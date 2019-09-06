@@ -13,13 +13,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(HealthController.class)
-public class HealthControllerTest {
+@WebMvcTest(SystemController.class)
+public class SystemControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void healthTest() throws Exception {
+    public void When_컨트롤러_호출_Then_정상_응답() throws Exception {
         // given
 
         // when
@@ -28,5 +28,18 @@ public class HealthControllerTest {
         // then
         actions.andExpect(status().isOk())
                 .andExpect(content().string("Hello System"));
+    }
+
+    @Test
+    public void When_예외_발생_컨트롤러_호출_Then_Advice_예외_처리() throws Exception {
+        // given
+
+        // when
+        final ResultActions actions = mockMvc.perform(get("/exception"));
+
+        // then
+        actions.andExpect(status().isInternalServerError())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().json("{\"message\":\"java.lang.NullPointerException\"}"));
     }
 }
