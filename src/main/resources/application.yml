@@ -1,17 +1,22 @@
 server:
   port: 8081
 
+logging:
+  level:
+    io.myrecipes.api.mapper: TRACE
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost/myrecipe?serverTimezone=Asia/Seoul&useSSL=false
     username: mruser
     password: P@ssw0rd!
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
 
 mybatis:
   type-aliases-package: io.myrecipes.api.model
   mapper-locations:
-
-logging:
-  level:
-    io.myrecipes.api.mapper: TRACE

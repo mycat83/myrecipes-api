@@ -17,7 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
                 "value=test",
                 "property.value=propertyTest"
         },
-        classes = {MyRecipesApiApplicationTests.class}
+        classes = {MyRecipesApiApplication.class}
 )
 public class MyRecipesApiApplicationTests {
 
