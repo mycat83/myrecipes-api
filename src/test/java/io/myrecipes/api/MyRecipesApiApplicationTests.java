@@ -31,6 +31,11 @@ public class MyRecipesApiApplicationTests {
     private String propertyValue;
 
     @Test
+    public void main() {
+        MyRecipesApiApplication.main(new String[]{"--server.port=9999"});
+    }
+
+    @Test
     public void contextLoads() {
         assertThat(value, is("test"));
         assertThat(propertyValue, is("propertyTest"));
