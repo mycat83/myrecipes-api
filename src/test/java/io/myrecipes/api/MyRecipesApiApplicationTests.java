@@ -8,6 +8,8 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -20,7 +22,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
         classes = {MyRecipesApiApplication.class}
 )
 public class MyRecipesApiApplicationTests {
-
     @Autowired
     DefaultListableBeanFactory beanFactory;
 
@@ -31,21 +32,23 @@ public class MyRecipesApiApplicationTests {
     private String propertyValue;
 
     @Test
-    public void main() {
+    public void main_메소드_정상_확인() {
         MyRecipesApiApplication.main(new String[]{"--server.port=9999"});
     }
 
     @Test
-    public void contextLoads() {
+    public void property_로드_정상_확인() {
         assertThat(value, is("test"));
         assertThat(propertyValue, is("propertyTest"));
     }
 
     @Test
-    public void beans() {
-        for (String bean: beanFactory.getBeanDefinitionNames()) {
-            System.out.println(bean + " \t" + beanFactory.getBean(bean).getClass().getName());
-        }
-    }
+    public void 빈_리스트_조회() {
+        String[] beans = beanFactory.getBeanDefinitionNames();
 
+        Arrays.stream(beans)
+                .sorted()
+                .map(s -> s + "\t" + beanFactory.getBean(s).getClass().getName())
+                .forEach(System.out::println);
+    }
 }

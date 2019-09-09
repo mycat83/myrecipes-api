@@ -19,25 +19,17 @@ public class SystemControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void When_컨트롤러_호출_Then_정상_응답() throws Exception {
-        // given
-
-        // when
+    public void Should_정상_응답_When_컨트롤러_호출() throws Exception {
         final ResultActions actions = mockMvc.perform(get("/health"));
 
-        // then
         actions.andExpect(status().isOk())
                 .andExpect(content().string("Hello System"));
     }
 
     @Test
-    public void When_예외_발생_컨트롤러_호출_Then_Advice_예외_처리() throws Exception {
-        // given
-
-        // when
+    public void Shuod_Advice_예외_처리_When_예외_발생_컨트롤러_호출() throws Exception {
         final ResultActions actions = mockMvc.perform(get("/exception"));
 
-        // then
         actions.andExpect(status().isInternalServerError())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(content().json("{\"message\":\"java.lang.NullPointerException\"}"));
