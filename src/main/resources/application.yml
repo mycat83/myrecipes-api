@@ -3,7 +3,9 @@ server:
 
 logging:
   level:
+    org.hibernate.type.descriptor.sql: TRACE
     io.myrecipes.api.mapper: TRACE
+    io.myrecipes.api.controller: TRACE
 
 spring:
   datasource:
@@ -16,7 +18,12 @@ spring:
       enabled: true
     restart:
       enabled: true
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+      use-new-id-generator-mappings: false
 
 mybatis:
   type-aliases-package: io.myrecipes.api.model
-  mapper-locations:

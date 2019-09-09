@@ -1,6 +1,6 @@
 package io.myrecipes.api.exception;
 
-import io.myrecipes.api.model.ApiErrorInfo;
+import io.myrecipes.api.domain.ApiErrorInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
