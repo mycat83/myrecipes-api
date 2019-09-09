@@ -23,14 +23,15 @@ public class SwaggerConfig {
                 .build()
                 .apiInfo(apiInfo())
                 .tags(
-                        new Tag("system", "시스템 API")
+                        new Tag("system", "시스템 API"),
+                        new Tag("recipe", "레시피 API")
                 );
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("마이레시피 API")
-                .description("마이레시피 Front/Admin에서 사용할 API 제공")
+                .description("마이레시피 Front/Admin에서 사용할 Rest API 제공")
                 .version("1.0")
                 .build();
     }
