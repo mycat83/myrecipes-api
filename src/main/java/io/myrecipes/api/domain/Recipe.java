@@ -1,16 +1,20 @@
 package io.myrecipes.api.domain;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "recipe")
 public class Recipe {
@@ -36,8 +40,14 @@ public class Recipe {
         @UpdateTimestamp
         private Timestamp modifyDate;
 
-        public Recipe() {
-        }
+        @OneToMany(mappedBy = "recipe")
+        private List<RecipeMaterial> recipeMaterialList = new ArrayList<>();
+
+        @OneToMany(mappedBy = "recipe")
+        private List<RecipeStep> recipeStepList = new ArrayList<>();
+
+        @OneToMany(mappedBy = "recipe")
+        private List<RecipeTag> recipeTagList = new ArrayList<>();
 
         public Recipe(String title, String image, Integer estimatedTime, String difficulty) {
                 this.title = title;
