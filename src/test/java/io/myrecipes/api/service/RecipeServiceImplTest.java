@@ -15,6 +15,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -68,7 +69,7 @@ public class RecipeServiceImplTest {
     @Test
     public void Should_업데이트된_항목_반환_When_업데이트_성공() {
         given(recipeRepository.getOne(1)).willReturn(recipe1);
-        given(recipeRepository.save(recipe2)).willReturn(recipe2);
+        given(recipeRepository.save(anyObject())).willReturn(recipe2);
 
         final Recipe updatedRecipe = recipeService.updateRecipe(1, recipe2);
 
