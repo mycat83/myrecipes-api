@@ -17,12 +17,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class RecipeRepositoryTest {
-    private Recipe recipe1;
-    private Recipe recipe2;
-    private Recipe recipe3;
-
     @Autowired
     private RecipeRepository recipeRepository;
 
@@ -40,6 +35,10 @@ public class RecipeRepositoryTest {
 
     @Autowired
     private UnitRepository unitRepository;
+
+    private Recipe recipe1;
+    private Recipe recipe2;
+    private Recipe recipe3;
 
     @Before
     public void setUp() {
@@ -61,7 +60,7 @@ public class RecipeRepositoryTest {
 
         recipe2.setId(recipeList.get(0).getId());
         recipeRepository.save(recipe2);
-        List<Recipe> updatedRecipeList = recipeRepository.findAll();
+        final List<Recipe> updatedRecipeList = recipeRepository.findAll();
 
         assertThat(updatedRecipeList.size(), is(1));
         assertThat(updatedRecipeList.get(0).getTitle(), is("test2"));
@@ -75,7 +74,7 @@ public class RecipeRepositoryTest {
         recipeRepository.save(recipe1);
         recipeRepository.save(recipe2);
         recipeRepository.save(recipe3);
-        List<Recipe> recipeList = recipeRepository.findAll();
+        final List<Recipe> recipeList = recipeRepository.findAll();
 
         assertThat(recipeList.size(), is(3));
         assertThat(recipeList.get(0).getId(), is(1));
@@ -107,9 +106,9 @@ public class RecipeRepositoryTest {
         materialRepository.saveAll(materialList);
 
         List<RecipeMaterial> recipeMaterialList = new ArrayList<>();
-        recipeMaterialList.add(new RecipeMaterial(1, recipe1, materialList.get(0)));
-        recipeMaterialList.add(new RecipeMaterial(2, recipe1, materialList.get(1)));
-        recipeMaterialList.add(new RecipeMaterial(3, recipe1, materialList.get(2)));
+        recipeMaterialList.add(new RecipeMaterial(10, recipe1, materialList.get(0)));
+        recipeMaterialList.add(new RecipeMaterial(20, recipe1, materialList.get(1)));
+        recipeMaterialList.add(new RecipeMaterial(30, recipe1, materialList.get(2)));
         recipeMaterialList.get(0).getRecipe().getRecipeMaterialList().add(recipeMaterialList.get(0));
         recipeMaterialList.get(1).getRecipe().getRecipeMaterialList().add(recipeMaterialList.get(1));
         recipeMaterialList.get(2).getRecipe().getRecipeMaterialList().add(recipeMaterialList.get(2));
@@ -126,9 +125,26 @@ public class RecipeRepositoryTest {
         recipeTag.getRecipe().getRecipeTagList().add(recipeTag);
         recipeTagRepository.save(recipeTag);
 
-        List<RecipeMaterial> savedRecipeMaterialList = recipe1.getRecipeMaterialList();
-        for (RecipeMaterial savedRecipeMaterial: savedRecipeMaterialList) {
-            System.out.println(savedRecipeMaterial.getId());
-        }
+        final Recipe savedRecipe = recipeRepository.getOne(recipe1.getId());
+
+        assertThat(savedRecipe.getRecipeMaterialList().size(), is(3));
+        assertThat(savedRecipe.getRecipeMaterialList().get(0).getQuantity(), is(10));
+        assertThat(savedRecipe.getRecipeMaterialList().get(1).getQuantity(), is(20));
+        assertThat(savedRecipe.getRecipeMaterialList().get(2).getQuantity(), is(30));
+
+        assertThat(savedRecipe.getRecipeMaterialList().get(0).getMaterial().getName(), is("material1"));
+        assertThat(savedRecipe.getRecipeMaterialList().get(1).getMaterial().getName(), is("material2"));
+        assertThat(savedRecipe.getRecipeMaterialList().get(2).getMaterial().getName(), is("material3"));
+
+        assertThat(savedRecipe.getRecipeMaterialList().get(0).getMaterial().getUnit().getName(), is("g"));
+        assertThat(savedRecipe.getRecipeMaterialList().get(1).getMaterial().getUnit().getName(), is("kg"));
+        assertThat(savedRecipe.getRecipeMaterialList().get(2).getMaterial().getUnit().getName(), is("g"));
+
+        assertThat(savedRecipe.getRecipeStepList().size(), is(2));
+        assertThat(savedRecipe.getRecipeStepList().get(0).getContent(), is("step1"));
+        assertThat(savedRecipe.getRecipeStepList().get(1).getContent(), is("step2"));
+
+        assertThat(savedRecipe.getRecipeTagList().size(), is(1));
+        assertThat(savedRecipe.getRecipeTagList().get(0).getTag(), is("tag1"));
     }
 }
