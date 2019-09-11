@@ -1,7 +1,6 @@
 package io.myrecipes.api.repository;
 
 import io.myrecipes.api.domain.*;
-import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -42,9 +42,9 @@ public class RecipeRepositoryTest {
 
     @Before
     public void setUp() {
-        recipe1 = new Recipe("test1", "test1.jpg", 30, "1");
-        recipe2 = new Recipe("test2", "test2.jpg", 60, "2");
-        recipe3 = new Recipe("test3", "test3.jpg", 90, "3");
+        recipe1 = new Recipe("test1", "test1.jpg", 30, "1", 1001);
+        recipe2 = new Recipe("test2", "test2.jpg", 60, "2", 1002);
+        recipe3 = new Recipe("test3", "test3.jpg", 90, "3", 1003);
     }
 
     @Test
@@ -57,16 +57,22 @@ public class RecipeRepositoryTest {
         assertThat(recipeList.get(0).getImage(), is("test1.jpg"));
         assertThat(recipeList.get(0).getEstimatedTime(), is(30));
         assertThat(recipeList.get(0).getDifficulty(), is("1"));
+        assertThat(recipeList.get(0).getRegisterUserId(), is(1001));
 
-        recipe2.setId(recipeList.get(0).getId());
-        recipeRepository.save(recipe2);
+        recipe1.setTitle(recipe2.getTitle());
+        recipe1.setImage(recipe2.getImage());
+        recipe1.setEstimatedTime(recipe2.getEstimatedTime());
+        recipe1.setDifficulty(recipe2.getDifficulty());
+        recipe1.setModifyUserId(recipe2.getRegisterUserId());
+        recipeRepository.save(recipe1);
         final List<Recipe> updatedRecipeList = recipeRepository.findAll();
 
         assertThat(updatedRecipeList.size(), is(1));
-        assertThat(updatedRecipeList.get(0).getTitle(), is("test2"));
-        assertThat(updatedRecipeList.get(0).getImage(), is("test2.jpg"));
-        assertThat(updatedRecipeList.get(0).getEstimatedTime(), is(60));
-        assertThat(updatedRecipeList.get(0).getDifficulty(), is("2"));
+        assertThat(updatedRecipeList.get(0).getTitle(), is(recipe2.getTitle()));
+        assertThat(updatedRecipeList.get(0).getImage(), is(recipe2.getImage()));
+        assertThat(updatedRecipeList.get(0).getEstimatedTime(), is(recipe2.getEstimatedTime()));
+        assertThat(updatedRecipeList.get(0).getDifficulty(), is(recipe2.getDifficulty()));
+        assertThat(updatedRecipeList.get(0).getModifyUserId(), is(recipe2.getRegisterUserId()));
     }
 
     @Test
@@ -85,9 +91,10 @@ public class RecipeRepositoryTest {
     @Test
     public void Should_엔티티_없음_When_엔티티_저장후_삭제() {
         recipeRepository.save(recipe1);
-        recipeRepository.deleteAll();
+        recipeRepository.deleteById(recipe1.getId());
+        Optional<Recipe> recipeOptional = recipeRepository.findById(recipe1.getId());
 
-        assertThat(recipeRepository.findAll(), IsEmptyCollection.empty());
+        assertThat(recipeOptional.isPresent(), is(false));
     }
 
     @Test
@@ -96,13 +103,13 @@ public class RecipeRepositoryTest {
 
         List<Unit> unitList = new ArrayList<>();
         unitList.add(new Unit("g"));
-        unitList.add(new Unit("kg", "g", 1000));
+        unitList.add(new Unit("kg", "g", 1000, 1001));
         unitRepository.saveAll(unitList);
 
         List<Material> materialList = new ArrayList<>();
-        materialList.add(new Material("material1", unitList.get(0)));
-        materialList.add(new Material("material2", unitList.get(1)));
-        materialList.add(new Material("material3", unitList.get(0)));
+        materialList.add(new Material("material1", 1001, unitList.get(0)));
+        materialList.add(new Material("material2", 1002, unitList.get(1)));
+        materialList.add(new Material("material3", 1003, unitList.get(0)));
         materialRepository.saveAll(materialList);
 
         List<RecipeMaterial> recipeMaterialList = new ArrayList<>();

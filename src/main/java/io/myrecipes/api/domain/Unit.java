@@ -1,9 +1,9 @@
 package io.myrecipes.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Entity
 @Table(name = "unit")
+@JsonIgnoreProperties("hibernateLazyInitializer")
 public class Unit {
     @Id
     private String name;
@@ -39,9 +40,10 @@ public class Unit {
         this.name = name;
     }
 
-    public Unit(String name, String exchangeUnitName, Integer exchangeQuantity) {
+    public Unit(String name, String exchangeUnitName, Integer exchangeQuantity, Integer registerUserId) {
         this.name = name;
         this.exchangeUnitName = exchangeUnitName;
         this.exchangeQuantity = exchangeQuantity;
+        this.registerUserId = registerUserId;
     }
 }

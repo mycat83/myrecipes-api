@@ -1,9 +1,10 @@
 package io.myrecipes.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "recipe_material")
+@JsonIgnoreProperties("hibernateLazyInitializer")
 public class RecipeMaterial {
     @Id
     @GeneratedValue
@@ -19,11 +21,12 @@ public class RecipeMaterial {
 
     private Integer quantity;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "material_id")
     private Material material;
 
