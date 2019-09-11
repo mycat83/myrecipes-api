@@ -39,7 +39,11 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         Recipe selectedRecipe = recipeOptional.get();
-        selectedRecipe.update(recipe);
+        selectedRecipe.setTitle(recipe.getTitle());
+        selectedRecipe.setImage(recipe.getImage());
+        selectedRecipe.setEstimatedTime(recipe.getEstimatedTime());
+        selectedRecipe.setDifficulty(recipe.getDifficulty());
+        selectedRecipe.setModifyUserId(recipe.getModifyUserId());
         return recipeRepository.save(selectedRecipe);
     }
 

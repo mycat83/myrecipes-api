@@ -1,9 +1,9 @@
 package io.myrecipes.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "recipe")
+@JsonIgnoreProperties("hibernateLazyInitializer")
 public class Recipe {
         @Id
         @GeneratedValue
@@ -40,26 +41,20 @@ public class Recipe {
         @UpdateTimestamp
         private Timestamp modifyDate;
 
-        @OneToMany(mappedBy = "recipe")
+        @OneToMany(mappedBy = "recipe", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
         private List<RecipeMaterial> recipeMaterialList = new ArrayList<>();
 
-        @OneToMany(mappedBy = "recipe")
+        @OneToMany(mappedBy = "recipe", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
         private List<RecipeStep> recipeStepList = new ArrayList<>();
 
-        @OneToMany(mappedBy = "recipe")
+        @OneToMany(mappedBy = "recipe", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
         private List<RecipeTag> recipeTagList = new ArrayList<>();
 
-        public Recipe(String title, String image, Integer estimatedTime, String difficulty) {
+        public Recipe(String title, String image, Integer estimatedTime, String difficulty, Integer registerUserId) {
                 this.title = title;
                 this.image = image;
                 this.estimatedTime = estimatedTime;
                 this.difficulty = difficulty;
-        }
-
-        public void update(Recipe recipe) {
-                this.title = recipe.getTitle();
-                this.image = recipe.getImage();
-                this.estimatedTime = recipe.getEstimatedTime();
-                this.difficulty = recipe.getDifficulty();
+                this.registerUserId = registerUserId;
         }
 }

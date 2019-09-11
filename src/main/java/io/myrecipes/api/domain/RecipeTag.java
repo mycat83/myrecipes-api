@@ -1,9 +1,9 @@
 package io.myrecipes.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -19,7 +19,8 @@ public class RecipeTag {
 
     private String tag;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
