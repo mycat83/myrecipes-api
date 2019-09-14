@@ -33,7 +33,7 @@ public class Material {
     @UpdateTimestamp
     private Timestamp modifyDate;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "unit_name")
     private Unit unit;
 

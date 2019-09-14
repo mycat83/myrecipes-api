@@ -19,7 +19,7 @@ public class RecipeTag {
 
     private String tag;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;

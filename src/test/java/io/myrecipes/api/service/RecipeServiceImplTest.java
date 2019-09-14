@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,8 @@ public class RecipeServiceImplTest {
         list.add(recipe3);
         given(recipeRepository.findAll()).willReturn(list);
 
-        final List<Recipe> foundList = recipeService.readRecipeList();
+        final Page<Recipe> foundPage = recipeService.readRecipePageSortedByParam(0, 10, "registerDate", false);
+        final List<Recipe> foundList = foundPage.getContent();
 
         assertThat(foundList.size(), is(3));
         assertThat(foundList.get(0).getTitle(), is("test1"));
