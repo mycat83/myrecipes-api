@@ -21,12 +21,12 @@ public class RecipeMaterial {
 
     private Integer quantity;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "material_id")
     private Material material;
 

@@ -41,13 +41,13 @@ public class Recipe {
         @UpdateTimestamp
         private Timestamp modifyDate;
 
-        @OneToMany(mappedBy = "recipe", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+        @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
         private List<RecipeMaterial> recipeMaterialList = new ArrayList<>();
 
-        @OneToMany(mappedBy = "recipe", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+        @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
         private List<RecipeStep> recipeStepList = new ArrayList<>();
 
-        @OneToMany(mappedBy = "recipe", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+        @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
         private List<RecipeTag> recipeTagList = new ArrayList<>();
 
         public Recipe(String title, String image, Integer estimatedTime, String difficulty, Integer registerUserId) {

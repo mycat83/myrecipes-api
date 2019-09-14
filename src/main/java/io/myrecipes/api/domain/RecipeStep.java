@@ -23,7 +23,7 @@ public class RecipeStep {
 
     private String image;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
