@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,26 +42,28 @@ public class RecipeServiceImplTest {
 
     @Test
     public void Should_동일한_항목_반환_When_저장_성공() {
-        given(recipeRepository.save(recipe1)).willReturn(recipe1);
+        given(recipeRepository.save(this.recipe1)).willReturn(this.recipe1);
 
-        final Recipe savedRecipe = recipeService.createRecipe(recipe1);
+        final Recipe savedRecipe = this.recipeService.createRecipe(this.recipe1);
 
         assertThat(savedRecipe, not(nullValue()));
-        assertThat(savedRecipe.getTitle(), equalTo(recipe1.getTitle()));
-        assertThat(savedRecipe.getImage(), equalTo(recipe1.getImage()));
-        assertThat(savedRecipe.getEstimatedTime(), equalTo(recipe1.getEstimatedTime()));
-        assertThat(savedRecipe.getDifficulty(), equalTo(recipe1.getDifficulty()));
+        assertThat(savedRecipe.getTitle(), equalTo(this.recipe1.getTitle()));
+        assertThat(savedRecipe.getImage(), equalTo(this.recipe1.getImage()));
+        assertThat(savedRecipe.getEstimatedTime(), equalTo(this.recipe1.getEstimatedTime()));
+        assertThat(savedRecipe.getDifficulty(), equalTo(this.recipe1.getDifficulty()));
     }
 
     @Test
     public void Should_리스트_반환_When_저장_성공() {
         List<Recipe> list = new ArrayList<>();
-        list.add(recipe1);
-        list.add(recipe2);
-        list.add(recipe3);
-        given(recipeRepository.findAll()).willReturn(list);
+        list.add(this.recipe1);
+        list.add(this.recipe2);
+        list.add(this.recipe3);
 
-        final List<Recipe> foundList = recipeService.readRecipePageSortedByParam(0, 10, "registerDate", false);
+        Page<Recipe> page = new PageImpl<>(list, PageRequest.of(0, list.size()), list.size());
+        given(this.recipeRepository.findAll(any(PageRequest.class))).willReturn(page);
+
+        final List<Recipe> foundList = this.recipeService.readRecipePageSortedByParam(0, 10, "registerDate", false);
 
         assertThat(foundList.size(), is(3));
         assertThat(foundList.get(0).getTitle(), is("test1"));
@@ -69,23 +73,23 @@ public class RecipeServiceImplTest {
 
     @Test
     public void Should_업데이트된_항목_반환_When_업데이트_성공() {
-        given(recipeRepository.getOne(1)).willReturn(recipe1);
-        given(recipeRepository.save(any(Recipe.class))).willReturn(recipe2);
+        given(recipeRepository.getOne(1)).willReturn(this.recipe1);
+        given(recipeRepository.save(any(Recipe.class))).willReturn(this.recipe2);
 
-        final Recipe updatedRecipe = recipeService.updateRecipe(1, recipe2);
+        final Recipe updatedRecipe = this.recipeService.updateRecipe(1, this.recipe2);
 
         assertThat(updatedRecipe, not(nullValue()));
-        assertThat(updatedRecipe.getTitle(), equalTo(recipe2.getTitle()));
-        assertThat(updatedRecipe.getImage(), equalTo(recipe2.getImage()));
-        assertThat(updatedRecipe.getEstimatedTime(), equalTo(recipe2.getEstimatedTime()));
-        assertThat(updatedRecipe.getDifficulty(), equalTo(recipe2.getDifficulty()));
+        assertThat(updatedRecipe.getTitle(), equalTo(this.recipe2.getTitle()));
+        assertThat(updatedRecipe.getImage(), equalTo(this.recipe2.getImage()));
+        assertThat(updatedRecipe.getEstimatedTime(), equalTo(this.recipe2.getEstimatedTime()));
+        assertThat(updatedRecipe.getDifficulty(), equalTo(this.recipe2.getDifficulty()));
     }
 
     @Test
     public void Should_Null_반환_When_업데이트_실패() {
         given(recipeRepository.getOne(1)).willReturn(null);
 
-        final Recipe updatedRecipe = recipeService.updateRecipe(1, recipe2);
+        final Recipe updatedRecipe = this.recipeService.updateRecipe(1, this.recipe2);
 
         assertThat(updatedRecipe, is(nullValue()));
     }

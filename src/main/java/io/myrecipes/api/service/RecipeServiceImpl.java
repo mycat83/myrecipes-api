@@ -19,7 +19,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Recipe readRecipe(int id) {
-        return recipeRepository.getOne(id);
+        return this.recipeRepository.getOne(id);
     }
 
     @Override
@@ -31,17 +31,17 @@ public class RecipeServiceImpl implements RecipeService {
             pageable = PageRequest.of(page, size, Sort.Direction.ASC, sortField);
         }
 
-        return recipeRepository.findAll(pageable).getContent();
+        return this.recipeRepository.findAll(pageable).getContent();
     }
 
     @Override
     public Recipe createRecipe(Recipe recipe) {
-        return recipeRepository.save(recipe);
+        return this.recipeRepository.save(recipe);
     }
 
     @Override
     public Recipe updateRecipe(int id, Recipe recipe) {
-        Optional<Recipe> recipeOptional = Optional.ofNullable(recipeRepository.getOne(id));
+        Optional<Recipe> recipeOptional = Optional.ofNullable(this.recipeRepository.getOne(id));
 
         if (!recipeOptional.isPresent()) {
             return null;
@@ -53,11 +53,11 @@ public class RecipeServiceImpl implements RecipeService {
         selectedRecipe.setEstimatedTime(recipe.getEstimatedTime());
         selectedRecipe.setDifficulty(recipe.getDifficulty());
         selectedRecipe.setModifyUserId(recipe.getModifyUserId());
-        return recipeRepository.save(selectedRecipe);
+        return this.recipeRepository.save(selectedRecipe);
     }
 
     @Override
     public void deleteRecipe(int id) {
-        recipeRepository.deleteById(id);
+        this.recipeRepository.deleteById(id);
     }
 }

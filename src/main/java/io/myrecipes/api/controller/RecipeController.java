@@ -40,27 +40,27 @@ public class RecipeController {
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "registerDate") String sortField, @RequestParam(defaultValue = "false") boolean isDescending) {
 
-        List<Recipe> recipePage = recipeService.readRecipePageSortedByParam(page, size, sortField, isDescending);
+        List<Recipe> recipePage = this.recipeService.readRecipePageSortedByParam(page, size, sortField, isDescending);
         return new ResponseEntity<>(recipePage, HttpStatus.OK);
     }
 
     @PostMapping("/recipes")
     @ApiOperation("레시피 저장")
     public ResponseEntity<Recipe> createRecipe(@RequestBody Recipe recipe) {
-        Recipe savedRecipe = recipeService.createRecipe(recipe);
+        Recipe savedRecipe = this.recipeService.createRecipe(recipe);
         return new ResponseEntity<>(savedRecipe, HttpStatus.OK);
     }
 
     @PutMapping("/recipes/{id}")
     @ApiOperation("레시피 수정")
     public ResponseEntity<Object> updateRecipe(@PathVariable int id, @RequestBody Recipe recipe) {
-        Recipe savedRecipe = recipeService.updateRecipe(id, recipe);
+        Recipe savedRecipe = this.recipeService.updateRecipe(id, recipe);
         return new ResponseEntity<>(savedRecipe, HttpStatus.OK);
     }
 
     @DeleteMapping("/recipes/{id}")
     @ApiOperation("레시피 삭제")
     public void deleteRecipe(@PathVariable int id) {
-        recipeService.deleteRecipe(id);
+        this.recipeService.deleteRecipe(id);
     }
 }

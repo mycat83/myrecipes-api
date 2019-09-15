@@ -20,7 +20,7 @@ public class SystemControllerTest {
 
     @Test
     public void Should_정상_응답_When_컨트롤러_호출() throws Exception {
-        final ResultActions actions = mockMvc.perform(get("/health"));
+        final ResultActions actions = this.mockMvc.perform(get("/health"));
 
         actions.andExpect(status().isOk())
                 .andExpect(content().string("Hello System"));
@@ -28,7 +28,7 @@ public class SystemControllerTest {
 
     @Test
     public void Shuod_Advice_예외_처리_When_예외_발생_컨트롤러_호출() throws Exception {
-        final ResultActions actions = mockMvc.perform(get("/exception"));
+        final ResultActions actions = this.mockMvc.perform(get("/exception"));
 
         actions.andExpect(status().isInternalServerError())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
