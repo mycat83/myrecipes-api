@@ -2,11 +2,11 @@ package io.myrecipes.api.service;
 
 import io.myrecipes.api.domain.Recipe;
 import io.myrecipes.api.repository.RecipeRepository;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,7 +23,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Page<Recipe> readRecipePageSortedByParam(int page, int size, String sortField, boolean isDescending) {
+    public List<Recipe> readRecipePageSortedByParam(int page, int size, String sortField, boolean isDescending) {
         PageRequest pageable;
         if (isDescending) {
             pageable = PageRequest.of(page, size, Sort.Direction.DESC, sortField);
@@ -31,7 +31,7 @@ public class RecipeServiceImpl implements RecipeService {
             pageable = PageRequest.of(page, size, Sort.Direction.ASC, sortField);
         }
 
-        return recipeRepository.findAll(pageable);
+        return recipeRepository.findAll(pageable).getContent();
     }
 
     @Override

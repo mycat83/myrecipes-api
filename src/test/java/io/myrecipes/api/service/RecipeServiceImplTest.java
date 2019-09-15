@@ -59,8 +59,7 @@ public class RecipeServiceImplTest {
         list.add(recipe3);
         given(recipeRepository.findAll()).willReturn(list);
 
-        final Page<Recipe> foundPage = recipeService.readRecipePageSortedByParam(0, 10, "registerDate", false);
-        final List<Recipe> foundList = foundPage.getContent();
+        final List<Recipe> foundList = recipeService.readRecipePageSortedByParam(0, 10, "registerDate", false);
 
         assertThat(foundList.size(), is(3));
         assertThat(foundList.get(0).getTitle(), is("test1"));

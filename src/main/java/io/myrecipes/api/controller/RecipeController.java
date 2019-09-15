@@ -6,10 +6,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Api(tags = {"recipe"})
 @RestController
@@ -35,11 +36,11 @@ public class RecipeController {
             @ApiImplicitParam(name = "sortField", value = "정렬기준 필드", dataType = "string", paramType = "query", defaultValue = "registerDate"),
             @ApiImplicitParam(name = "isDescending", value = "내림차순 정렬 여부", dataType = "boolean", paramType = "query", defaultValue = "false")
     })
-    public ResponseEntity<Page<Recipe>> readRecipeList(
+    public ResponseEntity<List<Recipe>> readRecipeList(
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "registerDate") String sortField, @RequestParam(defaultValue = "false") boolean isDescending) {
 
-        Page<Recipe> recipePage = recipeService.readRecipePageSortedByParam(page, size, sortField, isDescending);
+        List<Recipe> recipePage = recipeService.readRecipePageSortedByParam(page, size, sortField, isDescending);
         return new ResponseEntity<>(recipePage, HttpStatus.OK);
     }
 
