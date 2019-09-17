@@ -42,7 +42,7 @@ public class RecipeServiceImplTest {
 
     @Test
     public void Should_동일한_항목_반환_When_저장_성공() {
-        given(recipeRepository.save(this.recipe1)).willReturn(this.recipe1);
+        given(this.recipeRepository.save(this.recipe1)).willReturn(this.recipe1);
 
         final Recipe savedRecipe = this.recipeService.createRecipe(this.recipe1);
 
@@ -73,8 +73,8 @@ public class RecipeServiceImplTest {
 
     @Test
     public void Should_업데이트된_항목_반환_When_업데이트_성공() {
-        given(recipeRepository.getOne(1)).willReturn(this.recipe1);
-        given(recipeRepository.save(any(Recipe.class))).willReturn(this.recipe2);
+        given(this.recipeRepository.getOne(1)).willReturn(this.recipe1);
+        given(this.recipeRepository.save(any(Recipe.class))).willReturn(this.recipe2);
 
         final Recipe updatedRecipe = this.recipeService.updateRecipe(1, this.recipe2);
 
@@ -87,7 +87,7 @@ public class RecipeServiceImplTest {
 
     @Test
     public void Should_Null_반환_When_업데이트_실패() {
-        given(recipeRepository.getOne(1)).willReturn(null);
+        given(this.recipeRepository.getOne(1)).willReturn(null);
 
         final Recipe updatedRecipe = this.recipeService.updateRecipe(1, this.recipe2);
 
