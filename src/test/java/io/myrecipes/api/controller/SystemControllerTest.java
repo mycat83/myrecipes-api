@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -23,15 +24,15 @@ public class SystemControllerTest {
         final ResultActions actions = this.mockMvc.perform(get("/health"));
 
         actions.andExpect(status().isOk())
-                .andExpect(content().string("Hello System"));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
     @Test
-    public void Shuod_Advice_예외_처리_When_예외_발생_컨트롤러_호출() throws Exception {
+    public void Should_Advice_예외_처리_When_예외_발생_컨트롤러_호출() throws Exception {
         final ResultActions actions = this.mockMvc.perform(get("/exception"));
 
         actions.andExpect(status().isInternalServerError())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().json("{\"message\":\"java.lang.NullPointerException\"}"));
     }
 }
