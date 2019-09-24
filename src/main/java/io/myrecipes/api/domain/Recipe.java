@@ -1,11 +1,16 @@
 package io.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.myrecipes.api.dto.RecipeDTO;
 import lombok.*;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,5 +68,20 @@ public class Recipe extends BaseEntity {
 
     public void addRecipeTag(RecipeTag recipeTag) {
         this.recipeTagList.add(recipeTag);
+    }
+
+    public void update (Recipe recipe) {
+        this.title = recipe.title;
+        this.image = recipe.image;
+        this.estimatedTime = recipe.estimatedTime;
+        this.difficulty = recipe.difficulty;
+        this.registerUserId = recipe.registerUserId;
+        this.modifyUserId = recipe.modifyUserId;
+    }
+
+    public <T> T toDTO() {
+        ModelMapper modelMapper = new ModelMapper();
+        Type type = new TypeToken<T>() {}.getType();
+        return modelMapper.map(this, type);
     }
 }
