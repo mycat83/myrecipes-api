@@ -1,7 +1,10 @@
 package io.myrecipes.api.service;
 
 import io.myrecipes.api.domain.Recipe;
+import io.myrecipes.api.dto.RecipeDTO;
 import io.myrecipes.api.repository.RecipeRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -12,9 +15,11 @@ import java.util.Optional;
 @Service
 public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
+    private final ModelMapper modelMapper;
 
-    public RecipeServiceImpl(RecipeRepository recipeRepository) {
+    public RecipeServiceImpl(RecipeRepository recipeRepository, ModelMapper modelMapper) {
         this.recipeRepository = recipeRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -40,7 +45,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Recipe updateRecipe(int id, Recipe recipe) {
+    public RecipeDTO updateRecipe(int id, Recipe recipe) {
         Optional<Recipe> recipeOptional = Optional.ofNullable(this.recipeRepository.getOne(id));
 
         if (!recipeOptional.isPresent()) {
@@ -48,12 +53,10 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         Recipe selectedRecipe = recipeOptional.get();
-        selectedRecipe.setTitle(recipe.getTitle());
-        selectedRecipe.setImage(recipe.getImage());
-        selectedRecipe.setEstimatedTime(recipe.getEstimatedTime());
-        selectedRecipe.setDifficulty(recipe.getDifficulty());
-        selectedRecipe.setModifyUserId(recipe.getModifyUserId());
-        return this.recipeRepository.save(selectedRecipe);
+        selectedRecipe.update(recipe);
+        Recipe updatedRecipe = this.recipeRepository.save(selectedRecipe);
+
+        return updatedRecipe.toDTO();
     }
 
     @Override

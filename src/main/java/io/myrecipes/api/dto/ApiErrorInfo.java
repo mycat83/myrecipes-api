@@ -1,8 +1,14 @@
 package io.myrecipes.api.dto;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
+@Getter
 public class ApiErrorInfo {
     private String message;
+
+    @Builder
+    public ApiErrorInfo(String message) {
+        this.message = message;
+    }
 }
