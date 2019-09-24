@@ -1,60 +1,67 @@
 package io.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
 @Table(name = "recipe")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = {"recipeMaterialList", "recipeStepList", "recipeTagList"})
 @JsonIgnoreProperties("hibernateLazyInitializer")
-public class Recipe {
-        @Id
-        @GeneratedValue
-        private Integer id;
+public class Recipe extends BaseEntity {
+    @Id
+    @GeneratedValue
+    private Integer id;
 
-        private String title;
+    @Column(nullable = false)
+    private String title;
 
-        private String image;
+    @Column(nullable = false)
+    private String image;
 
-        private Integer estimatedTime;
+    @Column(nullable = false)
+    private Integer estimatedTime;
 
-        private String difficulty;
+    @Column(nullable = false)
+    @Max(5)
+    @Min(1)
+    private Integer difficulty;
 
-        private Integer registerUserId;
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<RecipeMaterial> recipeMaterialList = new ArrayList<>();
 
-        @CreationTimestamp
-        private Timestamp registerDate;
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<RecipeStep> recipeStepList = new ArrayList<>();
 
-        private Integer modifyUserId;
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<RecipeTag> recipeTagList = new ArrayList<>();
 
-        @UpdateTimestamp
-        private Timestamp modifyDate;
+    @Builder
+    public Recipe(String title, String image, Integer estimatedTime, Integer difficulty, Integer registerUserId, Integer modifyUserId) {
+        this.title = title;
+        this.image = image;
+        this.estimatedTime = estimatedTime;
+        this.difficulty = difficulty;
+        this.registerUserId = registerUserId;
+        this.modifyUserId = modifyUserId;
+    }
 
-        @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-        private List<RecipeMaterial> recipeMaterialList = new ArrayList<>();
+    public void addRecipeMaterial(RecipeMaterial recipeMaterial) {
+        this.recipeMaterialList.add(recipeMaterial);
+    }
 
-        @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-        private List<RecipeStep> recipeStepList = new ArrayList<>();
+    public void addRecipeStep(RecipeStep recipeStep) {
+        this.recipeStepList.add(recipeStep);
+    }
 
-        @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-        private List<RecipeTag> recipeTagList = new ArrayList<>();
-
-        public Recipe(String title, String image, Integer estimatedTime, String difficulty, Integer registerUserId) {
-                this.title = title;
-                this.image = image;
-                this.estimatedTime = estimatedTime;
-                this.difficulty = difficulty;
-                this.registerUserId = registerUserId;
-        }
+    public void addRecipeTag(RecipeTag recipeTag) {
+        this.recipeTagList.add(recipeTag);
+    }
 }

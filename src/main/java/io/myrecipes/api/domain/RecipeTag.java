@@ -1,22 +1,21 @@
 package io.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
 @Table(name = "recipe_tag")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class RecipeTag {
     @Id
     @GeneratedValue
     private Integer id;
 
+    @Column(nullable = false)
     private String tag;
 
     @ManyToOne
@@ -24,6 +23,7 @@ public class RecipeTag {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
+    @Builder
     public RecipeTag(String tag, Recipe recipe) {
         this.tag = tag;
         this.recipe = recipe;

@@ -2,23 +2,22 @@ package io.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
 @Table(name = "recipe_material")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 @JsonIgnoreProperties("hibernateLazyInitializer")
 public class RecipeMaterial {
     @Id
     @GeneratedValue
     private Integer id;
 
+    @Column(nullable = false)
     private Integer quantity;
 
     @ManyToOne
@@ -30,6 +29,7 @@ public class RecipeMaterial {
     @JoinColumn(name = "material_id")
     private Material material;
 
+    @Builder
     public RecipeMaterial(Integer quantity, Recipe recipe, Material material) {
         this.quantity = quantity;
         this.recipe = recipe;

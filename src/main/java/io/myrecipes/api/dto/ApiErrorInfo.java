@@ -1,4 +1,4 @@
-package io.myrecipes.api.domain;
+package io.myrecipes.api.dto;
 
 import lombok.Data;
 
