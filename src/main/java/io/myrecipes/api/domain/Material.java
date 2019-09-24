@@ -1,45 +1,33 @@
 package io.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
 @Table(name = "material")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 @JsonIgnoreProperties("hibernateLazyInitializer")
-public class Material {
+public class Material extends BaseEntity {
     @Id
     @GeneratedValue
     private Integer id;
 
+    @Column(nullable = false)
     private String name;
-
-    private Integer registerUserId;
-
-    @CreationTimestamp
-    private Timestamp registerDate;
-
-    private Integer modifyUserId;
-
-    @UpdateTimestamp
-    private Timestamp modifyDate;
 
     @ManyToOne
     @JoinColumn(name = "unit_name")
     private Unit unit;
 
-    public Material(String name, Integer registerUserId, Unit unit) {
+    @Builder
+    public Material(String name, Integer registerUserId, Integer modifyUserId, Unit unit) {
         this.name = name;
-        this.unit = unit;
         this.registerUserId = registerUserId;
+        this.modifyUserId = modifyUserId;
+        this.unit = unit;
     }
 }

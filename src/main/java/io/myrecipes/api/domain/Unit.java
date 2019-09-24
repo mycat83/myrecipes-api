@@ -1,24 +1,19 @@
 package io.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.sql.Timestamp;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
 @Table(name = "unit")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 @JsonIgnoreProperties("hibernateLazyInitializer")
-public class Unit {
+public class Unit extends BaseEntity {
     @Id
     private String name;
 
@@ -26,24 +21,12 @@ public class Unit {
 
     private Integer exchangeQuantity;
 
-    private Integer registerUserId;
-
-    @CreationTimestamp
-    private Timestamp registerDate;
-
-    private Integer modifyUserId;
-
-    @UpdateTimestamp
-    private Timestamp modifyDate;
-
-    public Unit(String name) {
-        this.name = name;
-    }
-
-    public Unit(String name, String exchangeUnitName, Integer exchangeQuantity, Integer registerUserId) {
+    @Builder
+    public Unit(String name, String exchangeUnitName, Integer exchangeQuantity, Integer registerUserId, Integer modifyUserId) {
         this.name = name;
         this.exchangeUnitName = exchangeUnitName;
         this.exchangeQuantity = exchangeQuantity;
         this.registerUserId = registerUserId;
+        this.modifyUserId = modifyUserId;
     }
 }
