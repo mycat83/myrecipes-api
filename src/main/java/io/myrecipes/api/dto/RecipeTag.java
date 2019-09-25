@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RecipeTagDTO {
+public class RecipeTag {
     private String tag;
 
     @Builder
-    public RecipeTagDTO(String tag) {
+    public RecipeTag(String tag) {
         this.tag = tag;
     }
 }

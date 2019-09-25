@@ -1,7 +1,7 @@
 package io.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import io.myrecipes.api.dto.RecipeTagDTO;
+import io.myrecipes.api.dto.RecipeTag;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class RecipeTag {
+public class RecipeTagEntity {
     @Id
     @GeneratedValue
     private Integer id;
@@ -22,16 +22,16 @@ public class RecipeTag {
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "recipe_id")
-    private Recipe recipe;
+    private RecipeEntity recipeEntity;
 
     @Builder
-    public RecipeTag(String tag, Recipe recipe) {
+    public RecipeTagEntity(String tag, RecipeEntity recipeEntity) {
         this.tag = tag;
-        this.recipe = recipe;
+        this.recipeEntity = recipeEntity;
     }
 
-    RecipeTagDTO toDTO() {
-        return RecipeTagDTO.builder()
+    RecipeTag toDTO() {
+        return RecipeTag.builder()
                 .tag(this.getTag())
                 .build();
     }

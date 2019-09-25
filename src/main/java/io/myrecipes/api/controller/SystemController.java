@@ -1,6 +1,6 @@
 package io.myrecipes.api.controller;
 
-import io.myrecipes.api.domain.Recipe;
+import io.myrecipes.api.domain.RecipeEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class SystemController {
     @GetMapping(value = "/health")
     @ApiOperation("API 상태")
-    public ResponseEntity<Recipe> health() {
-        Recipe recipe = Recipe.builder()
+    public ResponseEntity<RecipeEntity> health() {
+        RecipeEntity recipeEntity = RecipeEntity.builder()
                 .title("test1")
                 .image("test1.jpg")
                 .estimatedTime(30)
                 .difficulty(1)
                 .registerUserId(1001)
                 .build();
-        return new ResponseEntity<>(recipe, HttpStatus.OK);
+        return new ResponseEntity<>(recipeEntity, HttpStatus.OK);
     }
 
     @GetMapping(value = "/exception")

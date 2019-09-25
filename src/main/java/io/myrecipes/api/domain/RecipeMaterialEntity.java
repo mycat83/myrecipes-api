@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 @JsonIgnoreProperties("hibernateLazyInitializer")
-public class RecipeMaterial {
+public class RecipeMaterialEntity {
     @Id
     @GeneratedValue
     private Integer id;
@@ -23,16 +23,16 @@ public class RecipeMaterial {
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "recipe_id")
-    private Recipe recipe;
+    private RecipeEntity recipeEntity;
 
     @ManyToOne
     @JoinColumn(name = "material_id")
-    private Material material;
+    private MaterialEntity materialEntity;
 
     @Builder
-    public RecipeMaterial(Integer quantity, Recipe recipe, Material material) {
+    public RecipeMaterialEntity(Integer quantity, RecipeEntity recipeEntity, MaterialEntity materialEntity) {
         this.quantity = quantity;
-        this.recipe = recipe;
-        this.material = material;
+        this.recipeEntity = recipeEntity;
+        this.materialEntity = materialEntity;
     }
 }

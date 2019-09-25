@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class RecipeStep {
+public class RecipeStepEntity {
     @Id
     @GeneratedValue
     private Integer id;
@@ -26,13 +26,13 @@ public class RecipeStep {
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "recipe_id")
-    private Recipe recipe;
+    private RecipeEntity recipeEntity;
 
     @Builder
-    public RecipeStep(Integer step, String content, String image, Recipe recipe) {
+    public RecipeStepEntity(Integer step, String content, String image, RecipeEntity recipeEntity) {
         this.step = step;
         this.content = content;
         this.image = image;
-        this.recipe = recipe;
+        this.recipeEntity = recipeEntity;
     }
 }

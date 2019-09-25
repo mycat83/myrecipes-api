@@ -1,6 +1,6 @@
 package io.myrecipes.api.dto;
 
-import io.myrecipes.api.domain.Recipe;
+import io.myrecipes.api.domain.RecipeEntity;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RecipeDTO {
+public class Recipe {
     private Integer id;
 
     private String title;
@@ -19,10 +19,10 @@ public class RecipeDTO {
 
     private Integer difficulty;
 
-    private List<RecipeTagDTO> recipeTagDTOList = new ArrayList<>();
+    private List<RecipeTag> recipeTagList = new ArrayList<>();
 
     @Builder
-    public RecipeDTO(Integer id, String title, String image, Integer estimatedTime, Integer difficulty) {
+    public Recipe(Integer id, String title, String image, Integer estimatedTime, Integer difficulty) {
         this.id = id;
         this.title = title;
         this.image = image;
@@ -30,12 +30,12 @@ public class RecipeDTO {
         this.difficulty = difficulty;
     }
 
-    public void addRecipeTagDTO(RecipeTagDTO recipeTagDTO) {
-        this.recipeTagDTOList.add(recipeTagDTO);
+    public void addRecipeTagDTO(RecipeTag recipeTag) {
+        this.recipeTagList.add(recipeTag);
     }
 
-    public Recipe toDomain() {
-        return Recipe.builder()
+    public RecipeEntity toDomain() {
+        return RecipeEntity.builder()
                 .title(this.getTitle())
                 .image(this.getImage())
                 .estimatedTime(this.getEstimatedTime())

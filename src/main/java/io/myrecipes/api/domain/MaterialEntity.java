@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 @JsonIgnoreProperties("hibernateLazyInitializer")
-public class Material extends BaseEntity {
+public class MaterialEntity extends BaseEntity {
     @Id
     @GeneratedValue
     private Integer id;
@@ -21,13 +21,13 @@ public class Material extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "unit_name")
-    private Unit unit;
+    private UnitEntity unitEntity;
 
     @Builder
-    public Material(String name, Integer registerUserId, Integer modifyUserId, Unit unit) {
+    public MaterialEntity(String name, Integer registerUserId, Integer modifyUserId, UnitEntity unitEntity) {
         this.name = name;
         this.registerUserId = registerUserId;
         this.modifyUserId = modifyUserId;
-        this.unit = unit;
+        this.unitEntity = unitEntity;
     }
 }

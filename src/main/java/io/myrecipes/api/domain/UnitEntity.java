@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 @JsonIgnoreProperties("hibernateLazyInitializer")
-public class Unit extends BaseEntity {
+public class UnitEntity extends BaseEntity {
     @Id
     private String name;
 
@@ -22,7 +22,7 @@ public class Unit extends BaseEntity {
     private Integer exchangeQuantity;
 
     @Builder
-    public Unit(String name, String exchangeUnitName, Integer exchangeQuantity, Integer registerUserId, Integer modifyUserId) {
+    public UnitEntity(String name, String exchangeUnitName, Integer exchangeQuantity, Integer registerUserId, Integer modifyUserId) {
         this.name = name;
         this.exchangeUnitName = exchangeUnitName;
         this.exchangeQuantity = exchangeQuantity;

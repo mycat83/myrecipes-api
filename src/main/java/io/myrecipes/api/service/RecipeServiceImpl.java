@@ -1,7 +1,7 @@
 package io.myrecipes.api.service;
 
-import io.myrecipes.api.domain.Recipe;
-import io.myrecipes.api.dto.RecipeDTO;
+import io.myrecipes.api.domain.RecipeEntity;
+import io.myrecipes.api.dto.Recipe;
 import io.myrecipes.api.repository.RecipeRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -20,12 +20,12 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public RecipeDTO readRecipe(int id) {
+    public Recipe readRecipe(int id) {
         return this.recipeRepository.getOne(id).toDTO();
     }
 
     @Override
-    public List<RecipeDTO> readRecipePageSortedByParam(int page, int size, String sortField, boolean isDescending) {
+    public List<Recipe> readRecipePageSortedByParam(int page, int size, String sortField, boolean isDescending) {
         PageRequest pageable;
         if (isDescending) {
             pageable = PageRequest.of(page, size, Sort.Direction.DESC, sortField);
@@ -36,27 +36,27 @@ public class RecipeServiceImpl implements RecipeService {
         return this.recipeRepository.findAll(pageable)
                 .getContent()
                 .stream()
-                .map(Recipe::toDTO)
+                .map(RecipeEntity::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public RecipeDTO createRecipe(RecipeDTO recipeDTO) {
-        return this.recipeRepository.save(recipeDTO.toDomain()).toDTO();
+    public Recipe createRecipe(Recipe recipe) {
+        return this.recipeRepository.save(recipe.toDomain()).toDTO();
     }
 
     @Override
-    public RecipeDTO updateRecipe(int id, RecipeDTO recipeDTO) {
-        Optional<Recipe> recipeOptional = Optional.ofNullable(this.recipeRepository.getOne(id));
+    public Recipe updateRecipe(int id, Recipe recipe) {
+        Optional<RecipeEntity> recipeOptional = Optional.ofNullable(this.recipeRepository.getOne(id));
 
         if (!recipeOptional.isPresent()) {
             return null;
         }
 
-        Recipe selectedRecipe = recipeOptional.get();
-        selectedRecipe.update(recipeDTO.toDomain());
+        RecipeEntity selectedRecipeEntity = recipeOptional.get();
+        selectedRecipeEntity.update(recipe.toDomain());
 
-        return this.recipeRepository.save(selectedRecipe).toDTO();
+        return this.recipeRepository.save(selectedRecipeEntity).toDTO();
     }
 
     @Override
