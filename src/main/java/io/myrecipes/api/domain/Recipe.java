@@ -3,16 +3,13 @@ package io.myrecipes.api.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.myrecipes.api.dto.RecipeDTO;
 import lombok.*;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "recipe")
@@ -79,9 +76,19 @@ public class Recipe extends BaseEntity {
         this.modifyUserId = recipe.modifyUserId;
     }
 
-    public <T> T toDTO() {
-        ModelMapper modelMapper = new ModelMapper();
-        Type type = new TypeToken<T>() {}.getType();
-        return modelMapper.map(this, type);
+    public RecipeDTO toDTO() {
+        RecipeDTO recipeDTO = RecipeDTO.builder()
+                .id(this.getId())
+                .title(this.getTitle())
+                .image(this.getImage())
+                .estimatedTime(this.getEstimatedTime())
+                .difficulty(this.getDifficulty())
+                .build();
+
+        for (RecipeTag recipeTag: this.getRecipeTagList()) {
+            recipeDTO.addRecipeTagDTO(recipeTag.toDTO());
+        }
+
+        return recipeDTO;
     }
 }

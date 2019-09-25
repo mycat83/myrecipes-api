@@ -1,12 +1,14 @@
 package io.myrecipes.api.dto;
 
-import io.myrecipes.api.domain.Recipe;
+import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecipeTagDTO {
     private String tag;
-
-    private Recipe recipe;
 
     @Builder
     public RecipeTagDTO(String tag) {
