@@ -42,9 +42,9 @@ public class RecipeRepositoryTest {
 
     @Before
     public void setUp() {
-        this.recipe1 = new Recipe("test1", "test1.jpg", 30, "1", 1001);
-        this.recipe2 = new Recipe("test2", "test2.jpg", 60, "2", 1002);
-        this.recipe3 = new Recipe("test3", "test3.jpg", 90, "3", 1003);
+        this.recipe1 = Recipe.builder().title("test1").image("image1.jpg").estimatedTime(30).difficulty(1).registerUserId(1001).build();
+        this.recipe2 = Recipe.builder().title("test2").image("image2.jpg").estimatedTime(60).difficulty(3).registerUserId(1002).build();
+        this.recipe3 = Recipe.builder().title("test2").image("image3.jpg").estimatedTime(90).difficulty(5).registerUserId(1003).build();
     }
 
     @Test
@@ -53,17 +53,13 @@ public class RecipeRepositoryTest {
         final List<Recipe> recipeList = this.recipeRepository.findAll();
 
         assertThat(recipeList.size(), is(1));
-        assertThat(recipeList.get(0).getTitle(), is("test1"));
-        assertThat(recipeList.get(0).getImage(), is("test1.jpg"));
-        assertThat(recipeList.get(0).getEstimatedTime(), is(30));
-        assertThat(recipeList.get(0).getDifficulty(), is("1"));
-        assertThat(recipeList.get(0).getRegisterUserId(), is(1001));
+        assertThat(recipeList.get(0).getTitle(), is(this.recipe1.getTitle()));
+        assertThat(recipeList.get(0).getImage(), is(this.recipe1.getImage()));
+        assertThat(recipeList.get(0).getEstimatedTime(), is(this.recipe1.getEstimatedTime()));
+        assertThat(recipeList.get(0).getDifficulty(), is(this.recipe1.getDifficulty()));
+        assertThat(recipeList.get(0).getRegisterUserId(), is(this.recipe1.getRegisterUserId()));
 
-        this.recipe1.setTitle(this.recipe2.getTitle());
-        this.recipe1.setImage(this.recipe2.getImage());
-        this.recipe1.setEstimatedTime(this.recipe2.getEstimatedTime());
-        this.recipe1.setDifficulty(this.recipe2.getDifficulty());
-        this.recipe1.setModifyUserId(this.recipe2.getRegisterUserId());
+        this.recipe1.update(this.recipe2);
         this.recipeRepository.save(this.recipe1);
         final List<Recipe> updatedRecipeList = this.recipeRepository.findAll();
 
@@ -72,7 +68,7 @@ public class RecipeRepositoryTest {
         assertThat(updatedRecipeList.get(0).getImage(), is(this.recipe2.getImage()));
         assertThat(updatedRecipeList.get(0).getEstimatedTime(), is(this.recipe2.getEstimatedTime()));
         assertThat(updatedRecipeList.get(0).getDifficulty(), is(this.recipe2.getDifficulty()));
-        assertThat(updatedRecipeList.get(0).getModifyUserId(), is(this.recipe2.getRegisterUserId()));
+        assertThat(updatedRecipeList.get(0).getModifyUserId(), is(this.recipe2.getModifyUserId()));
     }
 
     @Test
@@ -102,33 +98,33 @@ public class RecipeRepositoryTest {
         this.recipeRepository.save(this.recipe1);
 
         List<Unit> unitList = new ArrayList<>();
-        unitList.add(new Unit("g"));
-        unitList.add(new Unit("kg", "g", 1000, 1001));
+        unitList.add(Unit.builder().name("g").build());
+        unitList.add(Unit.builder().name("kg").exchangeUnitName("g").registerUserId(1000).build());
         this.unitRepository.saveAll(unitList);
 
         List<Material> materialList = new ArrayList<>();
-        materialList.add(new Material("material1", 1001, unitList.get(0)));
-        materialList.add(new Material("material2", 1002, unitList.get(1)));
-        materialList.add(new Material("material3", 1003, unitList.get(0)));
+        materialList.add(Material.builder().name("material1").registerUserId(1001).unit(unitList.get(0)).build());
+        materialList.add(Material.builder().name("material2").registerUserId(1002).unit(unitList.get(1)).build());
+        materialList.add(Material.builder().name("material3").registerUserId(1003).unit(unitList.get(0)).build());
         this.materialRepository.saveAll(materialList);
 
         List<RecipeMaterial> recipeMaterialList = new ArrayList<>();
-        recipeMaterialList.add(new RecipeMaterial(10, this.recipe1, materialList.get(0)));
-        recipeMaterialList.add(new RecipeMaterial(20, this.recipe1, materialList.get(1)));
-        recipeMaterialList.add(new RecipeMaterial(30, this.recipe1, materialList.get(2)));
+        recipeMaterialList.add(RecipeMaterial.builder().quantity(10).recipe(this.recipe1).material(materialList.get(0)).build());
+        recipeMaterialList.add(RecipeMaterial.builder().quantity(20).recipe(this.recipe1).material(materialList.get(1)).build());
+        recipeMaterialList.add(RecipeMaterial.builder().quantity(30).recipe(this.recipe1).material(materialList.get(2)).build());
         recipeMaterialList.get(0).getRecipe().getRecipeMaterialList().add(recipeMaterialList.get(0));
         recipeMaterialList.get(1).getRecipe().getRecipeMaterialList().add(recipeMaterialList.get(1));
         recipeMaterialList.get(2).getRecipe().getRecipeMaterialList().add(recipeMaterialList.get(2));
         this.recipeMaterialRepository.saveAll(recipeMaterialList);
 
         List<RecipeStep> recipeStepList = new ArrayList<>();
-        recipeStepList.add(new RecipeStep(1, "step1", "step1.jpg", this.recipe1));
-        recipeStepList.add(new RecipeStep(2, "step2", "step2.jpg", this.recipe1));
+        recipeStepList.add(RecipeStep.builder().step(1).content("step1").image("step1.jpg").recipe(this.recipe1).build());
+        recipeStepList.add(RecipeStep.builder().step(1).content("step2").image("step2.jpg").recipe(this.recipe1).build());
         recipeStepList.get(0).getRecipe().getRecipeStepList().add(recipeStepList.get(0));
         recipeStepList.get(1).getRecipe().getRecipeStepList().add(recipeStepList.get(1));
         this.recipeStepRepository.saveAll(recipeStepList);
 
-        RecipeTag recipeTag = new RecipeTag("tag1", this.recipe1);
+        RecipeTag recipeTag = RecipeTag.builder().tag("tag1").recipe(this.recipe1).build();
         recipeTag.getRecipe().getRecipeTagList().add(recipeTag);
         this.recipeTagRepository.save(recipeTag);
 

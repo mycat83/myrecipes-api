@@ -1,6 +1,7 @@
 package io.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import io.myrecipes.api.dto.RecipeTagDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,5 +28,11 @@ public class RecipeTag {
     public RecipeTag(String tag, Recipe recipe) {
         this.tag = tag;
         this.recipe = recipe;
+    }
+
+    RecipeTagDTO toDTO() {
+        return RecipeTagDTO.builder()
+                .tag(this.getTag())
+                .build();
     }
 }

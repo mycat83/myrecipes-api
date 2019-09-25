@@ -14,8 +14,9 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiErrorInfo> handleException(Exception ex) {
         log.info(ex.toString());
 
-        ApiErrorInfo apiErrorInfo = new ApiErrorInfo();
-        apiErrorInfo.setMessage(ex.toString());
+        ApiErrorInfo apiErrorInfo = ApiErrorInfo.builder()
+                .message(ex.toString())
+                .build();
 
         return new ResponseEntity<>(apiErrorInfo, HttpStatus.INTERNAL_SERVER_ERROR);
     }

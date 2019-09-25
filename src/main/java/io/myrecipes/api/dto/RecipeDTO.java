@@ -1,13 +1,13 @@
 package io.myrecipes.api.dto;
 
-import io.myrecipes.api.domain.RecipeTag;
-import lombok.Builder;
-import lombok.Getter;
+import io.myrecipes.api.domain.Recipe;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecipeDTO {
     private Integer id;
 
@@ -19,7 +19,7 @@ public class RecipeDTO {
 
     private Integer difficulty;
 
-    private List<RecipeTag> recipeTagList = new ArrayList<>();
+    private List<RecipeTagDTO> recipeTagDTOList = new ArrayList<>();
 
     @Builder
     public RecipeDTO(Integer id, String title, String image, Integer estimatedTime, Integer difficulty) {
@@ -30,7 +30,16 @@ public class RecipeDTO {
         this.difficulty = difficulty;
     }
 
-    public void addRecipeTag(RecipeTag recipeTag) {
-        this.recipeTagList.add(recipeTag);
+    public void addRecipeTagDTO(RecipeTagDTO recipeTagDTO) {
+        this.recipeTagDTOList.add(recipeTagDTO);
+    }
+
+    public Recipe toDomain() {
+        return Recipe.builder()
+                .title(this.getTitle())
+                .image(this.getImage())
+                .estimatedTime(this.getEstimatedTime())
+                .difficulty(this.getDifficulty())
+                .build();
     }
 }
