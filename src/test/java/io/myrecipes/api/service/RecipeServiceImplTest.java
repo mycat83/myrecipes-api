@@ -39,7 +39,7 @@ public class RecipeServiceImplTest {
     public void setUp() {
         this.recipe1 = Recipe.builder().title("test1").image("image1.jpg").estimatedTime(30).difficulty(1).build();
         this.recipe2 = Recipe.builder().title("test2").image("image2.jpg").estimatedTime(60).difficulty(3).build();
-        this.recipe3 = Recipe.builder().title("test2").image("image3.jpg").estimatedTime(90).difficulty(5).build();
+        this.recipe3 = Recipe.builder().title("test3").image("image3.jpg").estimatedTime(90).difficulty(5).build();
     }
 
     @Test
@@ -56,7 +56,7 @@ public class RecipeServiceImplTest {
     }
 
     @Test
-    public void Should_리스트_반환_When_저장_성공() {
+    public void Should_첫번째_페이지_반환_When_0_페이지_조회() {
         List<Recipe> list = new ArrayList<>();
         list.add(this.recipe1);
         list.add(this.recipe2);
