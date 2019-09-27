@@ -19,6 +19,8 @@ public class Recipe {
 
     private Integer difficulty;
 
+    // TODO: 마지막 페이지 여부 추가
+
     private List<RecipeTag> recipeTagList = new ArrayList<>();
 
     @Builder

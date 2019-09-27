@@ -31,16 +31,16 @@ public class RecipeController {
     @GetMapping("/recipes")
     @ApiOperation("레시피 페이지 조회")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", value = "페이지 번호", dataType = "string", paramType = "query", defaultValue = "0"),
+            @ApiImplicitParam(name = "page", value = "페이지 번호", dataType = "string", paramType = "query", defaultValue = "1"),
             @ApiImplicitParam(name = "size", value = "페이지당 게시물 개수", dataType = "string", paramType = "query", defaultValue = "10"),
             @ApiImplicitParam(name = "sortField", value = "정렬기준 필드", dataType = "string", paramType = "query", defaultValue = "registerDate"),
             @ApiImplicitParam(name = "isDescending", value = "내림차순 정렬 여부", dataType = "boolean", paramType = "query", defaultValue = "false")
     })
     public ResponseEntity<List<Recipe>> readRecipeList(
-            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "registerDate") String sortField, @RequestParam(defaultValue = "false") boolean isDescending) {
 
-        List<Recipe> recipePage = this.recipeService.readRecipePageSortedByParam(page, size, sortField, isDescending);
+        List<Recipe> recipePage = this.recipeService.readRecipePageSortedByParam(page - 1, size, sortField, isDescending);
         return new ResponseEntity<>(recipePage, HttpStatus.OK);
     }
 
