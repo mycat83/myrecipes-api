@@ -150,4 +150,12 @@ public class RecipeRepositoryTest {
         assertThat(savedRecipeEntity.getRecipeTagEntityList().size(), is(1));
         assertThat(savedRecipeEntity.getRecipeTagEntityList().get(0).getTag(), is("tag1"));
     }
+
+    @Test
+    public void Should_1_반환_When_1건_저장() {
+        this.recipeRepository.save(this.recipeEntity1);
+        final long recipeCnt = this.recipeRepository.count();
+
+        assertThat(recipeCnt, is(1L));
+    }
 }

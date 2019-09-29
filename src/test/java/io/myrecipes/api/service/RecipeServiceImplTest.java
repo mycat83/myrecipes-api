@@ -98,4 +98,13 @@ public class RecipeServiceImplTest {
 
         assertThat(updatedRecipe, is(nullValue()));
     }
+
+    @Test
+    public void Should_1_반환_When_1건_조회() {
+        given(this.recipeRepository.count()).willReturn(1L);
+
+        final long recipeCnt = this.recipeService.readRecipeCnt();
+
+        assertThat(recipeCnt, is(1L));
+    }
 }
