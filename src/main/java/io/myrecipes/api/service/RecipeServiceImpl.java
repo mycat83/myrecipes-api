@@ -63,4 +63,9 @@ public class RecipeServiceImpl implements RecipeService {
     public void deleteRecipe(int id) {
         this.recipeRepository.deleteById(id);
     }
+
+    @Override
+    public long readRecipeCnt() {
+        return this.recipeRepository.count();
+    }
 }

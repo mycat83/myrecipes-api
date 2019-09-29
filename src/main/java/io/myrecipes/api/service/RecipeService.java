@@ -10,4 +10,5 @@ public interface RecipeService {
     Recipe createRecipe(Recipe recipe);
     Recipe updateRecipe(int id, Recipe recipe);
     void deleteRecipe(int id);
+    long readRecipeCnt();
 }

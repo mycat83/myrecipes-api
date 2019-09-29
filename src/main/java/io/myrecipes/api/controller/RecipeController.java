@@ -24,7 +24,7 @@ public class RecipeController {
     @GetMapping("/recipes/{id}")
     @ApiOperation("레시피 한건 조회")
     public ResponseEntity<Recipe> readRecipe(@PathVariable int id) {
-        Recipe recipe = recipeService.readRecipe(id);
+        Recipe recipe = this.recipeService.readRecipe(id);
         return new ResponseEntity<>(recipe, HttpStatus.OK);
     }
 
@@ -62,5 +62,12 @@ public class RecipeController {
     @ApiOperation("레시피 삭제")
     public void deleteRecipe(@PathVariable int id) {
         this.recipeService.deleteRecipe(id);
+    }
+
+    @GetMapping("/recipes/cnt")
+    @ApiOperation("레시피 건 수 조회")
+    public ResponseEntity<Long> readRecipe() {
+        long recipeCnt = this.recipeService.readRecipeCnt();
+        return new ResponseEntity<>(recipeCnt, HttpStatus.OK);
     }
 }
