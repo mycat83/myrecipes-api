@@ -1,6 +1,7 @@
 package io.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.myrecipes.api.dto.Material;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,5 +30,18 @@ public class MaterialEntity extends BaseEntity {
         this.registerUserId = registerUserId;
         this.modifyUserId = modifyUserId;
         this.unitEntity = unitEntity;
+    }
+
+    public void setUnitEntity(UnitEntity unitEntity) {
+        this.unitEntity = unitEntity;
+    }
+
+    public Material toDTO() {
+        return Material.builder()
+                .name(this.getName())
+                .registerUserId(this.getRegisterUserId())
+                .modifyUserId(this.getModifyUserId())
+                .unitName(this.getUnitEntity().getName())
+                .build();
     }
 }

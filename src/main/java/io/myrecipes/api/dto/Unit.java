@@ -1,29 +1,25 @@
-package io.myrecipes.api.domain;
+package io.myrecipes.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.myrecipes.api.dto.Unit;
-import lombok.*;
+import io.myrecipes.api.domain.UnitEntity;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "unit")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
-@JsonIgnoreProperties("hibernateLazyInitializer")
-public class UnitEntity extends BaseEntity {
-    @Id
+@NoArgsConstructor
+public class Unit {
     private String name;
 
     private String exchangeUnitName;
 
     private Integer exchangeQuantity;
 
+    private Integer registerUserId;
+
+    private Integer modifyUserId;
+
     @Builder
-    public UnitEntity(String name, String exchangeUnitName, Integer exchangeQuantity, Integer registerUserId, Integer modifyUserId) {
+    public Unit(String name, String exchangeUnitName, Integer exchangeQuantity, Integer registerUserId, Integer modifyUserId) {
         this.name = name;
         this.exchangeUnitName = exchangeUnitName;
         this.exchangeQuantity = exchangeQuantity;
@@ -31,8 +27,8 @@ public class UnitEntity extends BaseEntity {
         this.modifyUserId = modifyUserId;
     }
 
-    public Unit toDTO() {
-        return Unit.builder()
+    public UnitEntity toEntity() {
+        return UnitEntity.builder()
                 .name(this.getName())
                 .exchangeUnitName(this.getExchangeUnitName())
                 .exchangeQuantity(this.getExchangeQuantity())
