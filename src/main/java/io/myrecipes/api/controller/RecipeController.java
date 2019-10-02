@@ -1,6 +1,7 @@
 package io.myrecipes.api.controller;
 
 import io.myrecipes.api.dto.Recipe;
+import io.myrecipes.api.dto.RecipeReq;
 import io.myrecipes.api.service.RecipeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -46,9 +47,10 @@ public class RecipeController {
 
     @PostMapping("/recipes")
     @ApiOperation("레시피 저장")
-    public ResponseEntity<Recipe> createRecipe(@RequestBody Recipe recipe) {
-        Recipe savedRecipe = this.recipeService.createRecipe(recipe);
-        return new ResponseEntity<>(savedRecipe, HttpStatus.OK);
+    // TODO: 리턴타입 Object로 통일?
+    public ResponseEntity<Recipe> createRecipe(@RequestBody RecipeReq recipeReq) {
+        Recipe recipe = this.recipeService.createRecipe(recipeReq);
+        return new ResponseEntity<>(recipe, HttpStatus.OK);
     }
 
     @PutMapping("/recipes/{id}")

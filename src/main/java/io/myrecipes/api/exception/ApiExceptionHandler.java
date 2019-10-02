@@ -10,6 +10,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class ApiExceptionHandler {
+    @ExceptionHandler(NotExistDataException.class)
+    public ResponseEntity<ApiErrorInfo> handleNotExistDataException(Exception ex) {
+        log.info(ex.toString());
+
+        ApiErrorInfo apiErrorInfo = ApiErrorInfo.builder()
+                .message(ex.toString())
+                .build();
+
+        return new ResponseEntity<>(apiErrorInfo, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorInfo> handleException(Exception ex) {
         log.info(ex.toString());

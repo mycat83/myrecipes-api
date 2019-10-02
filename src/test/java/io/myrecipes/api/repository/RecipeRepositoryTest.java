@@ -152,7 +152,7 @@ public class RecipeRepositoryTest {
     }
 
     @Test
-    public void Should_1_반환_When_1건_저장() {
+    public void Should_카운트_1_반환_When_1건_저장() {
         this.recipeRepository.save(this.recipeEntity1);
         final long recipeCnt = this.recipeRepository.count();
 

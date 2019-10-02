@@ -85,7 +85,7 @@ public class RecipeEntity extends BaseEntity {
                 .build();
 
         for (RecipeTagEntity recipeTagEntity : this.getRecipeTagEntityList()) {
-            recipe.addRecipeTagDTO(recipeTagEntity.toDTO());
+            recipe.addRecipeTag(recipeTagEntity.toDTO());
         }
 
         return recipe;
