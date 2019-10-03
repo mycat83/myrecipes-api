@@ -1,6 +1,7 @@
 package io.myrecipes.api.dto;
 
 import io.myrecipes.api.domain.RecipeEntity;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +24,26 @@ public class RecipeReq {
     private List<RecipeStep> recipeStepList = new ArrayList<>();
 
     private List<RecipeTag> recipeTagList = new ArrayList<>();
+
+    @Builder
+    public RecipeReq(String title, String image, Integer estimatedTime, Integer difficulty) {
+        this.title = title;
+        this.image = image;
+        this.estimatedTime = estimatedTime;
+        this.difficulty = difficulty;
+    }
+
+    public void addRecipeMaterial(RecipeMaterial recipeMaterial) {
+        this.recipeMaterialList.add(recipeMaterial);
+    }
+
+    public void addRecipeStep(RecipeStep recipeStep) {
+        this.recipeStepList.add(recipeStep);
+    }
+
+    public void addRecipeTag(RecipeTag recipeTag) {
+        this.recipeTagList.add(recipeTag);
+    }
 
     public RecipeEntity toEntity() {
         return RecipeEntity.builder()

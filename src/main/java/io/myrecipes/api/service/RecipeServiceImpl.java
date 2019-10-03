@@ -1,10 +1,9 @@
 package io.myrecipes.api.service;
 
-import io.myrecipes.api.domain.RecipeEntity;
-import io.myrecipes.api.domain.RecipeMaterialEntity;
+import io.myrecipes.api.domain.*;
 import io.myrecipes.api.dto.*;
 import io.myrecipes.api.exception.NotExistDataException;
-import io.myrecipes.api.repository.RecipeMaterialRepository;
+import io.myrecipes.api.repository.MaterialRepository;
 import io.myrecipes.api.repository.RecipeRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,11 +17,11 @@ import java.util.stream.Collectors;
 @Service
 public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
-    private final RecipeMaterialRepository recipeMaterialRepository;
+    private final MaterialRepository materialRepository;
 
-    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeMaterialRepository recipeMaterialRepository) {
+    public RecipeServiceImpl(RecipeRepository recipeRepository,MaterialRepository materialRepository) {
         this.recipeRepository = recipeRepository;
-        this.recipeMaterialRepository = recipeMaterialRepository;
+        this.materialRepository = materialRepository;
     }
 
     @Override
@@ -30,7 +29,7 @@ public class RecipeServiceImpl implements RecipeService {
         Optional<RecipeEntity> recipeEntityOptional = this.recipeRepository.findById(id);
 
         if (!recipeEntityOptional.isPresent()) {
-            throw new NotExistDataException("RecipeEntity", id);
+            throw new NotExistDataException(RecipeEntity.class, id);
         }
 
         return recipeEntityOptional.get().toDTO();
@@ -54,24 +53,35 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional
-    public Recipe createRecipe(RecipeReq recipeReq) {
+    public Recipe createRecipe(RecipeReq recipeReq, int userId) {
         RecipeEntity recipeEntity = recipeReq.toEntity();
+        recipeEntity.setRegisterUserId(userId);
 
         for (RecipeMaterial recipeMaterial: recipeReq.getRecipeMaterialList()) {
-            Optional<RecipeMaterialEntity> recipeMaterialEntityOptional = this.recipeMaterialRepository.findById(recipeMaterial.getMaterialId());
-            if (!recipeMaterialEntityOptional.isPresent()) {
-                throw new NotExistDataException("RecipeMaterialEntity", recipeMaterial.getMaterialId());
+            Optional<MaterialEntity> materialEntityOptional = this.materialRepository.findById(recipeMaterial.getMaterialId());
+            if (!materialEntityOptional.isPresent()) {
+                throw new NotExistDataException(MaterialEntity.class, recipeMaterial.getMaterialId());
             }
 
-            recipeEntity.addRecipeMaterial(recipeMaterialEntityOptional.get());
+            RecipeMaterialEntity recipeMaterialEntity = recipeMaterial.toEntity();
+            recipeMaterialEntity.setRecipeEntity(recipeEntity);
+            recipeMaterialEntity.setMaterialEntity(materialEntityOptional.get());
+
+            recipeEntity.addRecipeMaterial(recipeMaterialEntity);
         }
 
         for (RecipeStep recipeStep: recipeReq.getRecipeStepList()) {
-            recipeEntity.addRecipeStep(recipeStep.toEntity());
+            RecipeStepEntity recipeStepEntity = recipeStep.toEntity();
+            recipeStepEntity.setRecipeEntity(recipeEntity);
+
+            recipeEntity.addRecipeStep(recipeStepEntity);
         }
 
         for (RecipeTag recipeTag: recipeReq.getRecipeTagList()) {
-            recipeEntity.addRecipeTag(recipeTag.toEntity());
+            RecipeTagEntity recipeTagEntity = recipeTag.toEntity();
+            recipeTagEntity.setRecipeEntity(recipeEntity);
+
+            recipeEntity.addRecipeTag(recipeTagEntity);
         }
 
         this.recipeRepository.save(recipeEntity);

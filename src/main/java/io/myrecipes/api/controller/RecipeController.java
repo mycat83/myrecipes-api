@@ -47,10 +47,9 @@ public class RecipeController {
 
     @PostMapping("/recipes")
     @ApiOperation("레시피 저장")
-    // TODO: 리턴타입 Object로 통일?
-    public ResponseEntity<Recipe> createRecipe(@RequestBody RecipeReq recipeReq) {
-        Recipe recipe = this.recipeService.createRecipe(recipeReq);
-        return new ResponseEntity<>(recipe, HttpStatus.OK);
+    public ResponseEntity<Recipe> createRecipe(@RequestBody RecipeReq recipeReq, @RequestParam int userId) {
+        Recipe savedRecipe = this.recipeService.createRecipe(recipeReq, userId);
+        return new ResponseEntity<>(savedRecipe, HttpStatus.OK);
     }
 
     @PutMapping("/recipes/{id}")

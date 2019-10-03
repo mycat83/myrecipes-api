@@ -28,10 +28,8 @@ public class MaterialEntity extends BaseEntity {
     public MaterialEntity(String name, Integer registerUserId, Integer modifyUserId, UnitEntity unitEntity) {
         this.name = name;
         this.registerUserId = registerUserId;
-        this.modifyUserId = modifyUserId;
-        this.unitEntity = unitEntity;
     }
-
+    
     public void setUnitEntity(UnitEntity unitEntity) {
         this.unitEntity = unitEntity;
     }
@@ -39,8 +37,6 @@ public class MaterialEntity extends BaseEntity {
     public Material toDTO() {
         return Material.builder()
                 .name(this.getName())
-                .registerUserId(this.getRegisterUserId())
-                .modifyUserId(this.getModifyUserId())
                 .unitName(this.getUnitEntity().getName())
                 .build();
     }

@@ -35,4 +35,8 @@ public class RecipeStepEntity {
         this.image = image;
         this.recipeEntity = recipeEntity;
     }
+
+    public void setRecipeEntity(RecipeEntity recipeEntity) {
+        this.recipeEntity = recipeEntity;
+    }
 }

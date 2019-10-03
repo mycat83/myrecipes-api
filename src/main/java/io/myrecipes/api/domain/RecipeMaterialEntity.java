@@ -35,4 +35,12 @@ public class RecipeMaterialEntity {
         this.recipeEntity = recipeEntity;
         this.materialEntity = materialEntity;
     }
+
+    public void setRecipeEntity(RecipeEntity recipeEntity) {
+        this.recipeEntity = recipeEntity;
+    }
+
+    public void setMaterialEntity(MaterialEntity materialEntity) {
+        this.materialEntity = materialEntity;
+    }
 }

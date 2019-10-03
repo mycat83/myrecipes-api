@@ -4,6 +4,7 @@ import io.myrecipes.api.domain.MaterialEntity;
 import io.myrecipes.api.domain.UnitEntity;
 import io.myrecipes.api.dto.Material;
 import io.myrecipes.api.dto.Unit;
+import io.myrecipes.api.exception.DuplicateDataException;
 import io.myrecipes.api.exception.NotExistDataException;
 import io.myrecipes.api.repository.MaterialRepository;
 import io.myrecipes.api.repository.UnitRepository;
@@ -26,19 +27,20 @@ public class BaseInfoServiceImpl implements BaseInfoService {
         Optional<MaterialEntity> materialEntityOptional = this.materialRepository.findById(id);
 
         if (!materialEntityOptional.isPresent()) {
-            throw new NotExistDataException("MaterialEntity", id);
+            throw new NotExistDataException(MaterialEntity.class, id);
         }
 
         return materialEntityOptional.get().toDTO();
     }
 
     @Override
-    public Material createMaterial(Material material) {
+    public Material createMaterial(Material material, int userId) {
         MaterialEntity materialEntity = material.toEntity();
+        materialEntity.setRegisterUserId(userId);
 
         Optional<UnitEntity> unitEntityOptional = this.unitRepository.findByName(material.getUnitName());
         if (!unitEntityOptional.isPresent()) {
-            throw new NotExistDataException("UnitEntity", material.getUnitName());
+            throw new NotExistDataException(UnitEntity.class, material.getUnitName());
         }
 
         materialEntity.setUnitEntity(unitEntityOptional.get());
@@ -49,14 +51,22 @@ public class BaseInfoServiceImpl implements BaseInfoService {
     public Unit readUnit(String name) {
         Optional<UnitEntity> unitEntityOptional = this.unitRepository.findByName(name);
         if (!unitEntityOptional.isPresent()) {
-            throw new NotExistDataException("UnitEntity", name);
+            throw new NotExistDataException(UnitEntity.class, name);
         }
 
         return unitEntityOptional.get().toDTO();
     }
 
     @Override
-    public Unit createUnit(Unit unit) {
-        return this.unitRepository.save(unit.toEntity()).toDTO();
+    public Unit createUnit(Unit unit, int userId) {
+        UnitEntity unitEntity = unit.toEntity();
+        unitEntity.setRegisterUserId(userId);
+
+        Optional<UnitEntity> unitEntityOptional = this.unitRepository.findByName(unitEntity.getName());
+        if (unitEntityOptional.isPresent()) {
+            throw new DuplicateDataException(UnitEntity.class, unitEntity.getName());
+        }
+
+        return this.unitRepository.save(unitEntity).toDTO();
     }
 }

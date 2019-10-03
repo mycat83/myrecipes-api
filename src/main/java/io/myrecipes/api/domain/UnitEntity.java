@@ -36,8 +36,6 @@ public class UnitEntity extends BaseEntity {
                 .name(this.getName())
                 .exchangeUnitName(this.getExchangeUnitName())
                 .exchangeQuantity(this.getExchangeQuantity())
-                .registerUserId(this.getRegisterUserId())
-                .modifyUserId(this.getModifyUserId())
                 .build();
     }
 }

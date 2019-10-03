@@ -1,8 +1,10 @@
 package io.myrecipes.api.service;
 
+import io.myrecipes.api.domain.MaterialEntity;
 import io.myrecipes.api.domain.RecipeEntity;
-import io.myrecipes.api.dto.Recipe;
-import io.myrecipes.api.dto.RecipeReq;
+import io.myrecipes.api.dto.*;
+import io.myrecipes.api.exception.NotExistDataException;
+import io.myrecipes.api.repository.MaterialRepository;
 import io.myrecipes.api.repository.RecipeRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -26,6 +29,8 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RecipeServiceImplTest {
+    private RecipeReq recipeReq;
+
     private Recipe recipe1;
     private Recipe recipe2;
     private Recipe recipe3;
@@ -36,33 +41,31 @@ public class RecipeServiceImplTest {
     @Mock
     private RecipeRepository recipeRepository;
 
+    @Mock
+    private MaterialRepository materialRepository;
+
     @Before
     public void setUp() {
-        // TODO: 단위 등록
+        RecipeMaterial recipeMaterial = RecipeMaterial.builder().materialId(1).quantity(5).build();
 
-        // TODO: 재료 등록
+        RecipeStep recipeStep = RecipeStep.builder().step(1).content("step1").image("step1.jpg").build();
 
-        // TODO: 레시피 요청 DTO 준비 3개
+        RecipeTag recipeTag1 = RecipeTag.builder().tag("tag1").build();
+        RecipeTag recipeTag2 = RecipeTag.builder().tag("tag2").build();
 
-        // TODO: 레시피 반환용 DTO 준비 3개
+        this.recipeReq = RecipeReq.builder().title("test1").image("image1.jpg").estimatedTime(30).difficulty(1).build();
+        this.recipeReq.addRecipeMaterial(recipeMaterial);
+        this.recipeReq.addRecipeStep(recipeStep);
+        this.recipeReq.addRecipeTag(recipeTag1);
+        this.recipeReq.addRecipeTag(recipeTag2);
 
-        this.recipe1 = Recipe.builder().title("test1").image("image1.jpg").estimatedTime(30).difficulty(1).build();
+        this.recipe1 = Recipe.builder()
+                .title(recipeReq.getTitle()).image(recipeReq.getImage())
+                .estimatedTime(recipeReq.getEstimatedTime()).difficulty(recipeReq.getDifficulty())
+                .build();
         this.recipe2 = Recipe.builder().title("test2").image("image2.jpg").estimatedTime(60).difficulty(3).build();
         this.recipe3 = Recipe.builder().title("test3").image("image3.jpg").estimatedTime(90).difficulty(5).build();
     }
-
-//    @Test
-//    public void Should_동일한_항목_반환_When_저장_성공() {
-//        given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(this.recipe1.toEntity());
-//
-//        final Recipe savedRecipe = this.recipeService.createRecipe(this.recipe1);
-//
-//        assertThat(savedRecipe, not(nullValue()));
-//        assertThat(savedRecipe.getTitle(), equalTo(this.recipe1.getTitle()));
-//        assertThat(savedRecipe.getImage(), equalTo(this.recipe1.getImage()));
-//        assertThat(savedRecipe.getEstimatedTime(), equalTo(this.recipe1.getEstimatedTime()));
-//        assertThat(savedRecipe.getDifficulty(), equalTo(this.recipe1.getDifficulty()));
-//    }
 
     @Test
     public void Should_첫번째_페이지_반환_When_0_페이지_조회() {
@@ -83,6 +86,36 @@ public class RecipeServiceImplTest {
         assertThat(foundList.get(0).getTitle(), is(this.recipe1.getTitle()));
         assertThat(foundList.get(1).getTitle(), is(this.recipe2.getTitle()));
         assertThat(foundList.get(2).getTitle(), is(this.recipe3.getTitle()));
+    }
+
+    @Test
+    public void Should_정상_저장_확인_When_레시피_저장() {
+        MaterialEntity materialEntity = MaterialEntity.builder().name("material1").build();
+
+        Optional<MaterialEntity> materialEntityOptional = Optional.ofNullable(materialEntity);
+
+        given(this.materialRepository.findById(1)).willReturn(materialEntityOptional);
+        given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(recipe1.toEntity());
+
+        final Recipe recipe = this.recipeService.createRecipe(recipeReq, 10001);
+
+        assertThat(recipe, instanceOf(Recipe.class));
+        assertThat(recipe.getTitle(), is(recipeReq.getTitle()));
+        assertThat(recipe.getImage(), is(recipeReq.getImage()));
+        assertThat(recipe.getEstimatedTime(), is(recipeReq.getEstimatedTime()));
+        assertThat(recipe.getDifficulty(), is(recipeReq.getDifficulty()));
+        assertThat(recipe.getRecipeTagList().size(), is(recipeReq.getRecipeTagList().size()));
+        assertThat(recipe.getRecipeTagList().get(0).getTag(), is(recipeReq.getRecipeTagList().get(0).getTag()));
+        assertThat(recipe.getRecipeTagList().get(1).getTag(), is(recipeReq.getRecipeTagList().get(1).getTag()));
+    }
+
+    @Test(expected = NotExistDataException.class)
+    public void Should_예외_발생_When_존재하지_않는_재료로_레시피_저장() {
+        Optional<MaterialEntity> materialEntityOptional = Optional.empty();
+
+        given(this.materialRepository.findById(1)).willReturn(materialEntityOptional);
+
+        final Recipe recipe = this.recipeService.createRecipe(recipeReq, 10001);
     }
 
     @Test
@@ -115,15 +148,5 @@ public class RecipeServiceImplTest {
         final long recipeCnt = this.recipeService.readRecipeCnt();
 
         assertThat(recipeCnt, is(1L));
-    }
-
-    @Test
-    //
-    public void Should_정상_저장_확인_When_레시피_저장() {
-        RecipeReq recipeReq = new RecipeReq();
-
-        final Recipe recipe = this.recipeService.createRecipe(recipeReq);
-
-        assertThat(recipe, instanceOf(Recipe.class));
     }
 }
