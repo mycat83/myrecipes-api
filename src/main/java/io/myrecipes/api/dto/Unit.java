@@ -14,17 +14,11 @@ public class Unit {
 
     private Integer exchangeQuantity;
 
-    private Integer registerUserId;
-
-    private Integer modifyUserId;
-
     @Builder
-    public Unit(String name, String exchangeUnitName, Integer exchangeQuantity, Integer registerUserId, Integer modifyUserId) {
+    public Unit(String name, String exchangeUnitName, Integer exchangeQuantity) {
         this.name = name;
         this.exchangeUnitName = exchangeUnitName;
         this.exchangeQuantity = exchangeQuantity;
-        this.registerUserId = registerUserId;
-        this.modifyUserId = modifyUserId;
     }
 
     public UnitEntity toEntity() {
@@ -32,8 +26,6 @@ public class Unit {
                 .name(this.getName())
                 .exchangeUnitName(this.getExchangeUnitName())
                 .exchangeQuantity(this.getExchangeQuantity())
-                .registerUserId(this.getRegisterUserId())
-                .modifyUserId(this.getModifyUserId())
                 .build();
     }
 }

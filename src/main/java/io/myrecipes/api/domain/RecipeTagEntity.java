@@ -30,6 +30,10 @@ public class RecipeTagEntity {
         this.recipeEntity = recipeEntity;
     }
 
+    public void setRecipeEntity(RecipeEntity recipeEntity) {
+        this.recipeEntity = recipeEntity;
+    }
+
     RecipeTag toDTO() {
         return RecipeTag.builder()
                 .tag(this.getTag())

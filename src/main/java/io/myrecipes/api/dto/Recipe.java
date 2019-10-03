@@ -21,21 +21,15 @@ public class Recipe {
 
     private Integer difficulty;
 
-    private Integer registerUserId;
-
-    private Integer modifyUserId;
-
     private List<RecipeTag> recipeTagList = new ArrayList<>();
 
     @Builder
-    public Recipe(Integer id, String title, String image, Integer estimatedTime, Integer difficulty, Integer registerUserId, Integer modifyUserId) {
+    public Recipe(Integer id, String title, String image, Integer estimatedTime, Integer difficulty) {
         this.id = id;
         this.title = title;
         this.image = image;
         this.estimatedTime = estimatedTime;
         this.difficulty = difficulty;
-        this.registerUserId = registerUserId;
-        this.modifyUserId = modifyUserId;
     }
 
     public void addRecipeTag(RecipeTag recipeTag) {
@@ -48,8 +42,6 @@ public class Recipe {
                 .image(this.getImage())
                 .estimatedTime(this.getEstimatedTime())
                 .difficulty(this.getDifficulty())
-                .registerUserId(this.getRegisterUserId())
-                .modifyUserId(this.getModifyUserId())
                 .build();
     }
 }

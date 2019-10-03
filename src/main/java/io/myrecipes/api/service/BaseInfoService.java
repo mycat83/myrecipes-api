@@ -6,10 +6,10 @@ import io.myrecipes.api.dto.Unit;
 public interface BaseInfoService {
     Material readMaterial(int id);
 
-    Material createMaterial(Material material);
+    Material createMaterial(Material material, int userId);
 
     Unit readUnit(String name);
 
-    Unit createUnit(Unit unit);
+    Unit createUnit(Unit unit, int userId);
 
 }

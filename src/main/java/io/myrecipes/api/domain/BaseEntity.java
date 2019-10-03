@@ -19,4 +19,13 @@ class BaseEntity {
 
     @UpdateTimestamp
     private LocalDateTime modifyDate;
+
+    public void setRegisterUserId(Integer registerUserId) {
+        this.registerUserId = registerUserId;
+        this.modifyUserId = registerUserId;
+    }
+
+    public void setModifyUserId(Integer modifyUserId) {
+        this.modifyUserId = modifyUserId;
+    }
 }

@@ -10,7 +10,7 @@ public interface RecipeService {
 
     List<Recipe> readRecipePageSortedByParam(int page, int size, String sortField, boolean isDescending);
 
-    Recipe createRecipe(RecipeReq recipe);
+    Recipe createRecipe(RecipeReq recipe, int userId);
 
     Recipe updateRecipe(int id, Recipe recipe);
 
