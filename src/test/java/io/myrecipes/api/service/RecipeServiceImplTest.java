@@ -88,6 +88,13 @@ public class RecipeServiceImplTest {
         assertThat(foundList.get(2).getTitle(), is(this.recipe3.getTitle()));
     }
 
+    @Test(expected = NotExistDataException.class)
+    public void Should_예외_발생_When_존재하지_않는_ID_조회() {
+        given(this.recipeRepository.findById(1)).willReturn(Optional.empty());
+
+        this.recipeService.readRecipe(1);
+    }
+
     @Test
     public void Should_정상_저장_확인_When_레시피_저장() {
         MaterialEntity materialEntity = MaterialEntity.builder().name("material1").build();
@@ -115,12 +122,12 @@ public class RecipeServiceImplTest {
 
         given(this.materialRepository.findById(1)).willReturn(materialEntityOptional);
 
-        final Recipe recipe = this.recipeService.createRecipe(recipeReq, 10001);
+        this.recipeService.createRecipe(recipeReq, 10001);
     }
 
     @Test
     public void Should_업데이트된_항목_반환_When_업데이트_성공() {
-        given(this.recipeRepository.getOne(1)).willReturn(this.recipe1.toEntity());
+        given(this.recipeRepository.findById(1)).willReturn(Optional.ofNullable(this.recipe1.toEntity()));
         given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(this.recipe2.toEntity());
 
         final Recipe updatedRecipe = this.recipeService.updateRecipe(1, this.recipe2);
@@ -134,7 +141,7 @@ public class RecipeServiceImplTest {
 
     @Test
     public void Should_Null_반환_When_업데이트_실패() {
-        given(this.recipeRepository.getOne(1)).willReturn(null);
+        given(this.recipeRepository.findById(1)).willReturn(Optional.empty());
 
         final Recipe updatedRecipe = this.recipeService.updateRecipe(1, this.recipe2);
 
