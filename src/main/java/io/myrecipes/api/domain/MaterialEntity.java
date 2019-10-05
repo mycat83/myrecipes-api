@@ -28,6 +28,8 @@ public class MaterialEntity extends BaseEntity {
     public MaterialEntity(String name, Integer registerUserId, Integer modifyUserId, UnitEntity unitEntity) {
         this.name = name;
         this.registerUserId = registerUserId;
+        this.modifyUserId = modifyUserId;
+        this.unitEntity = unitEntity;
     }
     
     public void setUnitEntity(UnitEntity unitEntity) {
