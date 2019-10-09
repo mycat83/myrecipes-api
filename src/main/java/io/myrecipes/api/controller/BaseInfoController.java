@@ -7,10 +7,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Api(tags = {"baseInfo"})
 @RestController
@@ -21,6 +20,13 @@ public class BaseInfoController {
         this.baseInfoService = baseInfoService;
     }
 
+    @GetMapping("/materials")
+    @ApiOperation("재료 리스트 조회")
+    public ResponseEntity<List<Material>> readMaterialList() {
+        List<Material> materialList = this.baseInfoService.readMaterialList();
+        return new ResponseEntity<>(materialList, HttpStatus.OK);
+    }
+
     @PostMapping("/materials")
     @ApiOperation("재료 저장")
     public ResponseEntity<Material> createMaterial(@RequestBody Material material, @RequestParam int userId) {
@@ -29,7 +35,7 @@ public class BaseInfoController {
     }
 
     @PostMapping("/units")
-    @ApiOperation("재료 저장")
+    @ApiOperation("단위 저장")
     public ResponseEntity<Unit> createUnit(@RequestBody Unit unit, @RequestParam int userId) {
         Unit savedUnit = this.baseInfoService.createUnit(unit, userId);
         return new ResponseEntity<>(savedUnit, HttpStatus.OK);

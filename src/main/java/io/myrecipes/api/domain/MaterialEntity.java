@@ -38,6 +38,7 @@ public class MaterialEntity extends BaseEntity {
 
     public Material toDTO() {
         return Material.builder()
+                .id(this.getId())
                 .name(this.getName())
                 .unitName(this.getUnitEntity().getName())
                 .build();
