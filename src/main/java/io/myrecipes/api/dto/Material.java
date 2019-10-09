@@ -8,12 +8,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class Material {
+    private Integer id;
+
     private String name;
 
     private String unitName;
 
     @Builder
-    public Material(String name, String unitName) {
+    public Material(Integer id, String name, String unitName) {
+        this.id = id;
         this.name = name;
         this.unitName = unitName;
     }

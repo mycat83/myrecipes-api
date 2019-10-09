@@ -10,7 +10,9 @@ import io.myrecipes.api.repository.MaterialRepository;
 import io.myrecipes.api.repository.UnitRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BaseInfoServiceImpl implements BaseInfoService {
@@ -31,6 +33,14 @@ public class BaseInfoServiceImpl implements BaseInfoService {
         }
 
         return materialEntityOptional.get().toDTO();
+    }
+
+    @Override
+    public List<Material> readMaterialList() {
+        return this.materialRepository.findAll()
+                .stream()
+                .map(MaterialEntity::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
