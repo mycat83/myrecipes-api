@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class RecipeReq {
+public class RecipeRequest {
     private String title;
 
     private String image;
@@ -26,7 +26,7 @@ public class RecipeReq {
     private List<RecipeTag> recipeTagList = new ArrayList<>();
 
     @Builder
-    public RecipeReq(String title, String image, Integer estimatedTime, Integer difficulty) {
+    public RecipeRequest(String title, String image, Integer estimatedTime, Integer difficulty) {
         this.title = title;
         this.image = image;
         this.estimatedTime = estimatedTime;

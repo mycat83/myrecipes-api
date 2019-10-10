@@ -9,6 +9,7 @@ import io.myrecipes.api.exception.NotExistDataException;
 import io.myrecipes.api.repository.MaterialRepository;
 import io.myrecipes.api.repository.UnitRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +45,7 @@ public class BaseInfoServiceImpl implements BaseInfoService {
     }
 
     @Override
+    @Transactional
     public Material createMaterial(Material material, int userId) {
         MaterialEntity materialEntity = material.toEntity();
         materialEntity.setRegisterUserId(userId);
@@ -68,6 +70,7 @@ public class BaseInfoServiceImpl implements BaseInfoService {
     }
 
     @Override
+    @Transactional
     public Unit createUnit(Unit unit, int userId) {
         UnitEntity unitEntity = unit.toEntity();
         unitEntity.setRegisterUserId(userId);

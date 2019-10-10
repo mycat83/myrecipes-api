@@ -29,7 +29,7 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RecipeServiceImplTest {
-    private RecipeReq recipeReq;
+    private RecipeRequest recipeRequest;
 
     private Recipe recipe1;
     private Recipe recipe2;
@@ -53,15 +53,15 @@ public class RecipeServiceImplTest {
         RecipeTag recipeTag1 = RecipeTag.builder().tag("tag1").build();
         RecipeTag recipeTag2 = RecipeTag.builder().tag("tag2").build();
 
-        this.recipeReq = RecipeReq.builder().title("test1").image("image1.jpg").estimatedTime(30).difficulty(1).build();
-        this.recipeReq.addRecipeMaterial(recipeMaterial);
-        this.recipeReq.addRecipeStep(recipeStep);
-        this.recipeReq.addRecipeTag(recipeTag1);
-        this.recipeReq.addRecipeTag(recipeTag2);
+        this.recipeRequest = RecipeRequest.builder().title("test1").image("image1.jpg").estimatedTime(30).difficulty(1).build();
+        this.recipeRequest.addRecipeMaterial(recipeMaterial);
+        this.recipeRequest.addRecipeStep(recipeStep);
+        this.recipeRequest.addRecipeTag(recipeTag1);
+        this.recipeRequest.addRecipeTag(recipeTag2);
 
         this.recipe1 = Recipe.builder()
-                .title(recipeReq.getTitle()).image(recipeReq.getImage())
-                .estimatedTime(recipeReq.getEstimatedTime()).difficulty(recipeReq.getDifficulty())
+                .title(recipeRequest.getTitle()).image(recipeRequest.getImage())
+                .estimatedTime(recipeRequest.getEstimatedTime()).difficulty(recipeRequest.getDifficulty())
                 .build();
         this.recipe2 = Recipe.builder().title("test2").image("image2.jpg").estimatedTime(60).difficulty(3).build();
         this.recipe3 = Recipe.builder().title("test3").image("image3.jpg").estimatedTime(90).difficulty(5).build();
@@ -104,16 +104,16 @@ public class RecipeServiceImplTest {
         given(this.materialRepository.findById(1)).willReturn(materialEntityOptional);
         given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(recipe1.toEntity());
 
-        final Recipe recipe = this.recipeService.createRecipe(recipeReq, 10001);
+        final Recipe recipe = this.recipeService.createRecipe(recipeRequest, 10001);
 
         assertThat(recipe, instanceOf(Recipe.class));
-        assertThat(recipe.getTitle(), is(recipeReq.getTitle()));
-        assertThat(recipe.getImage(), is(recipeReq.getImage()));
-        assertThat(recipe.getEstimatedTime(), is(recipeReq.getEstimatedTime()));
-        assertThat(recipe.getDifficulty(), is(recipeReq.getDifficulty()));
-        assertThat(recipe.getRecipeTagList().size(), is(recipeReq.getRecipeTagList().size()));
-        assertThat(recipe.getRecipeTagList().get(0).getTag(), is(recipeReq.getRecipeTagList().get(0).getTag()));
-        assertThat(recipe.getRecipeTagList().get(1).getTag(), is(recipeReq.getRecipeTagList().get(1).getTag()));
+        assertThat(recipe.getTitle(), is(recipeRequest.getTitle()));
+        assertThat(recipe.getImage(), is(recipeRequest.getImage()));
+        assertThat(recipe.getEstimatedTime(), is(recipeRequest.getEstimatedTime()));
+        assertThat(recipe.getDifficulty(), is(recipeRequest.getDifficulty()));
+        assertThat(recipe.getRecipeTagList().size(), is(recipeRequest.getRecipeTagList().size()));
+        assertThat(recipe.getRecipeTagList().get(0).getTag(), is(recipeRequest.getRecipeTagList().get(0).getTag()));
+        assertThat(recipe.getRecipeTagList().get(1).getTag(), is(recipeRequest.getRecipeTagList().get(1).getTag()));
     }
 
     @Test(expected = NotExistDataException.class)
@@ -122,7 +122,7 @@ public class RecipeServiceImplTest {
 
         given(this.materialRepository.findById(1)).willReturn(materialEntityOptional);
 
-        this.recipeService.createRecipe(recipeReq, 10001);
+        this.recipeService.createRecipe(recipeRequest, 10001);
     }
 
     @Test
