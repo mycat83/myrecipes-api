@@ -53,11 +53,11 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional
-    public Recipe createRecipe(RecipeReq recipeReq, int userId) {
-        RecipeEntity recipeEntity = recipeReq.toEntity();
+    public Recipe createRecipe(RecipeRequest recipeRequest, int userId) {
+        RecipeEntity recipeEntity = recipeRequest.toEntity();
         recipeEntity.setRegisterUserId(userId);
 
-        for (RecipeMaterial recipeMaterial: recipeReq.getRecipeMaterialList()) {
+        for (RecipeMaterial recipeMaterial: recipeRequest.getRecipeMaterialList()) {
             Optional<MaterialEntity> materialEntityOptional = this.materialRepository.findById(recipeMaterial.getMaterialId());
             if (!materialEntityOptional.isPresent()) {
                 throw new NotExistDataException(MaterialEntity.class, recipeMaterial.getMaterialId());
@@ -70,14 +70,14 @@ public class RecipeServiceImpl implements RecipeService {
             recipeEntity.addRecipeMaterial(recipeMaterialEntity);
         }
 
-        for (RecipeStep recipeStep: recipeReq.getRecipeStepList()) {
+        for (RecipeStep recipeStep: recipeRequest.getRecipeStepList()) {
             RecipeStepEntity recipeStepEntity = recipeStep.toEntity();
             recipeStepEntity.setRecipeEntity(recipeEntity);
 
             recipeEntity.addRecipeStep(recipeStepEntity);
         }
 
-        for (RecipeTag recipeTag: recipeReq.getRecipeTagList()) {
+        for (RecipeTag recipeTag: recipeRequest.getRecipeTagList()) {
             RecipeTagEntity recipeTagEntity = recipeTag.toEntity();
             recipeTagEntity.setRecipeEntity(recipeEntity);
 

@@ -1,7 +1,7 @@
 package io.myrecipes.api.service;
 
 import io.myrecipes.api.dto.Recipe;
-import io.myrecipes.api.dto.RecipeReq;
+import io.myrecipes.api.dto.RecipeRequest;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public interface RecipeService {
 
     List<Recipe> readRecipePageSortedByParam(int page, int size, String sortField, boolean isDescending);
 
-    Recipe createRecipe(RecipeReq recipe, int userId);
+    Recipe createRecipe(RecipeRequest recipe, int userId);
 
     Recipe updateRecipe(int id, Recipe recipe);
 

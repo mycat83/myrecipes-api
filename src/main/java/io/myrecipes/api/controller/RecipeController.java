@@ -1,7 +1,7 @@
 package io.myrecipes.api.controller;
 
 import io.myrecipes.api.dto.Recipe;
-import io.myrecipes.api.dto.RecipeReq;
+import io.myrecipes.api.dto.RecipeRequest;
 import io.myrecipes.api.service.RecipeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -47,8 +47,8 @@ public class RecipeController {
 
     @PostMapping("/recipes")
     @ApiOperation("레시피 저장")
-    public ResponseEntity<Recipe> createRecipe(@RequestBody RecipeReq recipeReq, @RequestParam int userId) {
-        Recipe savedRecipe = this.recipeService.createRecipe(recipeReq, userId);
+    public ResponseEntity<Recipe> createRecipe(@RequestBody RecipeRequest recipeRequest, @RequestParam int userId) {
+        Recipe savedRecipe = this.recipeService.createRecipe(recipeRequest, userId);
         return new ResponseEntity<>(savedRecipe, HttpStatus.OK);
     }
 
