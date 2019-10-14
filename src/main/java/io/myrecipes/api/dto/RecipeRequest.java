@@ -19,11 +19,11 @@ public class RecipeRequest {
 
     private Integer difficulty;
 
-    private List<RecipeMaterial> recipeMaterialList = new ArrayList<>();
+    private List<RecipeMaterialRequest> recipeMaterialRequestList = new ArrayList<>();
 
-    private List<RecipeStep> recipeStepList = new ArrayList<>();
+    private List<RecipeStepRequest> recipeStepRequestList = new ArrayList<>();
 
-    private List<RecipeTag> recipeTagList = new ArrayList<>();
+    private List<RecipeTagRequest> recipeTagRequestList = new ArrayList<>();
 
     @Builder
     public RecipeRequest(String title, String image, Integer estimatedTime, Integer difficulty) {
@@ -33,16 +33,16 @@ public class RecipeRequest {
         this.difficulty = difficulty;
     }
 
-    public void addRecipeMaterial(RecipeMaterial recipeMaterial) {
-        this.recipeMaterialList.add(recipeMaterial);
+    public void addRecipeMaterial(RecipeMaterialRequest recipeMaterialRequest) {
+        this.recipeMaterialRequestList.add(recipeMaterialRequest);
     }
 
-    public void addRecipeStep(RecipeStep recipeStep) {
-        this.recipeStepList.add(recipeStep);
+    public void addRecipeStep(RecipeStepRequest recipeStepRequest) {
+        this.recipeStepRequestList.add(recipeStepRequest);
     }
 
-    public void addRecipeTag(RecipeTag recipeTag) {
-        this.recipeTagList.add(recipeTag);
+    public void addRecipeTag(RecipeTagRequest recipeTagRequest) {
+        this.recipeTagRequestList.add(recipeTagRequest);
     }
 
     public RecipeEntity toEntity() {

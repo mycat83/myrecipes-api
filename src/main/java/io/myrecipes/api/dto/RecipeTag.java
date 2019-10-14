@@ -1,6 +1,5 @@
 package io.myrecipes.api.dto;
 
-import io.myrecipes.api.domain.RecipeTagEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,9 +14,9 @@ public class RecipeTag {
         this.tag = tag;
     }
 
-    public RecipeTagEntity toEntity() {
-        return RecipeTagEntity.builder()
-                .tag(this.getTag())
-                .build();
-    }
+//    public RecipeTagEntity toEntity() {
+//        return RecipeTagEntity.builder()
+//                .tag(this.getTag())
+//                .build();
+//    }
 }

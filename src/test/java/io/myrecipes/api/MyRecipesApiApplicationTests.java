@@ -14,32 +14,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(
-        properties = {
-                "value=test",
-                "property.value=propertyTest"
-        },
-        classes = {MyRecipesApiApplication.class}
-)
+@SpringBootTest
 public class MyRecipesApiApplicationTests {
     @Autowired
     DefaultListableBeanFactory beanFactory;
 
-    @Value("${value}")
-    private String value;
-
-    @Value("${property.value}")
-    private String propertyValue;
-
     @Test
     public void main_메소드_정상_확인() {
         MyRecipesApiApplication.main(new String[]{"--server.port=9999"});
-    }
-
-    @Test
-    public void property_로드_정상_확인() {
-        assertThat(value, is("test"));
-        assertThat(propertyValue, is("propertyTest"));
     }
 
     @Test

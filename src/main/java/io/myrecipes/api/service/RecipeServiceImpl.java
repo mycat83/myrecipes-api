@@ -57,28 +57,28 @@ public class RecipeServiceImpl implements RecipeService {
         RecipeEntity recipeEntity = recipeRequest.toEntity();
         recipeEntity.setRegisterUserId(userId);
 
-        for (RecipeMaterial recipeMaterial: recipeRequest.getRecipeMaterialList()) {
-            Optional<MaterialEntity> materialEntityOptional = this.materialRepository.findById(recipeMaterial.getMaterialId());
+        for (RecipeMaterialRequest recipeMaterialRequest : recipeRequest.getRecipeMaterialRequestList()) {
+            Optional<MaterialEntity> materialEntityOptional = this.materialRepository.findById(recipeMaterialRequest.getMaterialId());
             if (!materialEntityOptional.isPresent()) {
-                throw new NotExistDataException(MaterialEntity.class, recipeMaterial.getMaterialId());
+                throw new NotExistDataException(MaterialEntity.class, recipeMaterialRequest.getMaterialId());
             }
 
-            RecipeMaterialEntity recipeMaterialEntity = recipeMaterial.toEntity();
+            RecipeMaterialEntity recipeMaterialEntity = recipeMaterialRequest.toEntity();
             recipeMaterialEntity.setRecipeEntity(recipeEntity);
             recipeMaterialEntity.setMaterialEntity(materialEntityOptional.get());
 
             recipeEntity.addRecipeMaterial(recipeMaterialEntity);
         }
 
-        for (RecipeStep recipeStep: recipeRequest.getRecipeStepList()) {
-            RecipeStepEntity recipeStepEntity = recipeStep.toEntity();
+        for (RecipeStepRequest recipeStepRequest : recipeRequest.getRecipeStepRequestList()) {
+            RecipeStepEntity recipeStepEntity = recipeStepRequest.toEntity();
             recipeStepEntity.setRecipeEntity(recipeEntity);
 
             recipeEntity.addRecipeStep(recipeStepEntity);
         }
 
-        for (RecipeTag recipeTag: recipeRequest.getRecipeTagList()) {
-            RecipeTagEntity recipeTagEntity = recipeTag.toEntity();
+        for (RecipeTagRequest recipeTagRequest: recipeRequest.getRecipeTagRequestList()) {
+            RecipeTagEntity recipeTagEntity = recipeTagRequest.toEntity();
             recipeTagEntity.setRecipeEntity(recipeEntity);
 
             recipeEntity.addRecipeTag(recipeTagEntity);
