@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class RecipeMaterial {
+public class RecipeMaterialRequest {
     private Integer materialId;
 
     private Integer quantity;
 
     @Builder
-    public RecipeMaterial(Integer materialId, Integer quantity) {
+    public RecipeMaterialRequest(Integer materialId, Integer quantity) {
         this.materialId = materialId;
         this.quantity = quantity;
     }

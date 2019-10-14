@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class RecipeStep {
+public class RecipeStepRequest {
     private Integer step;
 
     private String content;
@@ -15,7 +15,7 @@ public class RecipeStep {
     private String image;
 
     @Builder
-    public RecipeStep(Integer step, String content, String image) {
+    public RecipeStepRequest(Integer step, String content, String image) {
         this.step = step;
         this.content = content;
         this.image = image;

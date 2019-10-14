@@ -46,18 +46,18 @@ public class RecipeServiceImplTest {
 
     @Before
     public void setUp() {
-        RecipeMaterial recipeMaterial = RecipeMaterial.builder().materialId(1).quantity(5).build();
+        RecipeMaterialRequest recipeMaterialRequest = RecipeMaterialRequest.builder().materialId(1).quantity(5).build();
 
-        RecipeStep recipeStep = RecipeStep.builder().step(1).content("step1").image("step1.jpg").build();
+        RecipeStepRequest recipeStepRequest = RecipeStepRequest.builder().step(1).content("step1").image("step1.jpg").build();
 
-        RecipeTag recipeTag1 = RecipeTag.builder().tag("tag1").build();
-        RecipeTag recipeTag2 = RecipeTag.builder().tag("tag2").build();
+        RecipeTagRequest recipeTagRequest1 = RecipeTagRequest.builder().tag("tag1").build();
+        RecipeTagRequest recipeTagRequest2 = RecipeTagRequest.builder().tag("tag2").build();
 
         this.recipeRequest = RecipeRequest.builder().title("test1").image("image1.jpg").estimatedTime(30).difficulty(1).build();
-        this.recipeRequest.addRecipeMaterial(recipeMaterial);
-        this.recipeRequest.addRecipeStep(recipeStep);
-        this.recipeRequest.addRecipeTag(recipeTag1);
-        this.recipeRequest.addRecipeTag(recipeTag2);
+        this.recipeRequest.addRecipeMaterial(recipeMaterialRequest);
+        this.recipeRequest.addRecipeStep(recipeStepRequest);
+        this.recipeRequest.addRecipeTag(recipeTagRequest1);
+        this.recipeRequest.addRecipeTag(recipeTagRequest2);
 
         this.recipe1 = Recipe.builder()
                 .title(recipeRequest.getTitle()).image(recipeRequest.getImage())
@@ -111,9 +111,9 @@ public class RecipeServiceImplTest {
         assertThat(recipe.getImage(), is(recipeRequest.getImage()));
         assertThat(recipe.getEstimatedTime(), is(recipeRequest.getEstimatedTime()));
         assertThat(recipe.getDifficulty(), is(recipeRequest.getDifficulty()));
-        assertThat(recipe.getRecipeTagList().size(), is(recipeRequest.getRecipeTagList().size()));
-        assertThat(recipe.getRecipeTagList().get(0).getTag(), is(recipeRequest.getRecipeTagList().get(0).getTag()));
-        assertThat(recipe.getRecipeTagList().get(1).getTag(), is(recipeRequest.getRecipeTagList().get(1).getTag()));
+        assertThat(recipe.getRecipeTagList().size(), is(recipeRequest.getRecipeTagRequestList().size()));
+        assertThat(recipe.getRecipeTagList().get(0).getTag(), is(recipeRequest.getRecipeTagRequestList().get(0).getTag()));
+        assertThat(recipe.getRecipeTagList().get(1).getTag(), is(recipeRequest.getRecipeTagRequestList().get(1).getTag()));
     }
 
     @Test(expected = NotExistDataException.class)
