@@ -1,6 +1,6 @@
 package io.myrecipes.api.controller;
 
-import io.myrecipes.api.domain.Recipe;
+import io.myrecipes.api.dto.Recipe;
 import io.myrecipes.api.service.RecipeServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +31,7 @@ public class RecipeControllerTest {
 
     @Test
     public void Should_첫페이지_조회_When_쿼리스트링_없이_레시피_페이지_호출() throws Exception {
-        Recipe recipe = new Recipe("test1", "test1.jpg", 30, "1", 1001);
+        Recipe recipe = Recipe.builder().title("test1").image("image1.jpg").estimatedTime(30).difficulty(1).build();
         given(this.recipeService.readRecipePageSortedByParam(eq(0), eq(10), eq("registerDate"), eq(false))).willReturn(Collections.singletonList(recipe));
 
         final ResultActions actions = this.mockMvc.perform(get("/recipes"));

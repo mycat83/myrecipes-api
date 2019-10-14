@@ -1,8 +1,10 @@
 package io.myrecipes.api.repository;
 
-import io.myrecipes.api.domain.Material;
-import io.myrecipes.api.domain.Unit;
+import io.myrecipes.api.domain.UnitEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UnitRepository extends JpaRepository<Unit, Integer> {
+import java.util.Optional;
+
+public interface UnitRepository extends JpaRepository<UnitEntity, Integer> {
+    Optional<UnitEntity> findByName(String name);
 }
