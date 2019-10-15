@@ -12,10 +12,10 @@ public class Unit {
 
     private String exchangeUnitName;
 
-    private Integer exchangeQuantity;
+    private Double exchangeQuantity;
 
     @Builder
-    public Unit(String name, String exchangeUnitName, Integer exchangeQuantity) {
+    public Unit(String name, String exchangeUnitName, Double exchangeQuantity) {
         this.name = name;
         this.exchangeUnitName = exchangeUnitName;
         this.exchangeQuantity = exchangeQuantity;

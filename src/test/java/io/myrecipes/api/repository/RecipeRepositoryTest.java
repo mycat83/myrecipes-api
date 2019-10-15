@@ -109,9 +109,9 @@ public class RecipeRepositoryTest {
         this.materialRepository.saveAll(materialEntityList);
 
         List<RecipeMaterialEntity> recipeMaterialEntityList = new ArrayList<>();
-        recipeMaterialEntityList.add(RecipeMaterialEntity.builder().quantity(10).recipeEntity(this.recipeEntity1).materialEntity(materialEntityList.get(0)).build());
-        recipeMaterialEntityList.add(RecipeMaterialEntity.builder().quantity(20).recipeEntity(this.recipeEntity1).materialEntity(materialEntityList.get(1)).build());
-        recipeMaterialEntityList.add(RecipeMaterialEntity.builder().quantity(30).recipeEntity(this.recipeEntity1).materialEntity(materialEntityList.get(2)).build());
+        recipeMaterialEntityList.add(RecipeMaterialEntity.builder().quantity(10D).recipeEntity(this.recipeEntity1).materialEntity(materialEntityList.get(0)).build());
+        recipeMaterialEntityList.add(RecipeMaterialEntity.builder().quantity(20D).recipeEntity(this.recipeEntity1).materialEntity(materialEntityList.get(1)).build());
+        recipeMaterialEntityList.add(RecipeMaterialEntity.builder().quantity(30D).recipeEntity(this.recipeEntity1).materialEntity(materialEntityList.get(2)).build());
         recipeMaterialEntityList.get(0).getRecipeEntity().getRecipeMaterialEntityList().add(recipeMaterialEntityList.get(0));
         recipeMaterialEntityList.get(1).getRecipeEntity().getRecipeMaterialEntityList().add(recipeMaterialEntityList.get(1));
         recipeMaterialEntityList.get(2).getRecipeEntity().getRecipeMaterialEntityList().add(recipeMaterialEntityList.get(2));
@@ -131,9 +131,9 @@ public class RecipeRepositoryTest {
         final RecipeEntity savedRecipeEntity = this.recipeRepository.getOne(this.recipeEntity1.getId());
 
         assertThat(savedRecipeEntity.getRecipeMaterialEntityList().size(), is(3));
-        assertThat(savedRecipeEntity.getRecipeMaterialEntityList().get(0).getQuantity(), is(10));
-        assertThat(savedRecipeEntity.getRecipeMaterialEntityList().get(1).getQuantity(), is(20));
-        assertThat(savedRecipeEntity.getRecipeMaterialEntityList().get(2).getQuantity(), is(30));
+        assertThat(savedRecipeEntity.getRecipeMaterialEntityList().get(0).getQuantity(), is(10D));
+        assertThat(savedRecipeEntity.getRecipeMaterialEntityList().get(1).getQuantity(), is(20D));
+        assertThat(savedRecipeEntity.getRecipeMaterialEntityList().get(2).getQuantity(), is(30D));
 
         assertThat(savedRecipeEntity.getRecipeMaterialEntityList().get(0).getMaterialEntity().getName(), is("material1"));
         assertThat(savedRecipeEntity.getRecipeMaterialEntityList().get(1).getMaterialEntity().getName(), is("material2"));

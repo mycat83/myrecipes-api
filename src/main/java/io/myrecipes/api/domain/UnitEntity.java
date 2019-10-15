@@ -20,10 +20,10 @@ public class UnitEntity extends BaseEntity {
 
     private String exchangeUnitName;
 
-    private Integer exchangeQuantity;
+    private Double exchangeQuantity;
 
     @Builder
-    public UnitEntity(String name, String exchangeUnitName, Integer exchangeQuantity, Integer registerUserId, Integer modifyUserId) {
+    public UnitEntity(String name, String exchangeUnitName, Double exchangeQuantity, Integer registerUserId, Integer modifyUserId) {
         this.name = name;
         this.exchangeUnitName = exchangeUnitName;
         this.exchangeQuantity = exchangeQuantity;

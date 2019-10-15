@@ -18,7 +18,7 @@ public class RecipeMaterialEntity {
     private Integer id;
 
     @Column(nullable = false)
-    private Integer quantity;
+    private Double quantity;
 
     @ManyToOne
     @JsonBackReference
@@ -30,7 +30,7 @@ public class RecipeMaterialEntity {
     private MaterialEntity materialEntity;
 
     @Builder
-    public RecipeMaterialEntity(Integer quantity, RecipeEntity recipeEntity, MaterialEntity materialEntity) {
+    public RecipeMaterialEntity(Double quantity, RecipeEntity recipeEntity, MaterialEntity materialEntity) {
         this.quantity = quantity;
         this.recipeEntity = recipeEntity;
         this.materialEntity = materialEntity;

@@ -13,10 +13,4 @@ public class RecipeTag {
     public RecipeTag(String tag) {
         this.tag = tag;
     }
-
-//    public RecipeTagEntity toEntity() {
-//        return RecipeTagEntity.builder()
-//                .tag(this.getTag())
-//                .build();
-//    }
 }

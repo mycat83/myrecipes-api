@@ -69,9 +69,9 @@ public class MakeDataTest {
         this.materialRepository.saveAll(this.materialEntityList);
 
         List<RecipeMaterialEntity> recipeMaterialEntityList = new ArrayList<>();
-        recipeMaterialEntityList.add(RecipeMaterialEntity.builder().quantity(10).recipeEntity(recipeEntity).materialEntity(this.materialEntityList.get(0)).build());
-        recipeMaterialEntityList.add(RecipeMaterialEntity.builder().quantity(20).recipeEntity(recipeEntity).materialEntity(this.materialEntityList.get(1)).build());
-        recipeMaterialEntityList.add(RecipeMaterialEntity.builder().quantity(30).recipeEntity(recipeEntity).materialEntity(this.materialEntityList.get(2)).build());
+        recipeMaterialEntityList.add(RecipeMaterialEntity.builder().quantity(10D).recipeEntity(recipeEntity).materialEntity(this.materialEntityList.get(0)).build());
+        recipeMaterialEntityList.add(RecipeMaterialEntity.builder().quantity(20D).recipeEntity(recipeEntity).materialEntity(this.materialEntityList.get(1)).build());
+        recipeMaterialEntityList.add(RecipeMaterialEntity.builder().quantity(30D).recipeEntity(recipeEntity).materialEntity(this.materialEntityList.get(2)).build());
         recipeMaterialEntityList.get(0).getRecipeEntity().getRecipeMaterialEntityList().add(recipeMaterialEntityList.get(0));
         recipeMaterialEntityList.get(1).getRecipeEntity().getRecipeMaterialEntityList().add(recipeMaterialEntityList.get(1));
         recipeMaterialEntityList.get(2).getRecipeEntity().getRecipeMaterialEntityList().add(recipeMaterialEntityList.get(2));

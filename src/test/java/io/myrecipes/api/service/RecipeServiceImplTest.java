@@ -46,7 +46,7 @@ public class RecipeServiceImplTest {
 
     @Before
     public void setUp() {
-        RecipeMaterialRequest recipeMaterialRequest = RecipeMaterialRequest.builder().materialId(1).quantity(5).build();
+        RecipeMaterialRequest recipeMaterialRequest = RecipeMaterialRequest.builder().materialId(1).quantity(5D).build();
 
         RecipeStepRequest recipeStepRequest = RecipeStepRequest.builder().step(1).content("step1").image("step1.jpg").build();
 
