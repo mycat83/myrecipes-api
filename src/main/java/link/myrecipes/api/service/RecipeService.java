@@ -1,7 +1,7 @@
 package link.myrecipes.api.service;
 
 import link.myrecipes.api.dto.Recipe;
-import link.myrecipes.api.dto.RecipeRequest;
+import link.myrecipes.api.dto.request.RecipeRequest;
 import link.myrecipes.api.dto.view.RecipeView;
 
 import java.util.List;
