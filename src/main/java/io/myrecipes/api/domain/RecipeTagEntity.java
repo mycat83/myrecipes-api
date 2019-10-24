@@ -2,6 +2,7 @@ package io.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.myrecipes.api.dto.RecipeTag;
+import io.myrecipes.api.dto.view.RecipeTagView;
 import lombok.*;
 
 import javax.persistence.*;
@@ -36,6 +37,12 @@ public class RecipeTagEntity {
 
     RecipeTag toDTO() {
         return RecipeTag.builder()
+                .tag(this.getTag())
+                .build();
+    }
+
+    RecipeTagView toViewDTO() {
+        return RecipeTagView.builder()
                 .tag(this.getTag())
                 .build();
     }

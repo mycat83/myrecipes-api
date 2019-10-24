@@ -2,6 +2,7 @@ package io.myrecipes.api.controller;
 
 import io.myrecipes.api.dto.Recipe;
 import io.myrecipes.api.dto.RecipeRequest;
+import io.myrecipes.api.dto.view.RecipeView;
 import io.myrecipes.api.service.RecipeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -24,9 +25,9 @@ public class RecipeController {
 
     @GetMapping("/recipes/{id}")
     @ApiOperation("레시피 한건 조회")
-    public ResponseEntity<Recipe> readRecipe(@PathVariable int id) {
-        Recipe recipe = this.recipeService.readRecipe(id);
-        return new ResponseEntity<>(recipe, HttpStatus.OK);
+    public ResponseEntity<RecipeView> readRecipe(@PathVariable int id) {
+        RecipeView recipeView = this.recipeService.readRecipe(id);
+        return new ResponseEntity<>(recipeView, HttpStatus.OK);
     }
 
     @GetMapping("/recipes")

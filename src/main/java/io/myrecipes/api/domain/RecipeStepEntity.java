@@ -1,6 +1,7 @@
 package io.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import io.myrecipes.api.dto.view.RecipeStepView;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,5 +39,13 @@ public class RecipeStepEntity {
 
     public void setRecipeEntity(RecipeEntity recipeEntity) {
         this.recipeEntity = recipeEntity;
+    }
+
+    public RecipeStepView toViewDTO() {
+        return RecipeStepView.builder()
+                .step(this.getStep())
+                .content(this.getContent())
+                .image(this.getImage())
+                .build();
     }
 }

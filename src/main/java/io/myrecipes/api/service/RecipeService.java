@@ -2,11 +2,12 @@ package io.myrecipes.api.service;
 
 import io.myrecipes.api.dto.Recipe;
 import io.myrecipes.api.dto.RecipeRequest;
+import io.myrecipes.api.dto.view.RecipeView;
 
 import java.util.List;
 
 public interface RecipeService {
-    Recipe readRecipe(int id);
+    RecipeView readRecipe(int id);
 
     List<Recipe> readRecipePageSortedByParam(int page, int size, String sortField, boolean isDescending);
 
