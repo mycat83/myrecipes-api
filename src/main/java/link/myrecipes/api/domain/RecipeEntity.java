@@ -94,7 +94,7 @@ public class RecipeEntity extends BaseEntity {
 
     public RecipeView toViewDTO() {
         RecipeView recipeView = RecipeView.builder()
-                .id(this.getId())
+                .id(this.getId() == null ? 0 : this.getId())
                 .title(this.getTitle())
                 .image(this.getImage())
                 .estimatedTime(this.getEstimatedTime())

@@ -3,6 +3,7 @@ package link.myrecipes.api.service;
 import link.myrecipes.api.domain.MaterialEntity;
 import link.myrecipes.api.domain.RecipeEntity;
 import link.myrecipes.api.dto.*;
+import link.myrecipes.api.dto.view.RecipeView;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.RecipeRepository;
@@ -98,22 +99,44 @@ public class RecipeServiceImplTest {
     @Test
     public void Should_정상_저장_확인_When_레시피_저장() {
         MaterialEntity materialEntity = MaterialEntity.builder().name("material1").build();
-
         Optional<MaterialEntity> materialEntityOptional = Optional.ofNullable(materialEntity);
+
+        RecipeEntity recipeEntity = this.recipeRequest.toEntity();
+        for (RecipeMaterialRequest recipeMaterialRequest : this.recipeRequest.getRecipeMaterialRequestList()) {
+            recipeEntity.addRecipeMaterial(recipeMaterialRequest.toEntity());
+        }
+        for (RecipeStepRequest recipeStepRequest : this.recipeRequest.getRecipeStepRequestList()) {
+            recipeEntity.addRecipeStep(recipeStepRequest.toEntity());
+        }
+        for (RecipeTagRequest recipeTagRequest : this.recipeRequest.getRecipeTagRequestList()) {
+            recipeEntity.addRecipeTag(recipeTagRequest.toEntity());
+        }
+        Optional<RecipeEntity> recipeEntityOptional = Optional.ofNullable(recipeEntity);
 
         given(this.materialRepository.findById(1)).willReturn(materialEntityOptional);
         given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(recipe1.toEntity());
+        given(this.recipeRepository.findById(1)).willReturn(recipeEntityOptional);
 
-        final Recipe recipe = this.recipeService.createRecipe(recipeRequest, 10001);
+        final Recipe savedRecipe = this.recipeService.createRecipe(recipeRequest, 10001);
+        final RecipeView recipeView = this.recipeService.readRecipe(1);
 
-        assertThat(recipe, instanceOf(Recipe.class));
-        assertThat(recipe.getTitle(), is(recipeRequest.getTitle()));
-        assertThat(recipe.getImage(), is(recipeRequest.getImage()));
-        assertThat(recipe.getEstimatedTime(), is(recipeRequest.getEstimatedTime()));
-        assertThat(recipe.getDifficulty(), is(recipeRequest.getDifficulty()));
-        assertThat(recipe.getRecipeTagList().size(), is(recipeRequest.getRecipeTagRequestList().size()));
-        assertThat(recipe.getRecipeTagList().get(0).getTag(), is(recipeRequest.getRecipeTagRequestList().get(0).getTag()));
-        assertThat(recipe.getRecipeTagList().get(1).getTag(), is(recipeRequest.getRecipeTagRequestList().get(1).getTag()));
+        assertThat(recipeView, instanceOf(RecipeView.class));
+        assertThat(recipeView.getTitle(), is(recipeRequest.getTitle()));
+        assertThat(recipeView.getImage(), is(recipeRequest.getImage()));
+        assertThat(recipeView.getEstimatedTime(), is(recipeRequest.getEstimatedTime()));
+        assertThat(recipeView.getDifficulty(), is(recipeRequest.getDifficulty()));
+
+        assertThat(recipeView.getRecipeMaterialViewList().size(), is(recipeRequest.getRecipeMaterialRequestList().size()));
+        assertThat(recipeView.getRecipeMaterialViewList().get(0).getQuantity(), is(recipeRequest.getRecipeMaterialRequestList().get(0).getQuantity()));
+
+        assertThat(recipeView.getRecipeStepViewList().size(), is(recipeRequest.getRecipeStepRequestList().size()));
+        assertThat(recipeView.getRecipeStepViewList().get(0).getStep(), is(recipeRequest.getRecipeStepRequestList().get(0).getStep()));
+        assertThat(recipeView.getRecipeStepViewList().get(0).getContent(), is(recipeRequest.getRecipeStepRequestList().get(0).getContent()));
+        assertThat(recipeView.getRecipeStepViewList().get(0).getImage(), is(recipeRequest.getRecipeStepRequestList().get(0).getImage()));
+
+        assertThat(recipeView.getRecipeTagViewList().size(), is(recipeRequest.getRecipeTagRequestList().size()));
+        assertThat(recipeView.getRecipeTagViewList().get(0).getTag(), is(recipeRequest.getRecipeTagRequestList().get(0).getTag()));
+        assertThat(recipeView.getRecipeTagViewList().get(1).getTag(), is(recipeRequest.getRecipeTagRequestList().get(1).getTag()));
     }
 
     @Test(expected = NotExistDataException.class)
