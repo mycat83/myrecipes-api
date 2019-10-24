@@ -2,6 +2,7 @@ package io.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.myrecipes.api.dto.view.RecipeMaterialView;
 import lombok.*;
 
 import javax.persistence.*;
@@ -42,5 +43,13 @@ public class RecipeMaterialEntity {
 
     public void setMaterialEntity(MaterialEntity materialEntity) {
         this.materialEntity = materialEntity;
+    }
+
+    public RecipeMaterialView toViewDTO() {
+        return RecipeMaterialView.builder()
+                .materialName(this.getMaterialEntity().getName())
+                .materialUnitName(this.getMaterialEntity().getUnitEntity().getName())
+                .quantity(this.getQuantity())
+                .build();
     }
 }

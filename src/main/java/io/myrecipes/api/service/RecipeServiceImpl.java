@@ -2,6 +2,7 @@ package io.myrecipes.api.service;
 
 import io.myrecipes.api.domain.*;
 import io.myrecipes.api.dto.*;
+import io.myrecipes.api.dto.view.RecipeView;
 import io.myrecipes.api.exception.NotExistDataException;
 import io.myrecipes.api.repository.MaterialRepository;
 import io.myrecipes.api.repository.RecipeRepository;
@@ -25,14 +26,14 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Recipe readRecipe(int id) {
+    public RecipeView readRecipe(int id) {
         Optional<RecipeEntity> recipeEntityOptional = this.recipeRepository.findById(id);
 
         if (!recipeEntityOptional.isPresent()) {
             throw new NotExistDataException(RecipeEntity.class, id);
         }
 
-        return recipeEntityOptional.get().toDTO();
+        return recipeEntityOptional.get().toViewDTO();
     }
 
     @Override

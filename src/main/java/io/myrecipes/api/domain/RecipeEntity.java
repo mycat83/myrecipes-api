@@ -2,6 +2,7 @@ package io.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.myrecipes.api.dto.Recipe;
+import io.myrecipes.api.dto.view.RecipeView;
 import lombok.*;
 
 import javax.persistence.*;
@@ -89,5 +90,29 @@ public class RecipeEntity extends BaseEntity {
         }
 
         return recipe;
+    }
+
+    public RecipeView toViewDTO() {
+        RecipeView recipeView = RecipeView.builder()
+                .id(this.getId())
+                .title(this.getTitle())
+                .image(this.getImage())
+                .estimatedTime(this.getEstimatedTime())
+                .difficulty(this.getDifficulty())
+                .build();
+
+        for (RecipeMaterialEntity recipeMaterialEntity : this.getRecipeMaterialEntityList()) {
+            recipeView.addRecipeMaterialView(recipeMaterialEntity.toViewDTO());
+        }
+
+        for (RecipeStepEntity recipeStepEntity : this.getRecipeStepEntityList()) {
+            recipeView.addRecipeStepView(recipeStepEntity.toViewDTO());
+        }
+
+        for (RecipeTagEntity recipeTagEntity : this.getRecipeTagEntityList()) {
+            recipeView.addRecipeTagView(recipeTagEntity.toViewDTO());
+        }
+
+        return recipeView;
     }
 }
