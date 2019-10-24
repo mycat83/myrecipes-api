@@ -1,4 +1,4 @@
-package link.myrecipes.api.dto;
+package link.myrecipes.api.dto.request;
 
 import link.myrecipes.api.domain.RecipeEntity;
 import lombok.Builder;

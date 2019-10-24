@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import link.myrecipes.api.dto.Recipe;
-import link.myrecipes.api.dto.RecipeRequest;
+import link.myrecipes.api.dto.request.RecipeRequest;
 import link.myrecipes.api.dto.view.RecipeView;
 import link.myrecipes.api.service.RecipeService;
 import org.springframework.http.HttpStatus;
