@@ -1,6 +1,7 @@
 package link.myrecipes.api.repository;
 
 import link.myrecipes.api.domain.*;
+import link.myrecipes.api.exception.NotExistDataException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,25 +51,44 @@ public class RecipeRepositoryTest {
     @Test
     public void Should_동일한_엔티티_반환_When_엔티티_저장() {
         this.recipeRepository.save(this.recipeEntity1);
-        final List<RecipeEntity> recipeEntityList = this.recipeRepository.findAll();
 
-        assertThat(recipeEntityList.size(), is(1));
-        assertThat(recipeEntityList.get(0).getTitle(), is(this.recipeEntity1.getTitle()));
-        assertThat(recipeEntityList.get(0).getImage(), is(this.recipeEntity1.getImage()));
-        assertThat(recipeEntityList.get(0).getEstimatedTime(), is(this.recipeEntity1.getEstimatedTime()));
-        assertThat(recipeEntityList.get(0).getDifficulty(), is(this.recipeEntity1.getDifficulty()));
-        assertThat(recipeEntityList.get(0).getRegisterUserId(), is(this.recipeEntity1.getRegisterUserId()));
+        Optional<RecipeEntity> recipeEntityOptional1 = this.recipeRepository.findById(this.recipeEntity1.getId());
+        if (!recipeEntityOptional1.isPresent()) {
+            throw new NotExistDataException(RecipeEntity.class, this.recipeEntity1.getId());
+        }
+        final RecipeEntity savedRecipeEntity1 = recipeEntityOptional1.get();
+
+        assertThat(savedRecipeEntity1.getTitle(), is(this.recipeEntity1.getTitle()));
+        assertThat(savedRecipeEntity1.getImage(), is(this.recipeEntity1.getImage()));
+        assertThat(savedRecipeEntity1.getEstimatedTime(), is(this.recipeEntity1.getEstimatedTime()));
+        assertThat(savedRecipeEntity1.getDifficulty(), is(this.recipeEntity1.getDifficulty()));
+        assertThat(savedRecipeEntity1.getRegisterUserId(), is(this.recipeEntity1.getRegisterUserId()));
 
         this.recipeEntity1.update(this.recipeEntity2);
         this.recipeRepository.save(this.recipeEntity1);
-        final List<RecipeEntity> updatedRecipeEntityList = this.recipeRepository.findAll();
 
-        assertThat(updatedRecipeEntityList.size(), is(1));
-        assertThat(updatedRecipeEntityList.get(0).getTitle(), is(this.recipeEntity2.getTitle()));
-        assertThat(updatedRecipeEntityList.get(0).getImage(), is(this.recipeEntity2.getImage()));
-        assertThat(updatedRecipeEntityList.get(0).getEstimatedTime(), is(this.recipeEntity2.getEstimatedTime()));
-        assertThat(updatedRecipeEntityList.get(0).getDifficulty(), is(this.recipeEntity2.getDifficulty()));
-        assertThat(updatedRecipeEntityList.get(0).getModifyUserId(), is(this.recipeEntity2.getModifyUserId()));
+        Optional<RecipeEntity> recipeEntityOptional2 = this.recipeRepository.findById(this.recipeEntity1.getId());
+        if (!recipeEntityOptional2.isPresent()) {
+            throw new NotExistDataException(RecipeEntity.class, this.recipeEntity1.getId());
+        }
+        final RecipeEntity savedRecipeEntity2 = recipeEntityOptional2.get();
+
+        assertThat(savedRecipeEntity2.getTitle(), is(this.recipeEntity2.getTitle()));
+        assertThat(savedRecipeEntity2.getImage(), is(this.recipeEntity2.getImage()));
+        assertThat(savedRecipeEntity2.getEstimatedTime(), is(this.recipeEntity2.getEstimatedTime()));
+        assertThat(savedRecipeEntity2.getDifficulty(), is(this.recipeEntity2.getDifficulty()));
+        assertThat(savedRecipeEntity2.getModifyUserId(), is(this.recipeEntity2.getModifyUserId()));
+    }
+
+    @Test(expected = NotExistDataException.class)
+    public void Should_없는_ID로_조회시_예외발생_When_엔티티_저장() {
+        this.recipeRepository.save(this.recipeEntity1);
+
+        Optional<RecipeEntity> recipeEntityOptional = this.recipeRepository.findById(0);
+        if (!recipeEntityOptional.isPresent()) {
+            throw new NotExistDataException(RecipeEntity.class, 0);
+        }
+        final RecipeEntity savedRecipeEntity = recipeEntityOptional.get();
     }
 
     @Test
