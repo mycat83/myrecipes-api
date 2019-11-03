@@ -83,10 +83,14 @@ public class RecipeServiceImplTest {
             list.stream().map(Recipe::toEntity).collect(Collectors.toList()),
             PageRequest.of(0, list.size()), list.size()
         );
+
+        //given
         given(this.recipeRepository.findAll(any(PageRequest.class))).willReturn(page);
 
+        //when
         final List<Recipe> foundList = this.recipeService.readRecipePageSortedByParam(0, 10, "registerDate", false);
 
+        //then
         assertThat(foundList.size(), is(3));
         assertThat(foundList.get(0).getTitle(), is(this.recipe1.getTitle()));
         assertThat(foundList.get(1).getTitle(), is(this.recipe2.getTitle()));
@@ -95,8 +99,10 @@ public class RecipeServiceImplTest {
 
     @Test(expected = NotExistDataException.class)
     public void Should_예외_발생_When_존재하지_않는_ID_조회() {
+        //given
         given(this.recipeRepository.findById(1)).willReturn(Optional.empty());
 
+        //when
         this.recipeService.readRecipe(1);
     }
 
@@ -117,13 +123,15 @@ public class RecipeServiceImplTest {
         }
         Optional<RecipeEntity> recipeEntityOptional = Optional.ofNullable(recipeEntity);
 
+        //given
         given(this.materialRepository.findById(1)).willReturn(materialEntityOptional);
         given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(recipe1.toEntity());
         given(this.recipeRepository.findById(1)).willReturn(recipeEntityOptional);
 
-        final Recipe savedRecipe = this.recipeService.createRecipe(recipeRequest, 10001);
+        //when
         final RecipeView recipeView = this.recipeService.readRecipe(1);
 
+        //then
         assertThat(recipeView, instanceOf(RecipeView.class));
         assertThat(recipeView.getTitle(), is(recipeRequest.getTitle()));
         assertThat(recipeView.getImage(), is(recipeRequest.getImage()));
@@ -147,18 +155,23 @@ public class RecipeServiceImplTest {
     public void Should_예외_발생_When_존재하지_않는_재료로_레시피_저장() {
         Optional<MaterialEntity> materialEntityOptional = Optional.empty();
 
+        //given
         given(this.materialRepository.findById(1)).willReturn(materialEntityOptional);
 
+        //when
         this.recipeService.createRecipe(recipeRequest, 10001);
     }
 
     @Test
     public void Should_업데이트된_항목_반환_When_업데이트_성공() {
+        //given
         given(this.recipeRepository.findById(1)).willReturn(Optional.ofNullable(this.recipe1.toEntity()));
         given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(this.recipe2.toEntity());
 
+        //when
         final Recipe updatedRecipe = this.recipeService.updateRecipe(1, this.recipe2);
 
+        //then
         assertThat(updatedRecipe, not(nullValue()));
         assertThat(updatedRecipe.getTitle(), equalTo(this.recipe2.getTitle()));
         assertThat(updatedRecipe.getImage(), equalTo(this.recipe2.getImage()));
@@ -168,19 +181,25 @@ public class RecipeServiceImplTest {
 
     @Test
     public void Should_Null_반환_When_업데이트_실패() {
+        //given
         given(this.recipeRepository.findById(1)).willReturn(Optional.empty());
 
+        //when
         final Recipe updatedRecipe = this.recipeService.updateRecipe(1, this.recipe2);
 
+        //then
         assertThat(updatedRecipe, is(nullValue()));
     }
 
     @Test
     public void Should_카운트_1_반환_When_1건_조회() {
+        //given
         given(this.recipeRepository.count()).willReturn(1L);
 
+        //when
         final long recipeCnt = this.recipeService.readRecipeCnt();
 
+        //then
         assertThat(recipeCnt, is(1L));
     }
 }
