@@ -24,6 +24,13 @@ spring:
     show-sql: true
     hibernate:
       use-new-id-generator-mappings: false
+  cache:
+    type: redis
+    redis:
+      time-to-live: 50000
+  redis:
+    host: localhost
+    port: 6379
 
 logging:
   level:
@@ -45,6 +52,13 @@ spring:
     show-sql: true
     hibernate:
       use-new-id-generator-mappings: false
+  cache:
+    type: redis
+    redis:
+      time-to-live: 50000
+  redis:
+    host: localhost
+    port: 6379
 
 logging:
   level:
@@ -66,6 +80,13 @@ spring:
     show-sql: true
     hibernate:
       use-new-id-generator-mappings: false
+  cache:
+    type: redis
+    redis:
+      time-to-live: 5000
+  redis:
+    host: localhost
+    port: 6379
 
 logging:
   level:
