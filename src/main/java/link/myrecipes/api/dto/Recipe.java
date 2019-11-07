@@ -5,12 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class Recipe {
+public class Recipe implements Serializable {
     private Integer id;
 
     private String title;

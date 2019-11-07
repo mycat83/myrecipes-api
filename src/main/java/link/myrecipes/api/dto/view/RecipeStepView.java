@@ -4,9 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Getter
 @NoArgsConstructor
-public class RecipeStepView {
+public class RecipeStepView implements Serializable {
     private Integer step;
 
     private String content;
