@@ -124,8 +124,6 @@ public class RecipeServiceImplTest {
         Optional<RecipeEntity> recipeEntityOptional = Optional.ofNullable(recipeEntity);
 
         //given
-        given(this.materialRepository.findById(1)).willReturn(materialEntityOptional);
-        given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(recipe1.toEntity());
         given(this.recipeRepository.findById(1)).willReturn(recipeEntityOptional);
 
         //when
@@ -179,16 +177,13 @@ public class RecipeServiceImplTest {
         assertThat(updatedRecipe.getDifficulty(), equalTo(this.recipe2.getDifficulty()));
     }
 
-    @Test
-    public void Should_Null_반환_When_업데이트_실패() {
+    @Test(expected = NotExistDataException.class)
+    public void Should_예외_발생_When_존재하지_않는_레시피_수정() {
         //given
         given(this.recipeRepository.findById(1)).willReturn(Optional.empty());
 
         //when
-        final Recipe updatedRecipe = this.recipeService.updateRecipe(1, this.recipe2);
-
-        //then
-        assertThat(updatedRecipe, is(nullValue()));
+        this.recipeService.updateRecipe(1, this.recipe2);
     }
 
     @Test
