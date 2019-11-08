@@ -35,8 +35,8 @@ spring:
 logging:
   level:
     org.hibernate.type.descriptor.sql: TRACE
-    io.myrecipes.api.mapper: TRACE
-    io.myrecipes.api.controller: TRACE
+    #    io.myrecipes.api.mapper: TRACE
+    org.springframework.web: TRACE
 
 ---
 spring:
