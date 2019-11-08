@@ -104,7 +104,7 @@ public class RecipeServiceImpl implements RecipeService {
         Optional<RecipeEntity> recipeOptional = this.recipeRepository.findById(id);
 
         if (!recipeOptional.isPresent()) {
-            return null;
+            throw new NotExistDataException(RecipeEntity.class, id);
         }
 
         RecipeEntity selectedRecipeEntity = recipeOptional.get();
