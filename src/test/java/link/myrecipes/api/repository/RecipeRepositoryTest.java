@@ -50,20 +50,24 @@ public class RecipeRepositoryTest {
 
     @Test
     public void Should_동일한_엔티티_반환_When_엔티티_저장() {
+        //when - save
         this.recipeRepository.save(this.recipeEntity1);
 
         Optional<RecipeEntity> recipeEntityOptional1 = this.recipeRepository.findById(this.recipeEntity1.getId());
         if (!recipeEntityOptional1.isPresent()) {
             throw new NotExistDataException(RecipeEntity.class, this.recipeEntity1.getId());
         }
+
         final RecipeEntity savedRecipeEntity1 = recipeEntityOptional1.get();
 
+        //then - save
         assertThat(savedRecipeEntity1.getTitle(), is(this.recipeEntity1.getTitle()));
         assertThat(savedRecipeEntity1.getImage(), is(this.recipeEntity1.getImage()));
         assertThat(savedRecipeEntity1.getEstimatedTime(), is(this.recipeEntity1.getEstimatedTime()));
         assertThat(savedRecipeEntity1.getDifficulty(), is(this.recipeEntity1.getDifficulty()));
         assertThat(savedRecipeEntity1.getRegisterUserId(), is(this.recipeEntity1.getRegisterUserId()));
 
+        //when - update
         this.recipeEntity1.update(this.recipeEntity2);
         this.recipeRepository.save(this.recipeEntity1);
 
@@ -71,8 +75,10 @@ public class RecipeRepositoryTest {
         if (!recipeEntityOptional2.isPresent()) {
             throw new NotExistDataException(RecipeEntity.class, this.recipeEntity1.getId());
         }
+
         final RecipeEntity savedRecipeEntity2 = recipeEntityOptional2.get();
 
+        //then - update
         assertThat(savedRecipeEntity2.getTitle(), is(this.recipeEntity2.getTitle()));
         assertThat(savedRecipeEntity2.getImage(), is(this.recipeEntity2.getImage()));
         assertThat(savedRecipeEntity2.getEstimatedTime(), is(this.recipeEntity2.getEstimatedTime()));
@@ -93,11 +99,13 @@ public class RecipeRepositoryTest {
 
     @Test
     public void Should_키_순차적_증가_When_엔티티_여러개_저장() {
+        //when
         recipeRepository.save(this.recipeEntity1);
         recipeRepository.save(this.recipeEntity2);
         recipeRepository.save(this.recipeEntity3);
         final List<RecipeEntity> recipeEntityList = this.recipeRepository.findAll();
 
+        //then
         assertThat(recipeEntityList.size(), is(3));
         assertThat(recipeEntityList.get(0).getId(), is(1));
         assertThat(recipeEntityList.get(1).getId(), is(2));
@@ -106,15 +114,18 @@ public class RecipeRepositoryTest {
 
     @Test
     public void Should_엔티티_없음_When_엔티티_저장후_삭제() {
+        //when
         this.recipeRepository.save(this.recipeEntity1);
         this.recipeRepository.deleteById(this.recipeEntity1.getId());
         final Optional<RecipeEntity> recipeOptional = this.recipeRepository.findById(this.recipeEntity1.getId());
 
+        //then
         assertThat(recipeOptional.isPresent(), is(false));
     }
 
     @Test
     public void Should_연관관계_정상_조회_When_연관관계_매핑() {
+        //when
         this.recipeRepository.save(this.recipeEntity1);
 
         List<UnitEntity> unitEntityList = new ArrayList<>();
@@ -150,6 +161,7 @@ public class RecipeRepositoryTest {
 
         final RecipeEntity savedRecipeEntity = this.recipeRepository.getOne(this.recipeEntity1.getId());
 
+        //then
         assertThat(savedRecipeEntity.getRecipeMaterialEntityList().size(), is(3));
         assertThat(savedRecipeEntity.getRecipeMaterialEntityList().get(0).getQuantity(), is(10D));
         assertThat(savedRecipeEntity.getRecipeMaterialEntityList().get(1).getQuantity(), is(20D));
@@ -173,9 +185,11 @@ public class RecipeRepositoryTest {
 
     @Test
     public void Should_카운트_1_반환_When_1건_저장() {
+        //when
         this.recipeRepository.save(this.recipeEntity1);
         final long recipeCnt = this.recipeRepository.count();
 
+        //then
         assertThat(recipeCnt, is(1L));
     }
 }

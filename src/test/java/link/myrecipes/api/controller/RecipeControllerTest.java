@@ -32,10 +32,14 @@ public class RecipeControllerTest {
     @Test
     public void Should_첫페이지_조회_When_쿼리스트링_없이_레시피_페이지_호출() throws Exception {
         Recipe recipe = Recipe.builder().title("test1").image("image1.jpg").estimatedTime(30).difficulty(1).build();
+
+        //given
         given(this.recipeService.readRecipePageSortedByParam(eq(0), eq(10), eq("registerDate"), eq(false))).willReturn(Collections.singletonList(recipe));
 
+        //when
         final ResultActions actions = this.mockMvc.perform(get("/recipes"));
 
+        //then
         actions.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }

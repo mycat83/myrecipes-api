@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Api(tags = {"recipe"})
@@ -48,7 +49,7 @@ public class RecipeController {
 
     @PostMapping("/recipes")
     @ApiOperation("레시피 저장")
-    public ResponseEntity<Recipe> createRecipe(@RequestBody RecipeRequest recipeRequest, @RequestParam int userId) {
+    public ResponseEntity<Recipe> createRecipe(@RequestBody @Valid RecipeRequest recipeRequest, @RequestParam int userId) {
         Recipe savedRecipe = this.recipeService.createRecipe(recipeRequest, userId);
         return new ResponseEntity<>(savedRecipe, HttpStatus.OK);
     }

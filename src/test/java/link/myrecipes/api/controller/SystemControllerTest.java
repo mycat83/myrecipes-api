@@ -21,16 +21,20 @@ public class SystemControllerTest {
 
     @Test
     public void Should_정상_응답_When_컨트롤러_호출() throws Exception {
+        //when
         final ResultActions actions = this.mockMvc.perform(get("/health"));
 
+        //then
         actions.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
     @Test
     public void Should_Advice_예외_처리_When_예외_발생_컨트롤러_호출() throws Exception {
+        //when
         final ResultActions actions = this.mockMvc.perform(get("/exception"));
 
+        //then
         actions.andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().json("{\"message\":\"java.lang.NullPointerException\"}"));

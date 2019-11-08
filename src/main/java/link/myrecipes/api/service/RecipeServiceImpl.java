@@ -10,6 +10,8 @@ import link.myrecipes.api.dto.view.RecipeView;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.RecipeRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    @Cacheable(value = "myrecipe:api:recipeView", key = "#id")
     public RecipeView readRecipe(int id) {
         Optional<RecipeEntity> recipeEntityOptional = this.recipeRepository.findById(id);
 
@@ -41,6 +44,8 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    @Cacheable(value = "myrecipe:api:recipeList",
+            key = "#page + ':' + #size + ':' + #sortField + ':' + #isDescending")
     public List<Recipe> readRecipePageSortedByParam(int page, int size, String sortField, boolean isDescending) {
         PageRequest pageable;
         if (isDescending) {
@@ -94,11 +99,12 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    @CacheEvict(value = "myrecipe:api:recipeView", key = "#id")
     public Recipe updateRecipe(int id, Recipe recipe) {
         Optional<RecipeEntity> recipeOptional = this.recipeRepository.findById(id);
 
         if (!recipeOptional.isPresent()) {
-            return null;
+            throw new NotExistDataException(RecipeEntity.class, id);
         }
 
         RecipeEntity selectedRecipeEntity = recipeOptional.get();
@@ -108,6 +114,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    @CacheEvict(value = "myrecipe:api:recipeView", key = "#id")
     public void deleteRecipe(int id) {
         this.recipeRepository.deleteById(id);
     }
