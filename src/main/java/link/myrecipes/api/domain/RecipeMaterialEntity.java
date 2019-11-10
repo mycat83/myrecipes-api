@@ -47,6 +47,7 @@ public class RecipeMaterialEntity {
 
     public RecipeMaterialView toViewDTO() {
         return RecipeMaterialView.builder()
+                .materialId(this.getMaterialEntity() == null ? 0 : this.getMaterialEntity().getId())
                 .materialName(this.getMaterialEntity() == null ? "" : this.getMaterialEntity().getName())
                 .materialUnitName(this.getMaterialEntity() == null ? "" : this.getMaterialEntity().getUnitEntity().getName())
                 .quantity(this.getQuantity())

@@ -9,6 +9,8 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 public class RecipeMaterialView implements Serializable {
+    private Integer materialId;
+
     private String materialName;
 
     private String materialUnitName;
@@ -16,7 +18,8 @@ public class RecipeMaterialView implements Serializable {
     private Double quantity;
 
     @Builder
-    public RecipeMaterialView(String materialName, String materialUnitName, Double quantity) {
+    public RecipeMaterialView(Integer materialId, String materialName, String materialUnitName, Double quantity) {
+        this.materialId = materialId;
         this.materialName = materialName;
         this.materialUnitName = materialUnitName;
         this.quantity = quantity;
