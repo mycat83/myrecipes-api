@@ -67,7 +67,20 @@ public class RecipeEntity extends BaseEntity {
         this.recipeTagEntityList.add(recipeTagEntity);
     }
 
-    public void update(RecipeEntity recipeEntity, int userId) {
+    public void clearRecipeMaterialEntityList() {
+        this.recipeMaterialEntityList.clear();
+    }
+
+    public void clearRecipeStepEntityList() {
+        this.recipeStepEntityList.clear();
+    }
+
+    public void clearRecipeTagEntityList() {
+        this.recipeTagEntityList.clear();
+    }
+
+    public void update(int id, RecipeEntity recipeEntity, int userId) {
+        this.id = id;
         this.title = recipeEntity.title;
         this.image = recipeEntity.image;
         this.estimatedTime = recipeEntity.estimatedTime;

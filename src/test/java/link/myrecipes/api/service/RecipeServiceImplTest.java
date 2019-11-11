@@ -34,7 +34,8 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RecipeServiceImplTest {
-    private RecipeRequest recipeRequest;
+    private RecipeRequest recipeRequest1;
+    private RecipeRequest recipeRequest2;
 
     private Recipe recipe1;
     private Recipe recipe2;
@@ -51,24 +52,36 @@ public class RecipeServiceImplTest {
 
     @Before
     public void setUp() {
-        RecipeMaterialRequest recipeMaterialRequest = RecipeMaterialRequest.builder().materialId(1).quantity(5D).build();
+        RecipeMaterialRequest recipeMaterialRequest1 = RecipeMaterialRequest.builder().materialId(1).quantity(5D).build();
+        RecipeMaterialRequest recipeMaterialRequest2 = RecipeMaterialRequest.builder().materialId(2).quantity(10D).build();
 
-        RecipeStepRequest recipeStepRequest = RecipeStepRequest.builder().step(1).content("step1").image("step1.jpg").build();
+        RecipeStepRequest recipeStepRequest1 = RecipeStepRequest.builder().step(1).content("step1").image("step1.jpg").build();
+        RecipeStepRequest recipeStepRequest2 = RecipeStepRequest.builder().step(1).content("step1-1").image("step1-1.jpg").build();
 
         RecipeTagRequest recipeTagRequest1 = RecipeTagRequest.builder().tag("tag1").build();
         RecipeTagRequest recipeTagRequest2 = RecipeTagRequest.builder().tag("tag2").build();
+        RecipeTagRequest recipeTagRequest3 = RecipeTagRequest.builder().tag("tag3").build();
 
-        this.recipeRequest = RecipeRequest.builder().title("test1").image("image1.jpg").estimatedTime(30).difficulty(1).build();
-        this.recipeRequest.addRecipeMaterial(recipeMaterialRequest);
-        this.recipeRequest.addRecipeStep(recipeStepRequest);
-        this.recipeRequest.addRecipeTag(recipeTagRequest1);
-        this.recipeRequest.addRecipeTag(recipeTagRequest2);
+        this.recipeRequest1 = RecipeRequest.builder().title("test1").image("image1.jpg").estimatedTime(30).difficulty(1).build();
+        this.recipeRequest1.addRecipeMaterial(recipeMaterialRequest1);
+        this.recipeRequest1.addRecipeStep(recipeStepRequest1);
+        this.recipeRequest1.addRecipeTag(recipeTagRequest1);
+        this.recipeRequest1.addRecipeTag(recipeTagRequest2);
+
+        this.recipeRequest2 = RecipeRequest.builder().title("test2").image("image2.jpg").estimatedTime(60).difficulty(3).build();
+        this.recipeRequest2.addRecipeMaterial(recipeMaterialRequest2);
+        this.recipeRequest2.addRecipeStep(recipeStepRequest2);
+        this.recipeRequest2.addRecipeTag(recipeTagRequest2);
+        this.recipeRequest2.addRecipeTag(recipeTagRequest3);
 
         this.recipe1 = Recipe.builder()
-                .title(recipeRequest.getTitle()).image(recipeRequest.getImage())
-                .estimatedTime(recipeRequest.getEstimatedTime()).difficulty(recipeRequest.getDifficulty())
+                .title(recipeRequest1.getTitle()).image(recipeRequest1.getImage())
+                .estimatedTime(recipeRequest1.getEstimatedTime()).difficulty(recipeRequest1.getDifficulty())
                 .build();
-        this.recipe2 = Recipe.builder().title("test2").image("image2.jpg").estimatedTime(60).difficulty(3).build();
+        this.recipe2 = Recipe.builder()
+                .title(recipeRequest2.getTitle()).image(recipeRequest2.getImage())
+                .estimatedTime(recipeRequest2.getEstimatedTime()).difficulty(recipeRequest2.getDifficulty())
+                .build();
         this.recipe3 = Recipe.builder().title("test3").image("image3.jpg").estimatedTime(90).difficulty(5).build();
     }
 
@@ -111,14 +124,14 @@ public class RecipeServiceImplTest {
         MaterialEntity materialEntity = MaterialEntity.builder().name("material1").build();
         Optional<MaterialEntity> materialEntityOptional = Optional.ofNullable(materialEntity);
 
-        RecipeEntity recipeEntity = this.recipeRequest.toEntity();
-        for (RecipeMaterialRequest recipeMaterialRequest : this.recipeRequest.getRecipeMaterialRequestList()) {
+        RecipeEntity recipeEntity = this.recipeRequest1.toEntity();
+        for (RecipeMaterialRequest recipeMaterialRequest : this.recipeRequest1.getRecipeMaterialRequestList()) {
             recipeEntity.addRecipeMaterial(recipeMaterialRequest.toEntity());
         }
-        for (RecipeStepRequest recipeStepRequest : this.recipeRequest.getRecipeStepRequestList()) {
+        for (RecipeStepRequest recipeStepRequest : this.recipeRequest1.getRecipeStepRequestList()) {
             recipeEntity.addRecipeStep(recipeStepRequest.toEntity());
         }
-        for (RecipeTagRequest recipeTagRequest : this.recipeRequest.getRecipeTagRequestList()) {
+        for (RecipeTagRequest recipeTagRequest : this.recipeRequest1.getRecipeTagRequestList()) {
             recipeEntity.addRecipeTag(recipeTagRequest.toEntity());
         }
         Optional<RecipeEntity> recipeEntityOptional = Optional.ofNullable(recipeEntity);
@@ -131,22 +144,22 @@ public class RecipeServiceImplTest {
 
         //then
         assertThat(recipeView, instanceOf(RecipeView.class));
-        assertThat(recipeView.getTitle(), is(recipeRequest.getTitle()));
-        assertThat(recipeView.getImage(), is(recipeRequest.getImage()));
-        assertThat(recipeView.getEstimatedTime(), is(recipeRequest.getEstimatedTime()));
-        assertThat(recipeView.getDifficulty(), is(recipeRequest.getDifficulty()));
+        assertThat(recipeView.getTitle(), is(recipeRequest1.getTitle()));
+        assertThat(recipeView.getImage(), is(recipeRequest1.getImage()));
+        assertThat(recipeView.getEstimatedTime(), is(recipeRequest1.getEstimatedTime()));
+        assertThat(recipeView.getDifficulty(), is(recipeRequest1.getDifficulty()));
 
-        assertThat(recipeView.getRecipeMaterialViewList().size(), is(recipeRequest.getRecipeMaterialRequestList().size()));
-        assertThat(recipeView.getRecipeMaterialViewList().get(0).getQuantity(), is(recipeRequest.getRecipeMaterialRequestList().get(0).getQuantity()));
+        assertThat(recipeView.getRecipeMaterialViewList().size(), is(recipeRequest1.getRecipeMaterialRequestList().size()));
+        assertThat(recipeView.getRecipeMaterialViewList().get(0).getQuantity(), is(recipeRequest1.getRecipeMaterialRequestList().get(0).getQuantity()));
 
-        assertThat(recipeView.getRecipeStepViewList().size(), is(recipeRequest.getRecipeStepRequestList().size()));
-        assertThat(recipeView.getRecipeStepViewList().get(0).getStep(), is(recipeRequest.getRecipeStepRequestList().get(0).getStep()));
-        assertThat(recipeView.getRecipeStepViewList().get(0).getContent(), is(recipeRequest.getRecipeStepRequestList().get(0).getContent()));
-        assertThat(recipeView.getRecipeStepViewList().get(0).getImage(), is(recipeRequest.getRecipeStepRequestList().get(0).getImage()));
+        assertThat(recipeView.getRecipeStepViewList().size(), is(recipeRequest1.getRecipeStepRequestList().size()));
+        assertThat(recipeView.getRecipeStepViewList().get(0).getStep(), is(recipeRequest1.getRecipeStepRequestList().get(0).getStep()));
+        assertThat(recipeView.getRecipeStepViewList().get(0).getContent(), is(recipeRequest1.getRecipeStepRequestList().get(0).getContent()));
+        assertThat(recipeView.getRecipeStepViewList().get(0).getImage(), is(recipeRequest1.getRecipeStepRequestList().get(0).getImage()));
 
-        assertThat(recipeView.getRecipeTagViewList().size(), is(recipeRequest.getRecipeTagRequestList().size()));
-        assertThat(recipeView.getRecipeTagViewList().get(0).getTag(), is(recipeRequest.getRecipeTagRequestList().get(0).getTag()));
-        assertThat(recipeView.getRecipeTagViewList().get(1).getTag(), is(recipeRequest.getRecipeTagRequestList().get(1).getTag()));
+        assertThat(recipeView.getRecipeTagViewList().size(), is(recipeRequest1.getRecipeTagRequestList().size()));
+        assertThat(recipeView.getRecipeTagViewList().get(0).getTag(), is(recipeRequest1.getRecipeTagRequestList().get(0).getTag()));
+        assertThat(recipeView.getRecipeTagViewList().get(1).getTag(), is(recipeRequest1.getRecipeTagRequestList().get(1).getTag()));
     }
 
     @Test(expected = NotExistDataException.class)
@@ -157,7 +170,7 @@ public class RecipeServiceImplTest {
         given(this.materialRepository.findById(1)).willReturn(materialEntityOptional);
 
         //when
-        this.recipeService.createRecipe(recipeRequest, 10001);
+        this.recipeService.createRecipe(recipeRequest1, 10001);
     }
 
     @Test
@@ -167,7 +180,7 @@ public class RecipeServiceImplTest {
         given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(this.recipe2.toEntity());
 
         //when
-        final Recipe updatedRecipe = this.recipeService.updateRecipe(1, this.recipe2, 10001);
+        final Recipe updatedRecipe = this.recipeService.updateRecipe(2, this.recipeRequest2, 10002);
 
         //then
         assertThat(updatedRecipe, not(nullValue()));
@@ -183,7 +196,7 @@ public class RecipeServiceImplTest {
         given(this.recipeRepository.findById(1)).willReturn(Optional.empty());
 
         //when
-        this.recipeService.updateRecipe(1, this.recipe2, 10001);
+        this.recipeService.updateRecipe(2, this.recipeRequest2, 10002);
     }
 
     @Test
