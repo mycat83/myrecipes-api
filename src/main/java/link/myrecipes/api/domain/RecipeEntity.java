@@ -67,13 +67,13 @@ public class RecipeEntity extends BaseEntity {
         this.recipeTagEntityList.add(recipeTagEntity);
     }
 
-    public void update (RecipeEntity recipeEntity) {
+    public void update(RecipeEntity recipeEntity, int userId) {
         this.title = recipeEntity.title;
         this.image = recipeEntity.image;
         this.estimatedTime = recipeEntity.estimatedTime;
         this.difficulty = recipeEntity.difficulty;
         this.registerUserId = recipeEntity.registerUserId;
-        this.modifyUserId = recipeEntity.modifyUserId;
+        this.modifyUserId = userId;
     }
 
     public Recipe toDTO() {

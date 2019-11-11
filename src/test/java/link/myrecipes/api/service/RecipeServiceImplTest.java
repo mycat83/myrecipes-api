@@ -167,7 +167,7 @@ public class RecipeServiceImplTest {
         given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(this.recipe2.toEntity());
 
         //when
-        final Recipe updatedRecipe = this.recipeService.updateRecipe(1, this.recipe2);
+        final Recipe updatedRecipe = this.recipeService.updateRecipe(1, this.recipe2, 10001);
 
         //then
         assertThat(updatedRecipe, not(nullValue()));
@@ -183,7 +183,7 @@ public class RecipeServiceImplTest {
         given(this.recipeRepository.findById(1)).willReturn(Optional.empty());
 
         //when
-        this.recipeService.updateRecipe(1, this.recipe2);
+        this.recipeService.updateRecipe(1, this.recipe2, 10001);
     }
 
     @Test
