@@ -56,8 +56,8 @@ public class RecipeController {
 
     @PutMapping("/recipes/{id}")
     @ApiOperation("레시피 수정")
-    public ResponseEntity<Recipe> updateRecipe(@PathVariable int id, @RequestBody Recipe recipe, @RequestParam int userId) {
-        Recipe savedRecipe = this.recipeService.updateRecipe(id, recipe, userId);
+    public ResponseEntity<Recipe> updateRecipe(@PathVariable int id, @RequestBody RecipeRequest recipeRequest, @RequestParam int userId) {
+        Recipe savedRecipe = this.recipeService.updateRecipe(id, recipeRequest, userId);
         return new ResponseEntity<>(savedRecipe, HttpStatus.OK);
     }
 

@@ -68,7 +68,7 @@ public class RecipeRepositoryTest {
         assertThat(savedRecipeEntity1.getRegisterUserId(), is(this.recipeEntity1.getRegisterUserId()));
 
         //when - update
-        this.recipeEntity1.update(this.recipeEntity2, 10001);
+        this.recipeEntity1.update(2, this.recipeEntity2, 10002);
         this.recipeRepository.save(this.recipeEntity1);
 
         Optional<RecipeEntity> recipeEntityOptional2 = this.recipeRepository.findById(this.recipeEntity1.getId());
