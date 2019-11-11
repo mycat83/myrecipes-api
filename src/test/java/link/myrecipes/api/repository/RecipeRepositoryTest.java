@@ -68,7 +68,7 @@ public class RecipeRepositoryTest {
         assertThat(savedRecipeEntity1.getRegisterUserId(), is(this.recipeEntity1.getRegisterUserId()));
 
         //when - update
-        this.recipeEntity1.update(this.recipeEntity2);
+        this.recipeEntity1.update(this.recipeEntity2, 10001);
         this.recipeRepository.save(this.recipeEntity1);
 
         Optional<RecipeEntity> recipeEntityOptional2 = this.recipeRepository.findById(this.recipeEntity1.getId());
@@ -83,7 +83,7 @@ public class RecipeRepositoryTest {
         assertThat(savedRecipeEntity2.getImage(), is(this.recipeEntity2.getImage()));
         assertThat(savedRecipeEntity2.getEstimatedTime(), is(this.recipeEntity2.getEstimatedTime()));
         assertThat(savedRecipeEntity2.getDifficulty(), is(this.recipeEntity2.getDifficulty()));
-        assertThat(savedRecipeEntity2.getModifyUserId(), is(this.recipeEntity2.getModifyUserId()));
+        assertThat(savedRecipeEntity2.getModifyUserId(), is(10001));
     }
 
     @Test(expected = NotExistDataException.class)

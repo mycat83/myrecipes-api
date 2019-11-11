@@ -100,7 +100,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @CacheEvict(value = "myrecipe:api:recipeView", key = "#id")
-    public Recipe updateRecipe(int id, Recipe recipe) {
+    public Recipe updateRecipe(int id, Recipe recipe, int userId) {
         Optional<RecipeEntity> recipeOptional = this.recipeRepository.findById(id);
 
         if (!recipeOptional.isPresent()) {
@@ -108,8 +108,7 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         RecipeEntity selectedRecipeEntity = recipeOptional.get();
-        selectedRecipeEntity.update(recipe.toEntity());
-
+        selectedRecipeEntity.update(recipe.toEntity(), userId);
         return this.recipeRepository.save(selectedRecipeEntity).toDTO();
     }
 
