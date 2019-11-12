@@ -79,6 +79,10 @@ public class RecipeEntity extends BaseEntity {
         this.recipeTagEntityList.clear();
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public void update(int id, RecipeEntity recipeEntity, int userId) {
         this.id = id;
         this.title = recipeEntity.title;
