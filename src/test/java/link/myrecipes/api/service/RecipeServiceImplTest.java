@@ -210,10 +210,9 @@ public class RecipeServiceImplTest {
 
         //given
         given(this.recipeRepository.findById(1)).willReturn(Optional.ofNullable(this.recipe1.toEntity()));
-        given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(recipeEntity);
 
         //when
-        this.recipeService.updateRecipe(2, this.recipeRequest2, 10002);
+        this.recipeService.updateRecipe(recipeEntity.getId(), this.recipeRequest2, 10002);
     }
 
     @Test
