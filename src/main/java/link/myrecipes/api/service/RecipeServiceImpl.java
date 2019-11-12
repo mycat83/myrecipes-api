@@ -11,6 +11,7 @@ import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.*;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -68,6 +69,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "myrecipe:api:recipeList", allEntries = true)
     public Recipe createRecipe(RecipeRequest recipeRequest, int userId) {
         RecipeEntity recipeEntity = recipeRequest.toEntity();
         recipeEntity.setRegisterUserId(userId);
@@ -77,7 +79,10 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "myrecipe:api:recipeView", key = "#id")
+    @Caching(evict = {
+            @CacheEvict(value = "myrecipe:api:recipeView", key = "#id"),
+            @CacheEvict(value = "myrecipe:api:recipeList", allEntries = true)
+    })
     public Recipe updateRecipe(int id, RecipeRequest recipeRequest, int userId) {
         Optional<RecipeEntity> recipeOptional = this.recipeRepository.findById(id);
 
@@ -138,7 +143,10 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "myrecipe:api:recipeView", key = "#id")
+    @Caching(evict = {
+            @CacheEvict(value = "myrecipe:api:recipeView", key = "#id"),
+            @CacheEvict(value = "myrecipe:api:recipeList", allEntries = true)
+    })
     public void deleteRecipe(int id) {
         this.recipeRepository.deleteById(id);
     }
