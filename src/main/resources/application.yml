@@ -57,7 +57,7 @@ spring:
     redis:
       time-to-live: 50000
   redis:
-    host: localhost
+    host: 10.0.10.206
     port: 6379
 
 logging:
@@ -85,7 +85,7 @@ spring:
     redis:
       time-to-live: 5000
   redis:
-    host: localhost
+    host: 10.0.10.206
     port: 6379
 
 logging:
