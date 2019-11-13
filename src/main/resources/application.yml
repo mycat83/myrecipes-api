@@ -8,6 +8,9 @@ server:
 ---
 spring:
   profiles: local
+  http:
+    encoding:
+      force: true
   devtools:
     livereload:
       enabled: true
@@ -41,6 +44,9 @@ logging:
 ---
 spring:
   profiles: dev
+  http:
+    encoding:
+      force: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://myrecipes-dev.cwnkdef17vae.ap-northeast-2.rds.amazonaws.com/myrecipes?serverTimezone=Asia/Seoul&useSSL=false
@@ -69,6 +75,9 @@ logging:
 ---
 spring:
   profiles: prod
+  http:
+    encoding:
+      force: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://myrecipes-dev.cwnkdef17vae.ap-northeast-2.rds.amazonaws.com/myrecipes?serverTimezone=Asia/Seoul&useSSL=false
