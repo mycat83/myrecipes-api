@@ -1,11 +1,15 @@
 package link.myrecipes.api.service;
 
+import link.myrecipes.api.domain.UserAuthorityEntity;
 import link.myrecipes.api.domain.UserEntity;
 import link.myrecipes.api.dto.User;
+import link.myrecipes.api.dto.request.UserRequest;
 import link.myrecipes.api.dto.security.UserSecurity;
+import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.exception.UsernameNotFoundException;
 import link.myrecipes.api.repository.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -30,16 +34,40 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public User readMember(int id) {
-        return null;
+        Optional<UserEntity> userEntityOptional = this.memberRepository.findById(id);
+
+        if (!userEntityOptional.isPresent()) {
+            throw new NotExistDataException(UserEntity.class, id);
+        }
+
+        return userEntityOptional.get().toDTO();
     }
 
     @Override
-    public User createMember(User user, int userId) {
-        return null;
+    @Transactional
+    public User createMember(UserRequest userRequest) {
+        UserEntity userEntity = userRequest.toEntity();
+        UserAuthorityEntity userAuthorityEntity = UserAuthorityEntity.builder()
+                .authority("USER")
+                .build();
+
+        userEntity.setAccountNonExpired(true);
+        userEntity.setAccountNonLocked(true);
+        userEntity.setCredentialsNonExpired(true);
+        userEntity.setEnabled(true);
+        userEntity.addUserAuthority(userAuthorityEntity);
+        userAuthorityEntity.setUserEntity(userEntity);
+
+        UserEntity savedUserEntity = this.memberRepository.save(userEntity);
+        savedUserEntity.setRegisterUserId(savedUserEntity.getId());
+        savedUserEntity.setModifyUserId(savedUserEntity.getId());
+
+        return this.memberRepository.save(savedUserEntity).toDTO();
     }
 
     @Override
-    public User updateMember(int id, User user, int userId) {
+    @Transactional
+    public User updateMember(int id, UserRequest userRequest, int userId) {
         return null;
     }
 }

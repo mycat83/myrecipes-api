@@ -1,6 +1,7 @@
 package link.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import link.myrecipes.api.dto.User;
 import link.myrecipes.api.dto.security.UserSecurity;
 import lombok.*;
 
@@ -50,7 +51,8 @@ public class UserEntity extends BaseEntity {
     private List<UserAuthorityEntity> userAuthorityEntityList = new ArrayList<>();
 
     @Builder
-    public UserEntity(String username, String password, String name, String phone, String email, Boolean accountNonExpired, Boolean accountNonLocked, Boolean credentialsNonExpired, Boolean enabled) {
+    public UserEntity(String username, String password, String name, String phone, String email, Boolean accountNonExpired, Boolean accountNonLocked,
+                      Boolean credentialsNonExpired, Boolean enabled, Integer registerUserId, Integer modifyUserId) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -59,6 +61,24 @@ public class UserEntity extends BaseEntity {
         this.accountNonExpired = accountNonExpired;
         this.accountNonLocked = accountNonLocked;
         this.credentialsNonExpired = credentialsNonExpired;
+        this.enabled = enabled;
+        this.registerUserId = registerUserId;
+        this.modifyUserId = modifyUserId;
+    }
+
+    public void setAccountNonExpired(Boolean accountNonExpired) {
+        this.accountNonExpired = accountNonExpired;
+    }
+
+    public void setAccountNonLocked(Boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    public void setCredentialsNonExpired(Boolean credentialsNonExpired) {
+        this.credentialsNonExpired = credentialsNonExpired;
+    }
+
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -74,6 +94,17 @@ public class UserEntity extends BaseEntity {
                 .accountNonLocked(this.getAccountNonLocked())
                 .credentialsNonExpired(this.getCredentialsNonExpired())
                 .enabled(this.getEnabled())
+                .build();
+    }
+
+    public User toDTO() {
+        return User.builder()
+                .id(this.getId())
+                .username(this.getUsername())
+                .password(this.getPassword())
+                .name(this.getName())
+                .phone(this.getPhone())
+                .email(this.getEmail())
                 .build();
     }
 }

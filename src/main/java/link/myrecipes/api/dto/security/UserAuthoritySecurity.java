@@ -1,5 +1,6 @@
 package link.myrecipes.api.dto.security;
 
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
@@ -10,7 +11,8 @@ public class UserAuthoritySecurity {
         return authority;
     }
 
-    public void setAuthority(String authority) {
+    @Builder
+    public UserAuthoritySecurity(String authority) {
         this.authority = authority;
     }
 }
