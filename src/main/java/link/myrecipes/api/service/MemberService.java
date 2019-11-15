@@ -1,6 +1,7 @@
 package link.myrecipes.api.service;
 
 import link.myrecipes.api.dto.User;
+import link.myrecipes.api.dto.request.UserRequest;
 import link.myrecipes.api.dto.security.UserSecurity;
 
 public interface MemberService {
@@ -8,7 +9,7 @@ public interface MemberService {
 
     User readMember(int id);
 
-    User createMember(User user, int userId);
+    User createMember(UserRequest userRequest);
 
-    User updateMember(int id, User user, int userId);
+    User updateMember(int id, UserRequest userRequest, int userId);
 }

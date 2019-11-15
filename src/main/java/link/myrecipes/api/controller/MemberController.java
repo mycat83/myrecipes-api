@@ -3,6 +3,7 @@ package link.myrecipes.api.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import link.myrecipes.api.dto.User;
+import link.myrecipes.api.dto.request.UserRequest;
 import link.myrecipes.api.dto.security.UserSecurity;
 import link.myrecipes.api.service.MemberService;
 import org.springframework.http.HttpStatus;
@@ -36,15 +37,15 @@ public class MemberController {
 
     @PostMapping("/members")
     @ApiOperation("회원 저장")
-    public ResponseEntity<User> createMember(@RequestBody @Valid User user, @RequestParam int userId) {
-        User savedUser = this.memberService.createMember(user, userId);
+    public ResponseEntity<User> createMember(@RequestBody @Valid UserRequest userRequest) {
+        User savedUser = this.memberService.createMember(userRequest);
         return new ResponseEntity<>(savedUser, HttpStatus.OK);
     }
 
-    @PostMapping("/members")
+    @PutMapping("/members")
     @ApiOperation("회원 수정")
-    public ResponseEntity<User> updateMember(@PathVariable int id, @RequestBody @Valid User user, @RequestParam int userId) {
-        User savedUser = this.memberService.updateMember(id, user, userId);
+    public ResponseEntity<User> updateMember(@PathVariable int id, @RequestBody @Valid UserRequest userRequest, @RequestParam int userId) {
+        User savedUser = this.memberService.updateMember(id, userRequest, userId);
         return new ResponseEntity<>(savedUser, HttpStatus.OK);
     }
 }

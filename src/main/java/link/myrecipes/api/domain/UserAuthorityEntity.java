@@ -1,11 +1,7 @@
 package link.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,8 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-@JsonIgnoreProperties("hibernateLazyInitializer")
-public class UserAuthorityEntity extends BaseEntity {
+public class UserAuthorityEntity {
     @Id
     @GeneratedValue
     private Integer id;
@@ -28,7 +23,12 @@ public class UserAuthorityEntity extends BaseEntity {
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
-    public void setAuthority(String authority) {
+    @Builder
+    public UserAuthorityEntity(String authority) {
         this.authority = authority;
+    }
+
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 }
