@@ -42,7 +42,7 @@ public class MemberController {
         return new ResponseEntity<>(savedUser, HttpStatus.OK);
     }
 
-    @PutMapping("/members")
+    @PutMapping("/members/{id}")
     @ApiOperation("회원 수정")
     public ResponseEntity<User> updateMember(@PathVariable int id, @RequestBody @Valid UserRequest userRequest, @RequestParam int userId) {
         User savedUser = this.memberService.updateMember(id, userRequest, userId);

@@ -29,7 +29,11 @@ public class MemberServiceImpl implements MemberService {
             throw new UsernameNotFoundException(username);
         }
 
-        return userEntityOptional.get().toSecurityDTO();
+        UserSecurity userSecurity = userEntityOptional.get().toSecurityDTO();
+        for (UserAuthorityEntity userAuthorityEntity : userEntityOptional.get().getUserAuthorityEntityList()) {
+            userSecurity.addUserAuthoritySecurity(userAuthorityEntity.toSecurityDTO());
+        }
+        return userSecurity;
     }
 
     @Override
@@ -68,6 +72,14 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public User updateMember(int id, UserRequest userRequest, int userId) {
-        return null;
+        Optional<UserEntity> userEntityOptional = this.memberRepository.findById(id);
+
+        if (!userEntityOptional.isPresent()) {
+            throw new NotExistDataException(UserEntity.class, id);
+        }
+
+        UserEntity selectedUserEntity = userEntityOptional.get();
+        selectedUserEntity.update(userRequest.toEntity(), userId);
+        return this.memberRepository.save(selectedUserEntity).toDTO();
     }
 }

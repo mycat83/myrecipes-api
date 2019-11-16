@@ -66,6 +66,10 @@ public class UserEntity extends BaseEntity {
         this.modifyUserId = modifyUserId;
     }
 
+    public void addUserAuthority(UserAuthorityEntity userAuthorityEntity) {
+        this.userAuthorityEntityList.add(userAuthorityEntity);
+    }
+
     public void setAccountNonExpired(Boolean accountNonExpired) {
         this.accountNonExpired = accountNonExpired;
     }
@@ -82,8 +86,13 @@ public class UserEntity extends BaseEntity {
         this.enabled = enabled;
     }
 
-    public void addUserAuthority(UserAuthorityEntity userAuthorityEntity) {
-        this.userAuthorityEntityList.add(userAuthorityEntity);
+    public void update(UserEntity userEntity, int userId) {
+        this.username = userEntity.getUsername();
+        this.password = userEntity.getPassword();
+        this.name = userEntity.getName();
+        this.phone = userEntity.getPhone();
+        this.email = userEntity.getEmail();
+        this.modifyUserId = userId;
     }
 
     public UserSecurity toSecurityDTO() {
