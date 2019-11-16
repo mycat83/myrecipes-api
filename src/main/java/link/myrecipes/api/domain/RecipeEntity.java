@@ -83,13 +83,11 @@ public class RecipeEntity extends BaseEntity {
         this.id = id;
     }
 
-    public void update(int id, RecipeEntity recipeEntity, int userId) {
-        this.id = id;
-        this.title = recipeEntity.title;
-        this.image = recipeEntity.image;
-        this.estimatedTime = recipeEntity.estimatedTime;
-        this.difficulty = recipeEntity.difficulty;
-        this.registerUserId = recipeEntity.registerUserId;
+    public void update(RecipeEntity recipeEntity, int userId) {
+        this.title = recipeEntity.getTitle();
+        this.image = recipeEntity.getImage();
+        this.estimatedTime = recipeEntity.getEstimatedTime();
+        this.difficulty = recipeEntity.getDifficulty();
         this.modifyUserId = userId;
     }
 

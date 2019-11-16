@@ -91,7 +91,7 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         RecipeEntity selectedRecipeEntity = recipeOptional.get();
-        selectedRecipeEntity.update(id, recipeRequest.toEntity(), userId);
+        selectedRecipeEntity.update(recipeRequest.toEntity(), userId);
 
         for (RecipeMaterialEntity recipeMaterialEntity : selectedRecipeEntity.getRecipeMaterialEntityList()) {
             this.recipeMaterialRepository.delete(recipeMaterialEntity);

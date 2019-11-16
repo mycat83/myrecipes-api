@@ -1,11 +1,13 @@
 package link.myrecipes.api.dto.security;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @NoArgsConstructor
 public class UserSecurity {
     private String username;
@@ -30,5 +32,9 @@ public class UserSecurity {
         this.accountNonLocked = accountNonLocked;
         this.credentialsNonExpired = credentialsNonExpired;
         this.enabled = enabled;
+    }
+
+    public void addUserAuthoritySecurity(UserAuthoritySecurity userAuthoritySecurity) {
+        this.userAuthoritySecurityList.add(userAuthoritySecurity);
     }
 }

@@ -1,6 +1,7 @@
 package link.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import link.myrecipes.api.dto.security.UserAuthoritySecurity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,5 +31,11 @@ public class UserAuthorityEntity {
 
     public void setUserEntity(UserEntity userEntity) {
         this.userEntity = userEntity;
+    }
+
+    public UserAuthoritySecurity toSecurityDTO() {
+        return UserAuthoritySecurity.builder()
+                .authority(this.getAuthority())
+                .build();
     }
 }
