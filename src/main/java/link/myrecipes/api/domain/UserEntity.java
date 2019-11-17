@@ -97,6 +97,7 @@ public class UserEntity extends BaseEntity {
 
     public UserSecurity toSecurityDTO() {
         return UserSecurity.builder()
+                .id(this.getId())
                 .username(this.getUsername())
                 .password(this.getPassword())
                 .accountNonExpired(this.getAccountNonExpired())

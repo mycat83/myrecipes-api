@@ -10,6 +10,8 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class UserSecurity {
+    private Integer id;
+
     private String username;
 
     private String password;
@@ -25,7 +27,8 @@ public class UserSecurity {
     private List<UserAuthoritySecurity> userAuthoritySecurityList = new ArrayList<>();
 
     @Builder
-    public UserSecurity(String username, String password, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled) {
+    public UserSecurity(Integer id, String username, String password, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.accountNonExpired = accountNonExpired;
