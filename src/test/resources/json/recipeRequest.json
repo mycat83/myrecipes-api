@@ -1,0 +1,24 @@
+{
+  "difficulty": 1,
+  "estimatedTime": 30,
+  "image": "recipe.jpg",
+  "recipeMaterialRequestList": [
+    {
+      "materialId": 1,
+      "quantity": 10
+    }
+  ],
+  "recipeStepRequestList": [
+    {
+      "content": "단계1",
+      "image": "step1.jpg",
+      "step": 1
+    }
+  ],
+  "recipeTagRequestList": [
+    {
+      "tag": "태그"
+    }
+  ],
+  "title": "레시피"
+}

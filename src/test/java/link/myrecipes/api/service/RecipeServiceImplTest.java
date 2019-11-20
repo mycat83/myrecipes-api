@@ -86,7 +86,7 @@ public class RecipeServiceImplTest {
     }
 
     @Test
-    public void Should_첫번째_페이지_반환_When_0_페이지_조회() {
+    public void When_0_페이지_조회_Then_첫번째_페이지_반환() {
         List<Recipe> list = new ArrayList<>();
         list.add(this.recipe1);
         list.add(this.recipe2);
@@ -111,7 +111,7 @@ public class RecipeServiceImplTest {
     }
 
     @Test(expected = NotExistDataException.class)
-    public void Should_예외_발생_When_존재하지_않는_ID_조회() {
+    public void When_존재하지_않는_ID_조회_Should_예외_발생() {
         //given
         given(this.recipeRepository.findById(1)).willReturn(Optional.empty());
 
@@ -120,7 +120,7 @@ public class RecipeServiceImplTest {
     }
 
     @Test
-    public void Should_정상_저장_확인_When_레시피_저장() {
+    public void When_레시피_저장_Should_정상_저장_확인() {
         MaterialEntity materialEntity = MaterialEntity.builder().name("material1").build();
         Optional<MaterialEntity> materialEntityOptional = Optional.ofNullable(materialEntity);
 
@@ -163,7 +163,7 @@ public class RecipeServiceImplTest {
     }
 
     @Test(expected = NotExistDataException.class)
-    public void Should_예외_발생_When_존재하지_않는_재료로_레시피_저장() {
+    public void When_존재하지_않는_재료로_레시피_저장_Then_예외_발생() {
         Optional<MaterialEntity> materialEntityOptional = Optional.empty();
 
         //given
@@ -174,7 +174,7 @@ public class RecipeServiceImplTest {
     }
 
     @Test
-    public void Should_업데이트된_항목_반환_When_업데이트_성공() {
+    public void When_업데이트_성공_Then_업데이트된_항목_반환() {
         RecipeEntity recipeEntity = this.recipe2.toEntity();
         recipeEntity.setId(1);
         MaterialEntity materialEntity = MaterialEntity.builder()
@@ -198,13 +198,13 @@ public class RecipeServiceImplTest {
     }
 
     @Test(expected = NotExistDataException.class)
-    public void Should_예외_발생_When_존재하지_않는_레시피_수정() {
+    public void When_존재하지_않는_레시피_수정_Then_예외_발생() {
         //when
         this.recipeService.updateRecipe(2, this.recipeRequest2, 10002);
     }
 
     @Test(expected = NotExistDataException.class)
-    public void Should_예외_발생_When_재료_미등록_상태에서_레시피_수정() {
+    public void When_재료_미등록_상태에서_레시피_수정_Then_예외_발생() {
         RecipeEntity recipeEntity = this.recipe2.toEntity();
         recipeEntity.setId(1);
 
@@ -216,7 +216,7 @@ public class RecipeServiceImplTest {
     }
 
     @Test
-    public void Should_카운트_1_반환_When_1건_조회() {
+    public void When_1건_조회_Then_카운트_1_반환() {
         //given
         given(this.recipeRepository.count()).willReturn(1L);
 

@@ -49,7 +49,7 @@ public class RecipeRepositoryTest {
     }
 
     @Test
-    public void Should_동일한_엔티티_반환_When_엔티티_저장() {
+    public void When_엔티티_저장_Then_동일한_엔티티_반환() {
         //when - save
         this.recipeRepository.save(this.recipeEntity1);
 
@@ -87,7 +87,7 @@ public class RecipeRepositoryTest {
     }
 
     @Test(expected = NotExistDataException.class)
-    public void Should_없는_ID로_조회시_예외발생_When_엔티티_저장() {
+    public void When_엔티티_저장_후_없는_ID_조회_Then_예외발생() {
         this.recipeRepository.save(this.recipeEntity1);
 
         Optional<RecipeEntity> recipeEntityOptional = this.recipeRepository.findById(0);
@@ -98,22 +98,23 @@ public class RecipeRepositoryTest {
     }
 
     @Test
-    public void Should_키_순차적_증가_When_엔티티_여러개_저장() {
+    public void When_엔티티_여러개_저장_Then_키_순차적_증가() {
         //when
         recipeRepository.save(this.recipeEntity1);
         recipeRepository.save(this.recipeEntity2);
         recipeRepository.save(this.recipeEntity3);
         final List<RecipeEntity> recipeEntityList = this.recipeRepository.findAll();
+        int firstId = recipeEntityList.get(0).getId();
 
         //then
         assertThat(recipeEntityList.size(), is(3));
-        assertThat(recipeEntityList.get(0).getId(), is(1));
-        assertThat(recipeEntityList.get(1).getId(), is(2));
-        assertThat(recipeEntityList.get(2).getId(), is(3));
+        assertThat(recipeEntityList.get(0).getId(), is(firstId));
+        assertThat(recipeEntityList.get(1).getId(), is(firstId + 1));
+        assertThat(recipeEntityList.get(2).getId(), is(firstId + 2));
     }
 
     @Test
-    public void Should_엔티티_없음_When_엔티티_저장후_삭제() {
+    public void When_엔티티_저장후_삭제_Then_엔티티_없음() {
         //when
         this.recipeRepository.save(this.recipeEntity1);
         this.recipeRepository.deleteById(this.recipeEntity1.getId());
@@ -124,7 +125,7 @@ public class RecipeRepositoryTest {
     }
 
     @Test
-    public void Should_연관관계_정상_조회_When_연관관계_매핑() {
+    public void When_연관관계_매핑_Then_연관관계_정상_조회() {
         //when
         this.recipeRepository.save(this.recipeEntity1);
 
@@ -184,7 +185,7 @@ public class RecipeRepositoryTest {
     }
 
     @Test
-    public void Should_카운트_1_반환_When_1건_저장() {
+    public void When_1건_저장_Then_카운트_1_반환() {
         //when
         this.recipeRepository.save(this.recipeEntity1);
         final long recipeCnt = this.recipeRepository.count();
