@@ -4,7 +4,6 @@ import link.myrecipes.api.domain.MaterialEntity;
 import link.myrecipes.api.domain.UnitEntity;
 import link.myrecipes.api.dto.Material;
 import link.myrecipes.api.dto.Unit;
-import link.myrecipes.api.exception.DuplicateDataException;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.UnitRepository;
@@ -74,11 +73,6 @@ public class BaseInfoServiceImpl implements BaseInfoService {
     public Unit createUnit(Unit unit, int userId) {
         UnitEntity unitEntity = unit.toEntity();
         unitEntity.setRegisterUserId(userId);
-
-        Optional<UnitEntity> unitEntityOptional = this.unitRepository.findByName(unitEntity.getName());
-        if (unitEntityOptional.isPresent()) {
-            throw new DuplicateDataException(UnitEntity.class, unitEntity.getName());
-        }
 
         return this.unitRepository.save(unitEntity).toDTO();
     }

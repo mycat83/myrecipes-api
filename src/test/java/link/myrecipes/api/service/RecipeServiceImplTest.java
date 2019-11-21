@@ -1,7 +1,6 @@
 package link.myrecipes.api.service;
 
-import link.myrecipes.api.domain.MaterialEntity;
-import link.myrecipes.api.domain.RecipeEntity;
+import link.myrecipes.api.domain.*;
 import link.myrecipes.api.dto.Recipe;
 import link.myrecipes.api.dto.request.RecipeMaterialRequest;
 import link.myrecipes.api.dto.request.RecipeRequest;
@@ -9,8 +8,7 @@ import link.myrecipes.api.dto.request.RecipeStepRequest;
 import link.myrecipes.api.dto.request.RecipeTagRequest;
 import link.myrecipes.api.dto.view.RecipeView;
 import link.myrecipes.api.exception.NotExistDataException;
-import link.myrecipes.api.repository.MaterialRepository;
-import link.myrecipes.api.repository.RecipeRepository;
+import link.myrecipes.api.repository.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +44,15 @@ public class RecipeServiceImplTest {
 
     @Mock
     private RecipeRepository recipeRepository;
+
+    @Mock
+    private RecipeMaterialRepository recipeMaterialRepository;
+
+    @Mock
+    private RecipeStepRepository recipeStepRepository;
+
+    @Mock
+    private RecipeTagRepository recipeTagRepository;
 
     @Mock
     private MaterialRepository materialRepository;
@@ -87,6 +94,7 @@ public class RecipeServiceImplTest {
 
     @Test
     public void When_0_페이지_조회_Then_첫번째_페이지_반환() {
+        //given
         List<Recipe> list = new ArrayList<>();
         list.add(this.recipe1);
         list.add(this.recipe2);
@@ -97,7 +105,6 @@ public class RecipeServiceImplTest {
             PageRequest.of(0, list.size()), list.size()
         );
 
-        //given
         given(this.recipeRepository.findAll(any(PageRequest.class))).willReturn(page);
 
         //when
@@ -111,7 +118,7 @@ public class RecipeServiceImplTest {
     }
 
     @Test(expected = NotExistDataException.class)
-    public void When_존재하지_않는_ID_조회_Should_예외_발생() {
+    public void When_존재하지_않는_ID_조회_Then_예외_발생() {
         //given
         given(this.recipeRepository.findById(1)).willReturn(Optional.empty());
 
@@ -120,7 +127,8 @@ public class RecipeServiceImplTest {
     }
 
     @Test
-    public void When_레시피_저장_Should_정상_저장_확인() {
+    public void When_레시피_저장_Then_정상_저장_확인() {
+        //given
         MaterialEntity materialEntity = MaterialEntity.builder().name("material1").build();
         Optional<MaterialEntity> materialEntityOptional = Optional.ofNullable(materialEntity);
 
@@ -136,7 +144,6 @@ public class RecipeServiceImplTest {
         }
         Optional<RecipeEntity> recipeEntityOptional = Optional.ofNullable(recipeEntity);
 
-        //given
         given(this.recipeRepository.findById(1)).willReturn(recipeEntityOptional);
 
         //when
@@ -164,9 +171,8 @@ public class RecipeServiceImplTest {
 
     @Test(expected = NotExistDataException.class)
     public void When_존재하지_않는_재료로_레시피_저장_Then_예외_발생() {
-        Optional<MaterialEntity> materialEntityOptional = Optional.empty();
-
         //given
+        Optional<MaterialEntity> materialEntityOptional = Optional.empty();
         given(this.materialRepository.findById(1)).willReturn(materialEntityOptional);
 
         //when
@@ -175,19 +181,26 @@ public class RecipeServiceImplTest {
 
     @Test
     public void When_업데이트_성공_Then_업데이트된_항목_반환() {
-        RecipeEntity recipeEntity = this.recipe2.toEntity();
-        recipeEntity.setId(1);
-        MaterialEntity materialEntity = MaterialEntity.builder()
-                .name("material")
-                .build();
-
         //given
-        given(this.recipeRepository.findById(1)).willReturn(Optional.ofNullable(this.recipe1.toEntity()));
-        given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(recipeEntity);
+        MaterialEntity materialEntity = MaterialEntity.builder().name("material").build();
+        RecipeMaterialEntity recipeMaterialEntity = RecipeMaterialEntity.builder().quantity(5D).materialEntity(materialEntity).build();
+        RecipeStepEntity recipeStepEntity = RecipeStepEntity.builder().step(1).content("step1").image("step1.jpg").build();
+        RecipeTagEntity recipeTagEntity = RecipeTagEntity.builder().tag("tag1").build();
+
+        RecipeEntity recipeEntity1 = this.recipe1.toEntity();
+        recipeEntity1.addRecipeMaterial(recipeMaterialEntity);
+        recipeEntity1.addRecipeStep(recipeStepEntity);
+        recipeEntity1.addRecipeTag(recipeTagEntity);
+
+        RecipeEntity recipeEntity2 = this.recipe2.toEntity();
+        recipeEntity2.setId(1);
+
+        given(this.recipeRepository.findById(1)).willReturn(Optional.of(recipeEntity1));
+        given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(recipeEntity2);
         given(this.materialRepository.findById(any(Integer.class))).willReturn(Optional.ofNullable(materialEntity));
 
         //when
-        final Recipe updatedRecipe = this.recipeService.updateRecipe(recipeEntity.getId(), this.recipeRequest2, 10002);
+        final Recipe updatedRecipe = this.recipeService.updateRecipe(recipeEntity2.getId(), this.recipeRequest2, 10002);
 
         //then
         assertThat(updatedRecipe, not(nullValue()));
@@ -205,14 +218,19 @@ public class RecipeServiceImplTest {
 
     @Test(expected = NotExistDataException.class)
     public void When_재료_미등록_상태에서_레시피_수정_Then_예외_발생() {
+        //given
         RecipeEntity recipeEntity = this.recipe2.toEntity();
         recipeEntity.setId(1);
-
-        //given
         given(this.recipeRepository.findById(1)).willReturn(Optional.ofNullable(this.recipe1.toEntity()));
 
         //when
         this.recipeService.updateRecipe(recipeEntity.getId(), this.recipeRequest2, 10002);
+    }
+
+    @Test
+    public void When_레시피_삭제_Then_이상_없음() {
+        //when
+        this.recipeService.deleteRecipe(1);
     }
 
     @Test
