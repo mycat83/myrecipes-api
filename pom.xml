@@ -17,6 +17,10 @@
     <properties>
         <java.version>1.8</java.version>
         <swagger.version>2.9.2</swagger.version>
+        <sonar.projectKey>mycat83_myrecipes-api</sonar.projectKey>
+        <sonar.organization>myrecipes</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.login>4abbbbaf42d41ec3dad35a9fcdc381d6f1ffd057</sonar.login>
     </properties>
 
     <dependencies>
