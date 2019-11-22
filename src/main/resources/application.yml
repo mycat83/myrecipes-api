@@ -8,6 +8,9 @@ server:
 ---
 spring:
   profiles: local
+  http:
+    encoding:
+      force: true
   devtools:
     livereload:
       enabled: true
@@ -15,7 +18,7 @@ spring:
       enabled: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost/myrecipe?serverTimezone=Asia/Seoul&useSSL=false
+    url: jdbc:mysql://localhost/myrecipes?serverTimezone=Asia/Seoul&useSSL=false
     username: mruser
     password: P@ssw0rd!
   jpa:
@@ -35,15 +38,18 @@ spring:
 logging:
   level:
     org.hibernate.type.descriptor.sql: TRACE
-    #    io.myrecipes.api.mapper: TRACE
+    #    link.myrecipes.api.mapper: TRACE
     org.springframework.web: TRACE
 
 ---
 spring:
   profiles: dev
+  http:
+    encoding:
+      force: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://myrecipes-dev.cwnkdef17vae.ap-northeast-2.rds.amazonaws.com/myrecipe?serverTimezone=Asia/Seoul&useSSL=false
+    url: jdbc:mysql://myrecipes-dev.cwnkdef17vae.ap-northeast-2.rds.amazonaws.com/myrecipes?serverTimezone=Asia/Seoul&useSSL=false
     username: mruser
     password: P@ssw0rd!
   jpa:
@@ -57,21 +63,24 @@ spring:
     redis:
       time-to-live: 50000
   redis:
-    host: localhost
+    host: 10.0.10.206
     port: 6379
 
 logging:
   level:
     org.hibernate.type.descriptor.sql: TRACE
-    io.myrecipes.api.mapper: TRACE
-    io.myrecipes.api.controller: TRACE
+    #    link.myrecipes.api.mapper: TRACE
+    org.springframework.web: TRACE
 
 ---
 spring:
   profiles: prod
+  http:
+    encoding:
+      force: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://myrecipes-dev.cwnkdef17vae.ap-northeast-2.rds.amazonaws.com/myrecipe?serverTimezone=Asia/Seoul&useSSL=false
+    url: jdbc:mysql://myrecipes-dev.cwnkdef17vae.ap-northeast-2.rds.amazonaws.com/myrecipes?serverTimezone=Asia/Seoul&useSSL=false
     username: mruser
     password: P@ssw0rd!
   jpa:
@@ -85,11 +94,11 @@ spring:
     redis:
       time-to-live: 5000
   redis:
-    host: localhost
+    host: 10.0.10.206
     port: 6379
 
 logging:
   level:
     org.hibernate.type.descriptor.sql: TRACE
-    io.myrecipes.api.mapper: TRACE
-    io.myrecipes.api.controller: TRACE
+    #    link.myrecipes.api.mapper: TRACE
+    org.springframework.web: TRACE

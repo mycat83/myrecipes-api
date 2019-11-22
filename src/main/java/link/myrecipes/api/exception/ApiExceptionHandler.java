@@ -10,9 +10,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class ApiExceptionHandler {
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ApiErrorInfo> handleUsernameNotFoundException(Exception ex) {
+        log.error(ex.toString());
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
     @ExceptionHandler(NotExistDataException.class)
     public ResponseEntity<ApiErrorInfo> handleNotExistDataException(Exception ex) {
-        log.info(ex.toString());
+        log.error(ex.toString());
 
         ApiErrorInfo apiErrorInfo = ApiErrorInfo.builder()
                 .message(ex.toString())
@@ -23,7 +30,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorInfo> handleException(Exception ex) {
-        log.info(ex.toString());
+        log.error(ex.toString());
 
         ApiErrorInfo apiErrorInfo = ApiErrorInfo.builder()
                 .message(ex.toString())
