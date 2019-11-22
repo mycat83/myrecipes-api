@@ -26,7 +26,7 @@ public class SwaggerConfig {
                         new Tag("system", "시스템 API"),
                         new Tag("baseInfo", "기본정보 API"),
                         new Tag("recipe", "레시피 API"),
-                        new Tag("member", "회원정보 API")
+                        new Tag("member", "회원 API")
                 );
     }
 
