@@ -43,9 +43,27 @@ public class RecipeRepositoryTest {
 
     @Before
     public void setUp() {
-        this.recipeEntity1 = RecipeEntity.builder().title("test1").image("image1.jpg").estimatedTime(30).difficulty(1).registerUserId(1001).build();
-        this.recipeEntity2 = RecipeEntity.builder().title("test2").image("image2.jpg").estimatedTime(60).difficulty(3).registerUserId(1002).build();
-        this.recipeEntity3 = RecipeEntity.builder().title("test3").image("image3.jpg").estimatedTime(90).difficulty(5).registerUserId(1003).build();
+        this.recipeEntity1 = RecipeEntity.builder()
+                .title("test1")
+                .image("image1.jpg")
+                .estimatedTime(30)
+                .difficulty(1)
+                .registerUserId(1001)
+                .build();
+        this.recipeEntity2 = RecipeEntity.builder()
+                .title("test2")
+                .image("image2.jpg")
+                .estimatedTime(60)
+                .difficulty(3)
+                .registerUserId(1002)
+                .build();
+        this.recipeEntity3 = RecipeEntity.builder()
+                .title("test3")
+                .image("image3.jpg")
+                .estimatedTime(90)
+                .difficulty(5)
+                .registerUserId(1003)
+                .build();
     }
 
     @Test
@@ -87,9 +105,11 @@ public class RecipeRepositoryTest {
     }
 
     @Test(expected = NotExistDataException.class)
-    public void When_엔티티_저장_후_없는_ID_조회_Then_예외발생() {
+    public void When_엔티티_저장_후_없는_ID_조회_Then_예외_발생() {
+        //given
         this.recipeRepository.save(this.recipeEntity1);
 
+        //when
         Optional<RecipeEntity> recipeEntityOptional = this.recipeRepository.findById(0);
         if (!recipeEntityOptional.isPresent()) {
             throw new NotExistDataException(RecipeEntity.class, 0);
