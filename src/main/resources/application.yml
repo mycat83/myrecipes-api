@@ -46,6 +46,13 @@ logging:
     #    link.myrecipes.api.mapper: TRACE
     org.springframework.web: TRACE
 
+app:
+  rabbitmq:
+    exchange: logger.exchange
+    routing:
+      call: logger.controller.call
+      fail: logger.controller.fail
+
 ---
 spring:
   profiles: dev

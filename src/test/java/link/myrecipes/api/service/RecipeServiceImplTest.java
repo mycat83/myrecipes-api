@@ -101,8 +101,8 @@ public class RecipeServiceImplTest {
         list.add(this.recipe3);
 
         Page<RecipeEntity> page = new PageImpl<>(
-            list.stream().map(Recipe::toEntity).collect(Collectors.toList()),
-            PageRequest.of(0, list.size()), list.size()
+                list.stream().map(Recipe::toEntity).collect(Collectors.toList()),
+                PageRequest.of(0, list.size()), list.size()
         );
 
         given(this.recipeRepository.findAll(any(PageRequest.class))).willReturn(page);
@@ -231,6 +231,9 @@ public class RecipeServiceImplTest {
     public void When_레시피_삭제_Then_이상_없음() {
         //when
         this.recipeService.deleteRecipe(1);
+
+        //then
+        assertThat(true, is(true));
     }
 
     @Test
