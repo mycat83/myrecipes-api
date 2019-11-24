@@ -31,7 +31,7 @@ public class MaterialEntity extends BaseEntity {
         this.modifyUserId = modifyUserId;
         this.unitEntity = unitEntity;
     }
-    
+
     public void setUnitEntity(UnitEntity unitEntity) {
         this.unitEntity = unitEntity;
     }
