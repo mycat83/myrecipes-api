@@ -26,6 +26,9 @@ public class LoggerAspect {
     @Value("${app.rabbitmq.routing.fail}")
     private String routingFail;
 
+    @Value("${app.artifactId}")
+    private String artifactId;
+
     private final RabbitTemplate rabbitTemplate;
 
     public LoggerAspect(RabbitTemplate rabbitTemplate) {
@@ -36,6 +39,7 @@ public class LoggerAspect {
     public void controllerLogger(JoinPoint joinPoint) {
         LoggerMessage loggerMessage = LoggerMessage.builder()
                 .logType("call")
+                .system(artifactId)
                 .method(joinPoint.getSignature().toShortString())
                 .arguments(Arrays.toString(joinPoint.getArgs()))
                 .registerDate(LocalDateTime.now().toString())
@@ -48,7 +52,9 @@ public class LoggerAspect {
     public void controllerFailLogger(JoinPoint joinPoint, Exception exception) {
         LoggerMessage loggerMessage = LoggerMessage.builder()
                 .logType("fail")
+                .system(artifactId)
                 .method(joinPoint.getSignature().toShortString())
+                .arguments(Arrays.toString(joinPoint.getArgs()))
                 .exception(exception.getClass().getSimpleName())
                 .exceptionMessage(exception.getMessage())
                 .registerDate(LocalDateTime.now().toString())
