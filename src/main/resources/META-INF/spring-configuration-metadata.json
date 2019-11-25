@@ -1,6 +1,10 @@
 {
   "properties": [
     {
+      "name": "app.artifactId",
+      "type": "java.lang.String"
+    },
+    {
       "name": "app.rabbitmq.exchange",
       "type": "java.lang.String"
     },
