@@ -81,7 +81,7 @@ spring:
     host: 10.0.10.206
     port: 6379
   rabbitmq:
-    host: localhost
+    host: 10.0.10.206
     port: 5672
     username: mruser
     password: qwer1234!
@@ -117,7 +117,7 @@ spring:
     host: 10.0.10.206
     port: 6379
   rabbitmq:
-    host: localhost
+    host: 10.0.10.206
     port: 5672
     username: mruser
     password: qwer1234!
