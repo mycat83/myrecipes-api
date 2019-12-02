@@ -1,7 +1,7 @@
 package link.myrecipes.api.service;
 
-import link.myrecipes.api.domain.UserAuthorityEntity;
 import link.myrecipes.api.domain.UserEntity;
+import link.myrecipes.api.domain.UserRoleEntity;
 import link.myrecipes.api.dto.User;
 import link.myrecipes.api.dto.request.UserRequest;
 import link.myrecipes.api.dto.security.UserSecurity;
@@ -30,8 +30,8 @@ public class MemberServiceImpl implements MemberService {
         }
 
         UserSecurity userSecurity = userEntityOptional.get().toSecurityDTO();
-        for (UserAuthorityEntity userAuthorityEntity : userEntityOptional.get().getUserAuthorityEntityList()) {
-            userSecurity.addUserAuthoritySecurity(userAuthorityEntity.toSecurityDTO());
+        for (UserRoleEntity userRoleEntity : userEntityOptional.get().getUserRoleEntityList()) {
+            userSecurity.addUserAuthoritySecurity(userRoleEntity.toSecurityDTO());
         }
         return userSecurity;
     }
@@ -51,7 +51,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public User createMember(UserRequest userRequest) {
         UserEntity userEntity = userRequest.toEntity();
-        UserAuthorityEntity userAuthorityEntity = UserAuthorityEntity.builder()
+        UserRoleEntity userRoleEntity = UserRoleEntity.builder()
                 .authority("USER")
                 .build();
 
@@ -59,8 +59,8 @@ public class MemberServiceImpl implements MemberService {
         userEntity.setAccountNonLocked(true);
         userEntity.setCredentialsNonExpired(true);
         userEntity.setEnabled(true);
-        userEntity.addUserAuthority(userAuthorityEntity);
-        userAuthorityEntity.setUserEntity(userEntity);
+        userEntity.addUserAuthority(userRoleEntity);
+        userRoleEntity.setUserEntity(userEntity);
 
         UserEntity savedUserEntity = this.memberRepository.save(userEntity);
         savedUserEntity.setRegisterUserId(savedUserEntity.getId());

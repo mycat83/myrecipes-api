@@ -1,17 +1,17 @@
 package link.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import link.myrecipes.api.dto.security.UserAuthoritySecurity;
+import link.myrecipes.api.dto.security.UserRoleSecurity;
 import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user_authority")
+@Table(name = "user_role")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class UserAuthorityEntity {
+public class UserRoleEntity {
     @Id
     @GeneratedValue
     private Integer id;
@@ -25,7 +25,7 @@ public class UserAuthorityEntity {
     private UserEntity userEntity;
 
     @Builder
-    public UserAuthorityEntity(String authority) {
+    public UserRoleEntity(String authority) {
         this.authority = authority;
     }
 
@@ -33,8 +33,8 @@ public class UserAuthorityEntity {
         this.userEntity = userEntity;
     }
 
-    public UserAuthoritySecurity toSecurityDTO() {
-        return UserAuthoritySecurity.builder()
+    public UserRoleSecurity toSecurityDTO() {
+        return UserRoleSecurity.builder()
                 .authority(this.getAuthority())
                 .build();
     }

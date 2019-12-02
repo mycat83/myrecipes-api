@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "user")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = "userAuthorityEntityList")
+@ToString(exclude = "userRoleEntityList")
 @JsonIgnoreProperties("hibernateLazyInitializer")
 public class UserEntity extends BaseEntity {
     @Id
@@ -48,7 +48,7 @@ public class UserEntity extends BaseEntity {
     private Boolean enabled;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
-    private List<UserAuthorityEntity> userAuthorityEntityList = new ArrayList<>();
+    private List<UserRoleEntity> userRoleEntityList = new ArrayList<>();
 
     @Builder
     public UserEntity(String username, String password, String name, String phone, String email, Boolean accountNonExpired, Boolean accountNonLocked,
@@ -66,8 +66,8 @@ public class UserEntity extends BaseEntity {
         this.modifyUserId = modifyUserId;
     }
 
-    public void addUserAuthority(UserAuthorityEntity userAuthorityEntity) {
-        this.userAuthorityEntityList.add(userAuthorityEntity);
+    public void addUserAuthority(UserRoleEntity userRoleEntity) {
+        this.userRoleEntityList.add(userRoleEntity);
     }
 
     public void setAccountNonExpired(Boolean accountNonExpired) {

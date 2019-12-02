@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UserAuthoritySecurity {
+public class UserRoleSecurity {
     private String authority;
 
     public String getAuthority() {
@@ -14,7 +14,7 @@ public class UserAuthoritySecurity {
     }
 
     @Builder
-    public UserAuthoritySecurity(String authority) {
+    public UserRoleSecurity(String authority) {
         this.authority = authority;
     }
 }
