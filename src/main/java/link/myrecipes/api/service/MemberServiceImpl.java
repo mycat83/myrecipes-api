@@ -31,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
 
         UserSecurity userSecurity = userEntityOptional.get().toSecurityDTO();
         for (UserRoleEntity userRoleEntity : userEntityOptional.get().getUserRoleEntityList()) {
-            userSecurity.addUserAuthoritySecurity(userRoleEntity.toSecurityDTO());
+            userSecurity.addUserRoleSecurity(userRoleEntity.toSecurityDTO());
         }
         return userSecurity;
     }
@@ -52,14 +52,14 @@ public class MemberServiceImpl implements MemberService {
     public User createMember(UserRequest userRequest) {
         UserEntity userEntity = userRequest.toEntity();
         UserRoleEntity userRoleEntity = UserRoleEntity.builder()
-                .authority("USER")
+                .role("USER")
                 .build();
 
         userEntity.setAccountNonExpired(true);
         userEntity.setAccountNonLocked(true);
         userEntity.setCredentialsNonExpired(true);
         userEntity.setEnabled(true);
-        userEntity.addUserAuthority(userRoleEntity);
+        userEntity.addUserRole(userRoleEntity);
         userRoleEntity.setUserEntity(userEntity);
 
         UserEntity savedUserEntity = this.memberRepository.save(userEntity);

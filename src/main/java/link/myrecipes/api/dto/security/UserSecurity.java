@@ -37,7 +37,7 @@ public class UserSecurity {
         this.enabled = enabled;
     }
 
-    public void addUserAuthoritySecurity(UserRoleSecurity userRoleSecurity) {
+    public void addUserRoleSecurity(UserRoleSecurity userRoleSecurity) {
         this.userRoleSecurityList.add(userRoleSecurity);
     }
 }

@@ -17,7 +17,7 @@ public class UserRoleEntity {
     private Integer id;
 
     @Column(nullable = false)
-    private String authority;
+    private String role;
 
     @ManyToOne
     @JsonBackReference
@@ -25,8 +25,8 @@ public class UserRoleEntity {
     private UserEntity userEntity;
 
     @Builder
-    public UserRoleEntity(String authority) {
-        this.authority = authority;
+    public UserRoleEntity(String role) {
+        this.role = role;
     }
 
     public void setUserEntity(UserEntity userEntity) {
@@ -35,7 +35,7 @@ public class UserRoleEntity {
 
     public UserRoleSecurity toSecurityDTO() {
         return UserRoleSecurity.builder()
-                .authority(this.getAuthority())
+                .role(this.getRole())
                 .build();
     }
 }

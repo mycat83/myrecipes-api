@@ -66,7 +66,7 @@ public class UserEntity extends BaseEntity {
         this.modifyUserId = modifyUserId;
     }
 
-    public void addUserAuthority(UserRoleEntity userRoleEntity) {
+    public void addUserRole(UserRoleEntity userRoleEntity) {
         this.userRoleEntityList.add(userRoleEntity);
     }
 
