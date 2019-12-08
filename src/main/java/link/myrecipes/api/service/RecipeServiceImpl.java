@@ -42,7 +42,7 @@ public class RecipeServiceImpl implements RecipeService {
     public RecipeView readRecipe(int id) {
         Optional<RecipeEntity> recipeEntityOptional = this.recipeRepository.findById(id);
 
-        if (!recipeEntityOptional.isPresent()) {
+        if (recipeEntityOptional.isEmpty()) {
             throw new NotExistDataException(RecipeEntity.class, id);
         }
 
@@ -86,7 +86,7 @@ public class RecipeServiceImpl implements RecipeService {
     public Recipe updateRecipe(int id, RecipeRequest recipeRequest, int userId) {
         Optional<RecipeEntity> recipeOptional = this.recipeRepository.findById(id);
 
-        if (!recipeOptional.isPresent()) {
+        if (recipeOptional.isEmpty()) {
             throw new NotExistDataException(RecipeEntity.class, id);
         }
 
@@ -112,7 +112,7 @@ public class RecipeServiceImpl implements RecipeService {
     private Recipe saveRecipe(RecipeRequest recipeRequest, RecipeEntity recipeEntity) {
         for (RecipeMaterialRequest recipeMaterialRequest : recipeRequest.getRecipeMaterialRequestList()) {
             Optional<MaterialEntity> materialEntityOptional = this.materialRepository.findById(recipeMaterialRequest.getMaterialId());
-            if (!materialEntityOptional.isPresent()) {
+            if (materialEntityOptional.isEmpty()) {
                 throw new NotExistDataException(MaterialEntity.class, recipeMaterialRequest.getMaterialId());
             }
 

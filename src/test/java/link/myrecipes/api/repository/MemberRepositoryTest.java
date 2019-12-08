@@ -94,7 +94,7 @@ public class MemberRepositoryTest {
 
         //when
         Optional<UserEntity> userEntityOptional = this.memberRepository.findById(this.savedUserEntity.getId());
-        if (!userEntityOptional.isPresent()) {
+        if (userEntityOptional.isEmpty()) {
             throw new NotExistDataException(UserEntity.class, this.savedUserEntity.getId());
         }
         final UserEntity userEntity = userEntityOptional.get();
