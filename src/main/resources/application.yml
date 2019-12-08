@@ -17,13 +17,14 @@ spring:
   devtools:
     livereload:
       enabled: true
+      port: 35731
     restart:
       enabled: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost/myrecipes?serverTimezone=Asia/Seoul&useSSL=false
     username: mruser
-    password: P@ssw0rd!
+    password: qwer1234!
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
@@ -64,9 +65,9 @@ spring:
       force: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://myrecipes-dev.cwnkdef17vae.ap-northeast-2.rds.amazonaws.com/myrecipes?serverTimezone=Asia/Seoul&useSSL=false
+    url: jdbc:mysql://13.124.254.231/myrecipes?serverTimezone=Asia/Seoul&useSSL=false
     username: mruser
-    password: P@ssw0rd!
+    password: qwer1234!
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
@@ -100,9 +101,9 @@ spring:
       force: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://myrecipes-dev.cwnkdef17vae.ap-northeast-2.rds.amazonaws.com/myrecipes?serverTimezone=Asia/Seoul&useSSL=false
+    url: jdbc:mysql://13.124.254.231/myrecipes?serverTimezone=Asia/Seoul&useSSL=false
     username: mruser
-    password: P@ssw0rd!
+    password: qwer1234!
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
