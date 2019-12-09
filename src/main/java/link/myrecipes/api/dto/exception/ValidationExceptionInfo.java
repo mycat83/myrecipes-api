@@ -4,20 +4,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Date;
 
 @Getter
 @ToString
 public class ValidationExceptionInfo {
-    private LocalDateTime timestamp;
+    private Date timestamp;
     private int status;
-    private List<ValidationError> validationErrorList;
+    private Error[]errors;
 
     @Builder
-    public ValidationExceptionInfo(LocalDateTime timestamp, int status, List<ValidationError> validationErrorList) {
+    public ValidationExceptionInfo(Date timestamp, int status, Error[] errors) {
         this.timestamp = timestamp;
         this.status = status;
-        this.validationErrorList = validationErrorList;
+        this.errors = errors;
     }
 }
