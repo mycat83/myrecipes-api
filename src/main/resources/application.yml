@@ -47,7 +47,6 @@ spring:
 logging:
   level:
     org.hibernate.type.descriptor.sql: TRACE
-    #    link.myrecipes.api.mapper: TRACE
     org.springframework.web: TRACE
 
 app:
@@ -90,8 +89,14 @@ spring:
 logging:
   level:
     org.hibernate.type.descriptor.sql: TRACE
-    #    link.myrecipes.api.mapper: TRACE
     org.springframework.web: TRACE
+
+app:
+  rabbitmq:
+    exchange: logger.exchange
+    routing:
+      call: logger.controller.call
+      fail: logger.controller.fail
 
 ---
 spring:
@@ -126,5 +131,11 @@ spring:
 logging:
   level:
     org.hibernate.type.descriptor.sql: TRACE
-    #    link.myrecipes.api.mapper: TRACE
     org.springframework.web: TRACE
+
+app:
+  rabbitmq:
+    exchange: logger.exchange
+    routing:
+      call: logger.controller.call
+      fail: logger.controller.fail
