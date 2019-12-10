@@ -45,7 +45,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         DefaultExceptionInfo defaultExceptionInfo = DefaultExceptionInfo.builder()
                 .timestamp(new Date())
                 .status(httpStatus.value())
-                .message(ex.getMessage())
+                .message(ex.toString())
                 .build();
         log.error(defaultExceptionInfo.toString());
 
@@ -55,5 +55,19 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<DefaultExceptionInfo> handleUsernameNotFoundException() {
         return new ResponseEntity<>(new DefaultExceptionInfo(), HttpStatus.OK);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<DefaultExceptionInfo> handleException(Exception ex) {
+        HttpStatus httpStatus =  HttpStatus.INTERNAL_SERVER_ERROR;
+
+        DefaultExceptionInfo defaultExceptionInfo = DefaultExceptionInfo.builder()
+                .timestamp(new Date())
+                .status(httpStatus.value())
+                .message(ex.toString())
+                .build();
+        log.error(defaultExceptionInfo.toString());
+
+        return new ResponseEntity<>(defaultExceptionInfo, httpStatus);
     }
 }
