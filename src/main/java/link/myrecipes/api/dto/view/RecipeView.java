@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,10 @@ public class RecipeView implements Serializable {
 
     private Integer difficulty;
 
+    private Integer registerUserId;
+
+    private LocalDateTime registerDate;
+
     private List<RecipeMaterialView> recipeMaterialViewList = new ArrayList<>();
 
     private List<RecipeStepView> recipeStepViewList = new ArrayList<>();
@@ -28,12 +33,15 @@ public class RecipeView implements Serializable {
     private List<RecipeTagView> recipeTagViewList = new ArrayList<>();
 
     @Builder
-    public RecipeView(Integer id, String title, String image, Integer estimatedTime, Integer difficulty) {
+    public RecipeView(Integer id, String title, String image, Integer estimatedTime, Integer difficulty,
+                      Integer registerUserId, LocalDateTime registerDate) {
         this.id = id;
         this.title = title;
         this.image = image;
         this.estimatedTime = estimatedTime;
         this.difficulty = difficulty;
+        this.registerUserId = registerUserId;
+        this.registerDate = registerDate;
     }
 
     public void addRecipeMaterialView(RecipeMaterialView recipeMaterialView) {

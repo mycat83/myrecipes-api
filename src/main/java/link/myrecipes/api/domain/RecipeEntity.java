@@ -114,6 +114,8 @@ public class RecipeEntity extends BaseEntity {
                 .image(this.getImage())
                 .estimatedTime(this.getEstimatedTime())
                 .difficulty(this.getDifficulty())
+                .registerUserId(this.getRegisterUserId())
+                .registerDate(this.getRegisterDate())
                 .build();
 
         for (RecipeMaterialEntity recipeMaterialEntity : this.getRecipeMaterialEntityList()) {
