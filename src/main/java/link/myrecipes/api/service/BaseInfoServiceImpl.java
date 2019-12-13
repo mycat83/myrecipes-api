@@ -28,7 +28,7 @@ public class BaseInfoServiceImpl implements BaseInfoService {
     public Material readMaterial(int id) {
         Optional<MaterialEntity> materialEntityOptional = this.materialRepository.findById(id);
 
-        if (!materialEntityOptional.isPresent()) {
+        if (materialEntityOptional.isEmpty()) {
             throw new NotExistDataException(MaterialEntity.class, id);
         }
 
@@ -50,7 +50,7 @@ public class BaseInfoServiceImpl implements BaseInfoService {
         materialEntity.setRegisterUserId(userId);
 
         Optional<UnitEntity> unitEntityOptional = this.unitRepository.findByName(material.getUnitName());
-        if (!unitEntityOptional.isPresent()) {
+        if (unitEntityOptional.isEmpty()) {
             throw new NotExistDataException(UnitEntity.class, material.getUnitName());
         }
 
@@ -61,7 +61,7 @@ public class BaseInfoServiceImpl implements BaseInfoService {
     @Override
     public Unit readUnit(String name) {
         Optional<UnitEntity> unitEntityOptional = this.unitRepository.findByName(name);
-        if (!unitEntityOptional.isPresent()) {
+        if (unitEntityOptional.isEmpty()) {
             throw new NotExistDataException(UnitEntity.class, name);
         }
 

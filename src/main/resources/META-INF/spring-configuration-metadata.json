@@ -1,0 +1,20 @@
+{
+  "properties": [
+    {
+      "name": "app.artifactId",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.rabbitmq.exchange",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.rabbitmq.routing.call",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.rabbitmq.routing.fail",
+      "type": "java.lang.String"
+    }
+  ]
+}

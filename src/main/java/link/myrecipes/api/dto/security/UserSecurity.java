@@ -24,7 +24,7 @@ public class UserSecurity {
 
     private boolean enabled;
 
-    private List<UserAuthoritySecurity> userAuthoritySecurityList = new ArrayList<>();
+    private List<UserRoleSecurity> userRoleSecurityList = new ArrayList<>();
 
     @Builder
     public UserSecurity(Integer id, String username, String password, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled) {
@@ -37,7 +37,7 @@ public class UserSecurity {
         this.enabled = enabled;
     }
 
-    public void addUserAuthoritySecurity(UserAuthoritySecurity userAuthoritySecurity) {
-        this.userAuthoritySecurityList.add(userAuthoritySecurity);
+    public void addUserRoleSecurity(UserRoleSecurity userRoleSecurity) {
+        this.userRoleSecurityList.add(userRoleSecurity);
     }
 }

@@ -72,7 +72,7 @@ public class RecipeRepositoryTest {
         this.recipeRepository.save(this.recipeEntity1);
 
         Optional<RecipeEntity> recipeEntityOptional1 = this.recipeRepository.findById(this.recipeEntity1.getId());
-        if (!recipeEntityOptional1.isPresent()) {
+        if (recipeEntityOptional1.isEmpty()) {
             throw new NotExistDataException(RecipeEntity.class, this.recipeEntity1.getId());
         }
 
@@ -90,7 +90,7 @@ public class RecipeRepositoryTest {
         this.recipeRepository.save(this.recipeEntity1);
 
         Optional<RecipeEntity> recipeEntityOptional2 = this.recipeRepository.findById(this.recipeEntity1.getId());
-        if (!recipeEntityOptional2.isPresent()) {
+        if (recipeEntityOptional2.isEmpty()) {
             throw new NotExistDataException(RecipeEntity.class, this.recipeEntity1.getId());
         }
 
@@ -111,7 +111,7 @@ public class RecipeRepositoryTest {
 
         //when
         Optional<RecipeEntity> recipeEntityOptional = this.recipeRepository.findById(0);
-        if (!recipeEntityOptional.isPresent()) {
+        if (recipeEntityOptional.isEmpty()) {
             throw new NotExistDataException(RecipeEntity.class, 0);
         }
         final RecipeEntity savedRecipeEntity = recipeEntityOptional.get();
