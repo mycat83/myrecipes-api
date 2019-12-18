@@ -157,7 +157,7 @@ public class RecipeControllerTest {
     @Test
     public void When_레시피_건_수_조회_When_정상_리턴() throws Exception {
         //given
-        given(this.recipeService.readRecipeCnt()).willReturn(10L);
+        given(this.recipeService.readRecipeCount()).willReturn(10L);
 
         //when
         final ResultActions actions = this.mockMvc.perform(get("/recipes/cnt"));

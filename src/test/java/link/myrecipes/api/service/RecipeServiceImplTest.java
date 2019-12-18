@@ -242,7 +242,7 @@ public class RecipeServiceImplTest {
         given(this.recipeRepository.count()).willReturn(1L);
 
         //when
-        final long recipeCnt = this.recipeService.readRecipeCnt();
+        final long recipeCnt = this.recipeService.readRecipeCount();
 
         //then
         assertThat(recipeCnt, is(1L));

@@ -17,7 +17,7 @@ public interface RecipeService {
 
     void deleteRecipe(int id);
 
-    long readRecipeCnt();
+    long readRecipeCount();
 
     void increaseReadCount(int id);
 }

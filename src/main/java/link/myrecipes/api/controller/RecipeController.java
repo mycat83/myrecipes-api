@@ -68,11 +68,11 @@ public class RecipeController {
         this.recipeService.deleteRecipe(id);
     }
 
-    @GetMapping("/cnt")
+    @GetMapping("/count")
     @ApiOperation("레시피 건 수 조회")
-    public ResponseEntity<Long> readRecipe() {
-        long recipeCnt = this.recipeService.readRecipeCnt();
-        return new ResponseEntity<>(recipeCnt, HttpStatus.OK);
+    public ResponseEntity<Long> recipeCount() {
+        long recipeCount = this.recipeService.readRecipeCount();
+        return new ResponseEntity<>(recipeCount, HttpStatus.OK);
     }
 
     @PutMapping("/{id}/readCount")
