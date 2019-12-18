@@ -155,4 +155,10 @@ public class RecipeServiceImpl implements RecipeService {
     public long readRecipeCnt() {
         return this.recipeRepository.count();
     }
+
+    @Override
+    @Transactional
+    public void increaseReadCount(int id) {
+        this.recipeRepository.increaseReadCount(id);
+    }
 }

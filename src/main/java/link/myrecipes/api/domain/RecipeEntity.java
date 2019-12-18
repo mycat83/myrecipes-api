@@ -36,6 +36,9 @@ public class RecipeEntity extends BaseEntity {
     @Min(1)
     private Integer difficulty;
 
+    @Column(nullable = false)
+    private Integer readCount;
+
     @OneToMany(mappedBy = "recipeEntity", cascade = CascadeType.ALL)
     private List<RecipeMaterialEntity> recipeMaterialEntityList = new ArrayList<>();
 
@@ -53,6 +56,11 @@ public class RecipeEntity extends BaseEntity {
         this.difficulty = difficulty;
         this.registerUserId = registerUserId;
         this.modifyUserId = modifyUserId;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.readCount = (this.readCount == null ? 0 : this.readCount);
     }
 
     public void addRecipeMaterial(RecipeMaterialEntity recipeMaterialEntity) {
@@ -89,6 +97,10 @@ public class RecipeEntity extends BaseEntity {
         this.estimatedTime = recipeEntity.getEstimatedTime();
         this.difficulty = recipeEntity.getDifficulty();
         this.modifyUserId = userId;
+    }
+
+    public void increaseReadCount() {
+        this.readCount++;
     }
 
     public Recipe toDTO() {
