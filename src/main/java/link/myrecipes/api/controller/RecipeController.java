@@ -74,4 +74,10 @@ public class RecipeController {
         long recipeCnt = this.recipeService.readRecipeCnt();
         return new ResponseEntity<>(recipeCnt, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}/readCount")
+    @ApiOperation("레시피 조회수 증가")
+    public void increaseReadCount(@PathVariable int id) {
+        this.recipeService.increaseReadCount(id);
+    }
 }

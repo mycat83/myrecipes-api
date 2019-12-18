@@ -18,4 +18,6 @@ public interface RecipeService {
     void deleteRecipe(int id);
 
     long readRecipeCnt();
+
+    void increaseReadCount(int id);
 }
