@@ -160,7 +160,7 @@ public class RecipeControllerTest {
         given(this.recipeService.readRecipeCount()).willReturn(10L);
 
         //when
-        final ResultActions actions = this.mockMvc.perform(get("/recipes/cnt"));
+        final ResultActions actions = this.mockMvc.perform(get("/recipes/count"));
 
         //then
         actions.andDo(print())
