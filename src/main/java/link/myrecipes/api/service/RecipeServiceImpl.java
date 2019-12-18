@@ -152,7 +152,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public long readRecipeCnt() {
+    public long readRecipeCount() {
         return this.recipeRepository.count();
     }
 
