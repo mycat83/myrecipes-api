@@ -17,5 +17,6 @@ MY.레시피 시스템에서 레시피, 회원 관련  API를 제공합니다.
 ## 사용기술
 
 * [Spring Boot](https://spring.io/projects/spring-boot)
+* [MySQL](https://www.mysql.com/)
 * [Redis](https://redis.io/)
 * [RabbitMQ](https://www.rabbitmq.com/)
