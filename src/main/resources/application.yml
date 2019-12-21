@@ -43,6 +43,9 @@ spring:
     port: 5672
     username: mruser
     password: qwer1234!
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/myrecipes
 
 logging:
   level:
@@ -85,6 +88,11 @@ spring:
     port: 5672
     username: mruser
     password: qwer1234!
+  data:
+    mongodb:
+      uri: mongodb://10.0.10.206:27017/myrecipes
+      username: mruser
+      password: qwer1234!
 
 logging:
   level:
@@ -127,6 +135,11 @@ spring:
     port: 5672
     username: mruser
     password: qwer1234!
+  data:
+    mongodb:
+      uri: mongodb://10.0.10.206:27017/myrecipes
+      username: mruser
+      password: qwer1234!
 
 logging:
   level:

@@ -20,4 +20,6 @@ public interface RecipeService {
     long readRecipeCount();
 
     void increaseReadCount(int id);
+
+    List<Recipe> readPopularRecipeList();
 }
