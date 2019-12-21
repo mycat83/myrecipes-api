@@ -28,13 +28,17 @@ public class RecipeServiceImpl implements RecipeService {
     private final RecipeStepRepository recipeStepRepository;
     private final RecipeTagRepository recipeTagRepository;
     private final MaterialRepository materialRepository;
+    private final PopularRecipeRepository popularRecipesRepository;
 
-    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeMaterialRepository recipeMaterialRepository, RecipeStepRepository recipeStepRepository, RecipeTagRepository recipeTagRepository, MaterialRepository materialRepository) {
+    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeMaterialRepository recipeMaterialRepository,
+                             RecipeStepRepository recipeStepRepository, RecipeTagRepository recipeTagRepository,
+                             MaterialRepository materialRepository, PopularRecipeRepository popularRecipesRepository) {
         this.recipeRepository = recipeRepository;
         this.recipeMaterialRepository = recipeMaterialRepository;
         this.recipeStepRepository = recipeStepRepository;
         this.recipeTagRepository = recipeTagRepository;
         this.materialRepository = materialRepository;
+        this.popularRecipesRepository = popularRecipesRepository;
     }
 
     @Override
@@ -160,5 +164,11 @@ public class RecipeServiceImpl implements RecipeService {
     @Transactional
     public void increaseReadCount(int id) {
         this.recipeRepository.increaseReadCount(id);
+    }
+
+    @Override
+    public List<Recipe> readPopularRecipeList() {
+        List<PopularRecipesDocument> popularRecipesDocumentList = this.popularRecipesRepository.findAllByOrderBySequence();
+        return popularRecipesDocumentList.stream().map(PopularRecipesDocument::toDTO).collect(Collectors.toList());
     }
 }
