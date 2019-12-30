@@ -32,6 +32,9 @@ public class RecipeEntity extends BaseEntity {
     private Integer estimatedTime;
 
     @Column(nullable = false)
+    private Integer people;
+
+    @Column(nullable = false)
     @Max(5)
     @Min(1)
     private Integer difficulty;
@@ -49,11 +52,13 @@ public class RecipeEntity extends BaseEntity {
     private List<RecipeTagEntity> recipeTagEntityList = new ArrayList<>();
 
     @Builder
-    public RecipeEntity(String title, String image, Integer estimatedTime, Integer difficulty, Integer registerUserId, Integer modifyUserId) {
+    public RecipeEntity(String title, String image, Integer estimatedTime, Integer difficulty, Integer people,
+                        Integer registerUserId, Integer modifyUserId) {
         this.title = title;
         this.image = image;
         this.estimatedTime = estimatedTime;
         this.difficulty = difficulty;
+        this.people = people;
         this.registerUserId = registerUserId;
         this.modifyUserId = modifyUserId;
     }
@@ -96,6 +101,7 @@ public class RecipeEntity extends BaseEntity {
         this.image = recipeEntity.getImage();
         this.estimatedTime = recipeEntity.getEstimatedTime();
         this.difficulty = recipeEntity.getDifficulty();
+        this.people = recipeEntity.getPeople();
         this.modifyUserId = userId;
     }
 
@@ -126,6 +132,7 @@ public class RecipeEntity extends BaseEntity {
                 .image(this.getImage())
                 .estimatedTime(this.getEstimatedTime())
                 .difficulty(this.getDifficulty())
+                .people(this.getPeople())
                 .registerUserId(this.getRegisterUserId())
                 .registerDate(this.getRegisterDate())
                 .build();

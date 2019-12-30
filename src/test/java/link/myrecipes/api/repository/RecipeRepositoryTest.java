@@ -48,6 +48,7 @@ public class RecipeRepositoryTest {
                 .image("image1.jpg")
                 .estimatedTime(30)
                 .difficulty(1)
+                .people(1)
                 .registerUserId(1001)
                 .build();
         this.recipeEntity2 = RecipeEntity.builder()
@@ -55,6 +56,7 @@ public class RecipeRepositoryTest {
                 .image("image2.jpg")
                 .estimatedTime(60)
                 .difficulty(3)
+                .people(5)
                 .registerUserId(1002)
                 .build();
         this.recipeEntity3 = RecipeEntity.builder()
@@ -62,6 +64,7 @@ public class RecipeRepositoryTest {
                 .image("image3.jpg")
                 .estimatedTime(90)
                 .difficulty(5)
+                .people(10)
                 .registerUserId(1003)
                 .build();
     }
