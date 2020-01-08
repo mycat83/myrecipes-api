@@ -3,6 +3,7 @@ package link.myrecipes.api.repository;
 import link.myrecipes.api.domain.*;
 import link.myrecipes.api.exception.NotExistDataException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@Ignore
 public class RecipeRepositoryTest {
     @Autowired
     private RecipeRepository recipeRepository;
