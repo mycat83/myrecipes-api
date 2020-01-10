@@ -13,22 +13,23 @@ import org.springframework.test.web.servlet.ResultActions;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class SystemControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     public void When_컨트롤러_호출_Then_정상_응답() throws Exception {
-        //when
+
+        // When
         final ResultActions actions = this.mockMvc.perform(get("/health"));
 
-        //then
+        // Then
         actions.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
@@ -36,14 +37,16 @@ public class SystemControllerTest {
 
     @Test
     public void When_예외_발생_컨트롤러_호출_Then_Advice_예외_처리() throws Exception {
-        //when
+
+        // When
         final ResultActions actions = this.mockMvc.perform(get("/exception"));
 
-        //then
+        // Then
         actions.andDo(print())
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(content().string(containsString("\"status\":500")))
-                .andExpect(content().string(containsString("\"message\":\"java.lang.NullPointerException\"")));
+                .andExpect(jsonPath("status").value(500))
+                .andExpect(jsonPath("message").value(500))
+                .andExpect(content().string(containsString("\"status\":java.lang.NullPointerException")));
     }
 }
