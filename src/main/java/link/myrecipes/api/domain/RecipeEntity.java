@@ -32,12 +32,12 @@ public class RecipeEntity extends BaseEntity {
     private Integer estimatedTime;
 
     @Column(nullable = false)
-    private Integer people;
-
-    @Column(nullable = false)
     @Max(5)
     @Min(1)
     private Integer difficulty;
+
+    @Column(nullable = false)
+    private Integer people;
 
     @Column(nullable = false)
     private Integer readCount;

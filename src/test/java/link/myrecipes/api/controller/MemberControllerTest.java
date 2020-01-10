@@ -1,154 +1,185 @@
 package link.myrecipes.api.controller;
 
-import link.myrecipes.api.dto.User;
-import link.myrecipes.api.dto.request.UserRequest;
-import link.myrecipes.api.dto.security.UserSecurity;
-import link.myrecipes.api.service.MemberServiceImpl;
-import org.junit.Before;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import link.myrecipes.api.domain.UserEntity;
+import link.myrecipes.api.domain.UserRoleEntity;
+import link.myrecipes.api.repository.MemberRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.nio.file.Files;
-
-import static org.hamcrest.core.StringContains.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class MemberControllerTest {
-    private User user;
-
-    @Value("classpath:/json/userRequest.json")
-    private Resource userRequestResource;
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private MemberServiceImpl memberService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @Before
-    public void setUp() {
-        this.user = User.builder()
-                .id(1)
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Test
+    public void When_로그인_정보_조회_When_정상_리턴() throws Exception {
+
+        // Given
+        this.memberRepository.deleteAll();
+        UserEntity userEntity = saveUser();
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(get("/login/{username}", userEntity.getUsername())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+//                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(userEntity)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isOk())
+//                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("username").value(userEntity.getUsername()))
+                .andExpect(jsonPath("password").value(userEntity.getPassword()))
+                .andExpect(jsonPath("accountNonExpired").value(userEntity.getAccountNonExpired()))
+                .andExpect(jsonPath("accountNonLocked").value(userEntity.getAccountNonLocked()))
+                .andExpect(jsonPath("credentialsNonExpired").value(userEntity.getCredentialsNonExpired()))
+                .andExpect(jsonPath("enabled").value(userEntity.getEnabled()))
+                .andExpect(jsonPath("userRoleSecurityList[0].role").value("USER"));
+    }
+
+    @Test
+    public void When_회원_조회_When_정상_리턴() throws Exception {
+
+        // Given
+        this.memberRepository.deleteAll();
+        UserEntity userEntity = saveUser();
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(get("/members/{id}", userEntity.getId()));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isOk())
+//                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("username").value(userEntity.getUsername()))
+                .andExpect(jsonPath("password").value(userEntity.getPassword()))
+                .andExpect(jsonPath("name").value(userEntity.getName()))
+                .andExpect(jsonPath("phone").value(userEntity.getPhone()))
+                .andExpect(jsonPath("email").value(userEntity.getEmail()));
+    }
+
+    @Test
+    public void When_회원_저장_When_정상_리턴() throws Exception {
+
+        // Given
+        this.memberRepository.deleteAll();
+        UserEntity userEntity = UserEntity.builder()
                 .username("user12")
                 .password("123456")
                 .name("유저12")
                 .phone("01012345678")
                 .email("user12@domain.com")
-                .build();
-    }
-
-    @Test
-    public void When_로그인_정보_조회_When_정상_리턴() throws Exception {
-        //given
-        UserSecurity userSecurity = UserSecurity.builder()
-                .id(1)
-                .username("user12")
-                .password("123456")
                 .accountNonExpired(true)
                 .accountNonLocked(true)
                 .credentialsNonExpired(true)
                 .enabled(true)
+                .registerUserId(1001)
+                .modifyUserId(1001)
                 .build();
-        given(this.memberService.login(eq(userSecurity.getUsername()))).willReturn(userSecurity);
 
-        //when
-        final ResultActions actions = this.mockMvc.perform(get("/login/" + userSecurity.getUsername()));
-
-        //then
-        actions.andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(content().string(containsString("\"id\":" + userSecurity.getId())))
-                .andExpect(content().string(containsString("\"username\":\"" + userSecurity.getUsername() + "\"")))
-                .andExpect(content().string(containsString("\"password\":\"" + userSecurity.getPassword() + "\"")))
-                .andExpect(content().string(containsString("\"accountNonExpired\":" + userSecurity.isAccountNonExpired())))
-                .andExpect(content().string(containsString("\"accountNonLocked\":" + userSecurity.isAccountNonLocked())))
-                .andExpect(content().string(containsString("\"credentialsNonExpired\":" + userSecurity.isCredentialsNonExpired())))
-                .andExpect(content().string(containsString("\"enabled\":" + userSecurity.isEnabled())));
-    }
-
-    @Test
-    public void When_회원_조회_When_정상_리턴() throws Exception {
-        //given
-        given(this.memberService.readMember(eq(this.user.getId()))).willReturn(this.user);
-
-        //when
-        final ResultActions actions = this.mockMvc.perform(get("/members/" + this.user.getId()));
-
-        //then
-        actions.andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(content().string(containsString("\"id\":" + this.user.getId())))
-                .andExpect(content().string(containsString("\"username\":\"" + this.user.getUsername() + "\"")))
-                .andExpect(content().string(containsString("\"password\":\"" + this.user.getPassword() + "\"")))
-                .andExpect(content().string(containsString("\"name\":\"" + this.user.getName() + "\"")))
-                .andExpect(content().string(containsString("\"phone\":\"" + this.user.getPhone() + "\"")))
-                .andExpect(content().string(containsString("\"email\":\"" + this.user.getEmail() + "\"")));
-    }
-
-    @Test
-    public void When_회원_저장_When_정상_리턴() throws Exception {
-        //given
-        String userRequestJson = new String(Files.readAllBytes(userRequestResource.getFile().toPath()));
-        given(this.memberService.createMember(any(UserRequest.class))).willReturn(this.user);
-
-        //when
+        // When
         final ResultActions actions = this.mockMvc.perform(post("/members")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(userRequestJson));
+//                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(userEntity)));
 
-        //then
+        // Then
         actions.andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(content().string(containsString("\"id\":" + this.user.getId())))
-                .andExpect(content().string(containsString("\"username\":\"" + this.user.getUsername() + "\"")))
-                .andExpect(content().string(containsString("\"password\":\"" + this.user.getPassword() + "\"")))
-                .andExpect(content().string(containsString("\"name\":\"" + this.user.getName() + "\"")))
-                .andExpect(content().string(containsString("\"phone\":\"" + this.user.getPhone() + "\"")))
-                .andExpect(content().string(containsString("\"email\":\"" + this.user.getEmail() + "\"")));
+//                .andExpect(status().isCreated())
+//                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("username").value(userEntity.getUsername()))
+                .andExpect(jsonPath("password").value(userEntity.getPassword()))
+                .andExpect(jsonPath("name").value(userEntity.getName()))
+                .andExpect(jsonPath("phone").value(userEntity.getPhone()))
+                .andExpect(jsonPath("email").value(userEntity.getEmail()));
     }
 
     @Test
     public void When_회원정보_수정_When_정상_리턴() throws Exception {
-        //given
-        String userRequestJson = new String(Files.readAllBytes(userRequestResource.getFile().toPath()));
-        given(this.memberService.updateMember(eq(this.user.getId()), any(UserRequest.class), any(Integer.class))).willReturn(this.user);
 
-        //when
-        final ResultActions actions = this.mockMvc.perform(put("/members/" + this.user.getId() + "?userId=10001")
+        // Given
+        UserEntity updateUserEntity = UserEntity.builder()
+                .username("user34")
+                .password("234567")
+                .name("유저34")
+                .phone("01023456789")
+                .email("user34@domain.com")
+                .build();
+
+        this.memberRepository.deleteAll();
+        UserEntity userEntity = saveUser();
+        userEntity.update(updateUserEntity, 1002);
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(put("/members/{id}", userEntity.getId())
+                .param("userId", "10001")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(userRequestJson));
+//                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(userEntity)));
 
-        //then
+        // Then
         actions.andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(content().string(containsString("\"id\":" + this.user.getId())))
-                .andExpect(content().string(containsString("\"username\":\"" + this.user.getUsername() + "\"")))
-                .andExpect(content().string(containsString("\"password\":\"" + this.user.getPassword() + "\"")))
-                .andExpect(content().string(containsString("\"name\":\"" + this.user.getName() + "\"")))
-                .andExpect(content().string(containsString("\"phone\":\"" + this.user.getPhone() + "\"")))
-                .andExpect(content().string(containsString("\"email\":\"" + this.user.getEmail() + "\"")));
+//                .andExpect(status().isCreated()) ??
+//                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("username").value(userEntity.getUsername()))
+                .andExpect(jsonPath("password").value(userEntity.getPassword()))
+                .andExpect(jsonPath("name").value(userEntity.getName()))
+                .andExpect(jsonPath("phone").value(userEntity.getPhone()))
+                .andExpect(jsonPath("email").value(userEntity.getEmail()));
+    }
+
+    private UserEntity saveUser() {
+
+        UserEntity userEntity = UserEntity.builder()
+                .username("user12")
+                .password("123456")
+                .name("유저12")
+                .phone("01012345678")
+                .email("user12@domain.com")
+                .accountNonExpired(true)
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
+                .enabled(true)
+                .registerUserId(1001)
+                .modifyUserId(1001)
+                .build();
+        UserRoleEntity userRoleEntity = UserRoleEntity.builder()
+                .role("USER")
+                .build();
+
+        userEntity.addUserRole(userRoleEntity);
+        userRoleEntity.setUserEntity(userEntity);
+        this.memberRepository.save(userEntity);
+        return userEntity;
     }
 }
