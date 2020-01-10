@@ -34,7 +34,7 @@ public class BaseInfoControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
     private MaterialRepository materialRepository;
@@ -71,7 +71,7 @@ public class BaseInfoControllerTest {
         // Given
         saveUnit();
         Material material = Material.builder()
-                .name("식용")
+                .name("재료")
                 .unitName("kg")
                 .build();
 
@@ -120,21 +120,23 @@ public class BaseInfoControllerTest {
     }
 
     private UnitEntity saveUnit() {
-        UnitEntity unitentity = UnitEntity.builder()
+
+        UnitEntity unitEntity = UnitEntity.builder()
                 .name("kg")
                 .registerUserId(1001)
                 .modifyUserId(1001)
                 .build();
-        this.unitRepository.save(unitentity);
-        return unitentity;
+        this.unitRepository.save(unitEntity);
+        return unitEntity;
     }
 
-    private MaterialEntity saveMaterial(UnitEntity unitentity) {
+    private MaterialEntity saveMaterial(UnitEntity unitEntity) {
+
         MaterialEntity materialEntity = MaterialEntity.builder()
-                .name("식용유")
-                .registerUserId(1002)
-                .modifyUserId(1002)
-                .unitEntity(unitentity)
+                .name("재료")
+                .registerUserId(1001)
+                .modifyUserId(1001)
+                .unitEntity(unitEntity)
                 .build();
         this.materialRepository.save(materialEntity);
         return materialEntity;
