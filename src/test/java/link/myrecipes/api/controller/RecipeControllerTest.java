@@ -20,13 +20,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -50,7 +53,7 @@ public class RecipeControllerTest {
     private UnitRepository unitRepository;
 
     @Test
-    public void When_레시피_한_건_조회_When_정상_리턴() throws Exception {
+    public void When_레시피_한_건_조회_Then_정상_리턴() throws Exception {
 
         // Given
         UnitEntity unitEntity = saveUnit();
@@ -77,12 +80,13 @@ public class RecipeControllerTest {
     }
 
     @Test
-    public void When_레시피_페이지_호출_When_첫페이지_조회() throws Exception {
+    public void When_레시피_페이지_호출_Then_첫페이지_조회() throws Exception {
 
         // Given
+        this.recipeRepository.deleteAll();
         UnitEntity unitEntity = saveUnit();
         MaterialEntity materialEntity = saveMaterial(unitEntity);
-        IntStream.range(0, 30).forEach(i -> saveRecipe(materialEntity, i));
+        IntStream.range(1, 30).forEach(i -> saveRecipe(materialEntity, i));
         RecipeEntity recipeEntity = saveRecipe(materialEntity, 30);
 
         // When
@@ -109,7 +113,7 @@ public class RecipeControllerTest {
     }
 
     @Test
-    public void When_레시피_저장_When_정상_리턴() throws Exception {
+    public void When_레시피_저장_Then_정상_리턴() throws Exception {
 
         // Given
         UnitEntity unitEntity = saveUnit();
@@ -163,7 +167,7 @@ public class RecipeControllerTest {
     }
 
     @Test
-    public void When_레시피_수정_When_정상_리턴() throws Exception {
+    public void When_레시피_수정_Then_정상_리턴() throws Exception {
 
         // Given
         UnitEntity unitEntity = saveUnit();
@@ -218,7 +222,7 @@ public class RecipeControllerTest {
     }
 
     @Test
-    public void When_레시피_삭제_When_정상_리턴() throws Exception {
+    public void When_레시피_삭제_Then_정상_리턴() throws Exception {
 
         // Given
         UnitEntity unitEntity = saveUnit();
@@ -232,23 +236,76 @@ public class RecipeControllerTest {
         // Then
         actions.andDo(print())
                 .andExpect(status().isOk());
-        // 실행횟수, 실행여부 확인
     }
 
-//    @Test
-//    public void When_레시피_건_수_조회_When_정상_리턴() throws Exception {
-//        // Given
-//        given(this.recipeService.readRecipeCount()).willReturn(10L);
-//
-//        // When
-//        final ResultActions actions = this.mockMvc.perform(get("/recipes/count"));
-//
-//        // Then
-//        actions.andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-//                .andExpect(content().string("10"));
-//    }
+    @Test
+    public void When_레시피_건_수_조회_Then_정상_리턴() throws Exception {
+
+        // Given
+        int count = 10;
+        this.recipeRepository.deleteAll();
+        UnitEntity unitEntity = saveUnit();
+        MaterialEntity materialEntity = saveMaterial(unitEntity);
+        IntStream.range(0, count).forEach(i -> saveRecipe(materialEntity, i));
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(get("/recipes/count"));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(String.valueOf(count)));
+    }
+
+    @Test
+    public void When_레시피_조회_Then_조회수_증가() throws Exception {
+
+        // Given
+        UnitEntity unitEntity = saveUnit();
+        MaterialEntity materialEntity = saveMaterial(unitEntity);
+        RecipeEntity recipeEntity = saveRecipe(materialEntity, 1);
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(put("/recipes/{id}/readCount", recipeEntity.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+//                .accept(MediaTypes.HAL_JSON)
+        );
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isOk());
+
+        Optional<RecipeEntity> recipeEntityOptional = this.recipeRepository.findById(recipeEntity.getId());
+        if (recipeEntityOptional.isEmpty()) {
+            fail("Finding recipe failed.");
+        }
+        assertThat(recipeEntityOptional.get().getPeople(), is(1));
+    }
+
+    @Test
+    public void When_인기_레시피_조회_Then_정상_조회() throws Exception {
+
+        // Given
+        // 몽고DB에 데이터 넣기
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(get("/popularRecipes")
+                        .contentType(MediaType.APPLICATION_JSON)
+//                .accept(MediaTypes.HAL_JSON)
+        );
+
+        // Then -> .andExpect(jsonPath("title").value(recipeRequest.getTitle())) 형태로 변경
+        actions.andDo(print())
+                .andExpect(status().isOk())
+//                .andExpect(status().isCreated())
+//                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+                .andExpect(jsonPath("$[0].id").exists())
+                .andExpect(jsonPath("$[0].title").exists())
+                .andExpect(jsonPath("$[0].image").exists())
+//                .andExpect(jsonPath("$[0].estimatedTime").exists())
+//                .andExpect(jsonPath("$[0].difficulty").exists())
+                .andExpect(jsonPath("$[0].recipeTagList[0].tag").exists());
+    }
 
     private UnitEntity saveUnit() {
 
