@@ -81,7 +81,7 @@ public class RecipeController {
     }
 
     @GetMapping("/popularRecipes")
-    @ApiOperation("인기 레시피 리스 조회")
+    @ApiOperation("인기 레시피 리스트 조회")
     public ResponseEntity<List<Recipe>> readPopularRecipeList() {
         List<Recipe> popularRecipesDocumentList = this.recipeService.readPopularRecipeList();
         return new ResponseEntity<>(popularRecipesDocumentList, HttpStatus.OK);
