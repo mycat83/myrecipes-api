@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import link.myrecipes.api.domain.UserEntity;
 import link.myrecipes.api.domain.UserRoleEntity;
 import link.myrecipes.api.repository.MemberRepository;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,15 @@ public class MemberControllerTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @After
+    public void tearDown() {
+        this.memberRepository.deleteAll();
+    }
+
     @Test
     public void When_로그인_정보_조회_When_정상_리턴() throws Exception {
 
         // Given
-        this.memberRepository.deleteAll();
         UserEntity userEntity = saveUser();
 
         // When
@@ -66,7 +71,6 @@ public class MemberControllerTest {
     public void When_회원_조회_When_정상_리턴() throws Exception {
 
         // Given
-        this.memberRepository.deleteAll();
         UserEntity userEntity = saveUser();
 
         // When
@@ -88,7 +92,6 @@ public class MemberControllerTest {
     public void When_회원_저장_When_정상_리턴() throws Exception {
 
         // Given
-        this.memberRepository.deleteAll();
         UserEntity userEntity = UserEntity.builder()
                 .username("user12")
                 .password("123456")
@@ -134,7 +137,6 @@ public class MemberControllerTest {
                 .email("user34@domain.com")
                 .build();
 
-        this.memberRepository.deleteAll();
         UserEntity userEntity = saveUser();
         userEntity.update(updateUserEntity, 1002);
 
