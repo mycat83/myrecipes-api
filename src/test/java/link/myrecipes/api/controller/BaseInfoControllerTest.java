@@ -7,6 +7,7 @@ import link.myrecipes.api.dto.Material;
 import link.myrecipes.api.dto.Unit;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.UnitRepository;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +43,15 @@ public class BaseInfoControllerTest {
     @Autowired
     private UnitRepository unitRepository;
 
+    @After
+    public void tearDown() {
+        this.materialRepository.deleteAll();
+    }
+
     @Test
     public void When_재료_리스트_조회_When_정상_리턴() throws Exception {
 
         // Given
-        this.materialRepository.deleteAll();
         UnitEntity unitentity = saveUnit();
         MaterialEntity materialEntity = saveMaterial(unitentity);
 

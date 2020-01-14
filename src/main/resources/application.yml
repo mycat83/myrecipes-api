@@ -62,54 +62,6 @@ app:
 
 ---
 spring:
-  profiles: test
-  http:
-    encoding:
-      force: true
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
-    hikari:
-      jdbc-url: jdbc:h2:mem:testdb
-  jpa:
-    database: h2
-    database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: true
-    hibernate:
-      use-new-id-generator-mappings: false
-  cache:
-    type: redis
-    redis:
-      time-to-live: 50000
-  redis:
-    host: localhost
-    port: 6379
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: mruser
-    password: qwer1234!
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/myrecipes
-
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.springframework.web: TRACE
-
-app:
-  rabbitmq:
-    exchange: logger.exchange
-    routing:
-      call: logger.controller.call
-      fail: logger.controller.fail
-
----
-spring:
   profiles: prod
   http:
     encoding:

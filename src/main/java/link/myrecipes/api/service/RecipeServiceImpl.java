@@ -168,7 +168,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public List<Recipe> readPopularRecipeList() {
-        List<PopularRecipesDocument> popularRecipesDocumentList = this.popularRecipesRepository.findAllByOrderBySequence();
-        return popularRecipesDocumentList.stream().map(PopularRecipesDocument::toDTO).collect(Collectors.toList());
+        List<PopularRecipeDocument> popularRecipeDocumentList = this.popularRecipesRepository.findAllByOrderBySequence();
+        return popularRecipeDocumentList.stream().map(PopularRecipeDocument::toDTO).collect(Collectors.toList());
     }
 }

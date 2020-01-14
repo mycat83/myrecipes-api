@@ -7,8 +7,10 @@ import link.myrecipes.api.dto.request.RecipeRequest;
 import link.myrecipes.api.dto.request.RecipeStepRequest;
 import link.myrecipes.api.dto.request.RecipeTagRequest;
 import link.myrecipes.api.repository.MaterialRepository;
+import link.myrecipes.api.repository.PopularRecipeRepository;
 import link.myrecipes.api.repository.RecipeRepository;
 import link.myrecipes.api.repository.UnitRepository;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -52,6 +55,14 @@ public class RecipeControllerTest {
     @Autowired
     private UnitRepository unitRepository;
 
+    @Autowired
+    private PopularRecipeRepository popularRecipeRepository;
+
+    @After
+    public void tearDown() {
+        this.recipeRepository.deleteAll();
+    }
+
     @Test
     public void When_레시피_한_건_조회_Then_정상_리턴() throws Exception {
 
@@ -83,7 +94,6 @@ public class RecipeControllerTest {
     public void When_레시피_페이지_호출_Then_첫페이지_조회() throws Exception {
 
         // Given
-        this.recipeRepository.deleteAll();
         UnitEntity unitEntity = saveUnit();
         MaterialEntity materialEntity = saveMaterial(unitEntity);
         IntStream.range(1, 30).forEach(i -> saveRecipe(materialEntity, i));
@@ -243,7 +253,6 @@ public class RecipeControllerTest {
 
         // Given
         int count = 10;
-        this.recipeRepository.deleteAll();
         UnitEntity unitEntity = saveUnit();
         MaterialEntity materialEntity = saveMaterial(unitEntity);
         IntStream.range(0, count).forEach(i -> saveRecipe(materialEntity, i));
@@ -286,7 +295,17 @@ public class RecipeControllerTest {
     public void When_인기_레시피_조회_Then_정상_조회() throws Exception {
 
         // Given
-        // 몽고DB에 데이터 넣기
+        PopularRecipeDocument popularRecipeDocument = PopularRecipeDocument.builder()
+                .id(1)
+                .title("레시피")
+                .image("recipe.jpg")
+                .estimatedTime(30)
+                .difficulty(1)
+                .people(1)
+                .readCount(1)
+                .recipeTagList(Collections.singletonList("태그"))
+                .build();
+        this.popularRecipeRepository.save(popularRecipeDocument);
 
         // When
         final ResultActions actions = this.mockMvc.perform(get("/popularRecipes")
@@ -297,14 +316,13 @@ public class RecipeControllerTest {
         // Then -> .andExpect(jsonPath("title").value(recipeRequest.getTitle())) 형태로 변경
         actions.andDo(print())
                 .andExpect(status().isOk())
-//                .andExpect(status().isCreated())
 //                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-                .andExpect(jsonPath("$[0].id").exists())
-                .andExpect(jsonPath("$[0].title").exists())
-                .andExpect(jsonPath("$[0].image").exists())
-//                .andExpect(jsonPath("$[0].estimatedTime").exists())
-//                .andExpect(jsonPath("$[0].difficulty").exists())
-                .andExpect(jsonPath("$[0].recipeTagList[0].tag").exists());
+                .andExpect(jsonPath("$[0].id").value(popularRecipeDocument.getId()))
+                .andExpect(jsonPath("$[0].title").value(popularRecipeDocument.getTitle()))
+                .andExpect(jsonPath("$[0].image").value(popularRecipeDocument.getImage()))
+                .andExpect(jsonPath("$[0].estimatedTime").value(popularRecipeDocument.getEstimatedTime()))
+                .andExpect(jsonPath("$[0].difficulty").value(popularRecipeDocument.getDifficulty()))
+                .andExpect(jsonPath("$[0].recipeTagList[0].tag").value(popularRecipeDocument.getRecipeTagList().get(0)));
     }
 
     private UnitEntity saveUnit() {
