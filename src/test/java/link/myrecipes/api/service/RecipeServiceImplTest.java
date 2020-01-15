@@ -32,6 +32,7 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RecipeServiceImplTest {
+
     private RecipeRequest recipeRequest1;
     private RecipeRequest recipeRequest2;
 
@@ -46,6 +47,9 @@ public class RecipeServiceImplTest {
     private RecipeRepository recipeRepository;
 
     @Mock
+    private MaterialRepository materialRepository;
+
+    @Mock
     private RecipeMaterialRepository recipeMaterialRepository;
 
     @Mock
@@ -54,11 +58,9 @@ public class RecipeServiceImplTest {
     @Mock
     private RecipeTagRepository recipeTagRepository;
 
-    @Mock
-    private MaterialRepository materialRepository;
-
     @Before
     public void setUp() {
+
         RecipeMaterialRequest recipeMaterialRequest1 = RecipeMaterialRequest.builder().materialId(1).quantity(5D).build();
         RecipeMaterialRequest recipeMaterialRequest2 = RecipeMaterialRequest.builder().materialId(2).quantity(10D).build();
 
@@ -94,7 +96,8 @@ public class RecipeServiceImplTest {
 
     @Test
     public void When_0_페이지_조회_Then_첫번째_페이지_반환() {
-        //given
+
+        // Given
         List<Recipe> list = new ArrayList<>();
         list.add(this.recipe1);
         list.add(this.recipe2);
@@ -107,10 +110,10 @@ public class RecipeServiceImplTest {
 
         given(this.recipeRepository.findAll(any(PageRequest.class))).willReturn(page);
 
-        //when
+        // When
         final List<Recipe> foundList = this.recipeService.readRecipePageSortedByParam(0, 10, "registerDate", false);
 
-        //then
+        // Then
         assertThat(foundList.size(), is(3));
         assertThat(foundList.get(0).getTitle(), is(this.recipe1.getTitle()));
         assertThat(foundList.get(1).getTitle(), is(this.recipe2.getTitle()));
@@ -119,16 +122,18 @@ public class RecipeServiceImplTest {
 
     @Test(expected = NotExistDataException.class)
     public void When_존재하지_않는_ID_조회_Then_예외_발생() {
-        //given
+
+        // Given
         given(this.recipeRepository.findById(1)).willReturn(Optional.empty());
 
-        //when
+        // When
         this.recipeService.readRecipe(1);
     }
 
     @Test
     public void When_레시피_저장_Then_정상_저장_확인() {
-        //given
+
+        // Given
         MaterialEntity materialEntity = MaterialEntity.builder().name("material1").build();
         Optional<MaterialEntity> materialEntityOptional = Optional.ofNullable(materialEntity);
 
@@ -146,10 +151,10 @@ public class RecipeServiceImplTest {
 
         given(this.recipeRepository.findById(1)).willReturn(recipeEntityOptional);
 
-        //when
+        // When
         final RecipeView recipeView = this.recipeService.readRecipe(1);
 
-        //then
+        // Then
         assertThat(recipeView, instanceOf(RecipeView.class));
         assertThat(recipeView.getTitle(), is(recipeRequest1.getTitle()));
         assertThat(recipeView.getImage(), is(recipeRequest1.getImage()));
@@ -171,17 +176,19 @@ public class RecipeServiceImplTest {
 
     @Test(expected = NotExistDataException.class)
     public void When_존재하지_않는_재료로_레시피_저장_Then_예외_발생() {
-        //given
+
+        // Given
         Optional<MaterialEntity> materialEntityOptional = Optional.empty();
         given(this.materialRepository.findById(1)).willReturn(materialEntityOptional);
 
-        //when
+        // When
         this.recipeService.createRecipe(recipeRequest1, 10001);
     }
 
     @Test
     public void When_업데이트_성공_Then_업데이트된_항목_반환() {
-        //given
+
+        // Given
         MaterialEntity materialEntity = MaterialEntity.builder().name("material").build();
         RecipeMaterialEntity recipeMaterialEntity = RecipeMaterialEntity.builder().quantity(5D).materialEntity(materialEntity).build();
         RecipeStepEntity recipeStepEntity = RecipeStepEntity.builder().step(1).content("step1").image("step1.jpg").build();
@@ -191,6 +198,7 @@ public class RecipeServiceImplTest {
         recipeEntity1.addRecipeMaterial(recipeMaterialEntity);
         recipeEntity1.addRecipeStep(recipeStepEntity);
         recipeEntity1.addRecipeTag(recipeTagEntity);
+        recipeEntity1.setId(1);
 
         RecipeEntity recipeEntity2 = this.recipe2.toEntity();
         recipeEntity2.setId(1);
@@ -199,10 +207,10 @@ public class RecipeServiceImplTest {
         given(this.recipeRepository.save(any(RecipeEntity.class))).willReturn(recipeEntity2);
         given(this.materialRepository.findById(any(Integer.class))).willReturn(Optional.ofNullable(materialEntity));
 
-        //when
+        // When
         final Recipe updatedRecipe = this.recipeService.updateRecipe(recipeEntity2.getId(), this.recipeRequest2, 10002);
 
-        //then
+        // Then
         assertThat(updatedRecipe, not(nullValue()));
         assertThat(updatedRecipe.getTitle(), equalTo(this.recipe2.getTitle()));
         assertThat(updatedRecipe.getImage(), equalTo(this.recipe2.getImage()));
@@ -212,39 +220,43 @@ public class RecipeServiceImplTest {
 
     @Test(expected = NotExistDataException.class)
     public void When_존재하지_않는_레시피_수정_Then_예외_발생() {
-        //when
+
+        // When
         this.recipeService.updateRecipe(2, this.recipeRequest2, 10002);
     }
 
     @Test(expected = NotExistDataException.class)
     public void When_재료_미등록_상태에서_레시피_수정_Then_예외_발생() {
-        //given
+
+        // Given
         RecipeEntity recipeEntity = this.recipe2.toEntity();
         recipeEntity.setId(1);
         given(this.recipeRepository.findById(1)).willReturn(Optional.ofNullable(this.recipe1.toEntity()));
 
-        //when
+        // When
         this.recipeService.updateRecipe(recipeEntity.getId(), this.recipeRequest2, 10002);
     }
 
     @Test
     public void When_레시피_삭제_Then_이상_없음() {
-        //when
+
+        // When
         this.recipeService.deleteRecipe(1);
 
-        //then
+        // Then
         assertThat(true, is(true));
     }
 
     @Test
     public void When_1건_조회_Then_카운트_1_반환() {
-        //given
+
+        // Given
         given(this.recipeRepository.count()).willReturn(1L);
 
-        //when
+        // When
         final long recipeCnt = this.recipeService.readRecipeCount();
 
-        //then
+        // Then
         assertThat(recipeCnt, is(1L));
     }
 }
