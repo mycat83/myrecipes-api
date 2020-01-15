@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,12 +24,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+//@AutoConfigureRestDocs
 @ActiveProfiles("test")
 public class BaseInfoControllerTest {
 
@@ -48,6 +50,8 @@ public class BaseInfoControllerTest {
         this.materialRepository.deleteAll();
     }
 
+    // TODO: 단위/재료 컨트롤러/서비 분리, 한건 조회 추가 TDD
+
     @Test
     public void When_재료_리스트_조회_When_정상_리턴() throws Exception {
 
@@ -58,16 +62,18 @@ public class BaseInfoControllerTest {
         // When
         final ResultActions actions = this.mockMvc.perform(get("/materials")
                 .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaTypes.HAL_JSON)
-                );
+                .accept(MediaTypes.HAL_JSON));
 
         // Then
         actions.andDo(print())
                 .andExpect(status().isOk())
-//                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$[0].id").exists())
                 .andExpect(jsonPath("$[0].name").value(materialEntity.getName()))
-                .andExpect(jsonPath("$[0].unitName").value(materialEntity.getUnitEntity().getName()));
+                .andExpect(jsonPath("$[0].unitName").value(materialEntity.getUnitEntity().getName()))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+                .andExpect(jsonPath("_embedded.materialList[0]._links.self").exists());
     }
 
     @Test
@@ -83,8 +89,8 @@ public class BaseInfoControllerTest {
         // When
         final ResultActions actions = this.mockMvc.perform(post("/materials")
                 .param("userId", "1001")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-//                .accept(MediaTypes.HAL_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON)
                 .content(this.objectMapper.writeValueAsString(material)));
 
         // Then
@@ -110,8 +116,8 @@ public class BaseInfoControllerTest {
         //when
         final ResultActions actions = this.mockMvc.perform(post("/units")
                 .param("userId", "1001")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-//                .accept(MediaTypes.HAL_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON)
                 .content(this.objectMapper.writeValueAsString(unit)));
 
         //then
