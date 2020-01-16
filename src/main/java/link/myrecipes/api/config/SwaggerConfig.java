@@ -24,7 +24,8 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 .tags(
                         new Tag("system", "시스템 API"),
-                        new Tag("baseInfo", "기본정보 API"),
+                        new Tag("unit", "단위 API"),
+                        new Tag("material", "재료 API"),
                         new Tag("recipe", "레시피 API"),
                         new Tag("member", "회원 API")
                 );

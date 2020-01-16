@@ -3,7 +3,6 @@ package link.myrecipes.api.service;
 import link.myrecipes.api.domain.MaterialEntity;
 import link.myrecipes.api.domain.UnitEntity;
 import link.myrecipes.api.dto.Material;
-import link.myrecipes.api.dto.Unit;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.UnitRepository;
@@ -15,17 +14,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class BaseInfoServiceImpl implements BaseInfoService {
+public class MaterialServiceImpl implements MaterialService {
+
     private final MaterialRepository materialRepository;
     private final UnitRepository unitRepository;
 
-    public BaseInfoServiceImpl(MaterialRepository materialRepository, UnitRepository unitRepository) {
+    public MaterialServiceImpl(MaterialRepository materialRepository, UnitRepository unitRepository) {
+
         this.materialRepository = materialRepository;
         this.unitRepository = unitRepository;
     }
 
     @Override
     public Material readMaterial(int id) {
+
         Optional<MaterialEntity> materialEntityOptional = this.materialRepository.findById(id);
 
         if (materialEntityOptional.isEmpty()) {
@@ -37,6 +39,7 @@ public class BaseInfoServiceImpl implements BaseInfoService {
 
     @Override
     public List<Material> readMaterialList() {
+
         return this.materialRepository.findAll()
                 .stream()
                 .map(MaterialEntity::toDTO)
@@ -46,6 +49,7 @@ public class BaseInfoServiceImpl implements BaseInfoService {
     @Override
     @Transactional
     public Material createMaterial(Material material, int userId) {
+
         MaterialEntity materialEntity = material.toEntity();
         materialEntity.setRegisterUserId(userId);
 
@@ -56,24 +60,5 @@ public class BaseInfoServiceImpl implements BaseInfoService {
 
         materialEntity.setUnitEntity(unitEntityOptional.get());
         return this.materialRepository.save(materialEntity).toDTO();
-    }
-
-    @Override
-    public Unit readUnit(String name) {
-        Optional<UnitEntity> unitEntityOptional = this.unitRepository.findByName(name);
-        if (unitEntityOptional.isEmpty()) {
-            throw new NotExistDataException(UnitEntity.class, name);
-        }
-
-        return unitEntityOptional.get().toDTO();
-    }
-
-    @Override
-    @Transactional
-    public Unit createUnit(Unit unit, int userId) {
-        UnitEntity unitEntity = unit.toEntity();
-        unitEntity.setRegisterUserId(userId);
-
-        return this.unitRepository.save(unitEntity).toDTO();
     }
 }
