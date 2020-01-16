@@ -3,7 +3,6 @@ package link.myrecipes.api.service;
 import link.myrecipes.api.domain.MaterialEntity;
 import link.myrecipes.api.domain.UnitEntity;
 import link.myrecipes.api.dto.Material;
-import link.myrecipes.api.dto.Unit;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.UnitRepository;
@@ -25,13 +24,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BaseInfoServiceImplTest {
+public class MaterialServiceImplTest {
 
     private MaterialEntity materialEntity;
     private UnitEntity unitEntity;
 
     @InjectMocks
-    private BaseInfoServiceImpl baseInfoService;
+    private MaterialService materialService;
 
     @Mock
     private MaterialRepository materialRepository;
@@ -61,7 +60,7 @@ public class BaseInfoServiceImplTest {
         given(this.materialRepository.findById(10)).willReturn(Optional.ofNullable(this.materialEntity));
 
         // When
-        final Material material = this.baseInfoService.readMaterial(10);
+        final Material material = this.materialService.readMaterial(10);
 
         // Then
         assertThat(material, instanceOf(Material.class));
@@ -73,7 +72,7 @@ public class BaseInfoServiceImplTest {
     public void When_존재하지_않는_재료_조회_Then_예외_발생() {
 
         // When
-        this.baseInfoService.readMaterial(11);
+        this.materialService.readMaterial(11);
     }
 
     @Test
@@ -83,7 +82,7 @@ public class BaseInfoServiceImplTest {
         given(this.materialRepository.findAll()).willReturn(Collections.singletonList(this.materialEntity));
 
         // When
-        final List<Material> materialList = this.baseInfoService.readMaterialList();
+        final List<Material> materialList = this.materialService.readMaterialList();
 
         // Then
         assertThat(materialList.size(), is(1));
@@ -100,7 +99,7 @@ public class BaseInfoServiceImplTest {
         given(this.materialRepository.save(any(MaterialEntity.class))).willReturn(this.materialEntity);
 
         // When
-        final Material material = this.baseInfoService.createMaterial(this.materialEntity.toDTO(), 10001);
+        final Material material = this.materialService.createMaterial(this.materialEntity.toDTO(), 10001);
 
         // Then
         assertThat(material, instanceOf(Material.class));
@@ -112,45 +111,6 @@ public class BaseInfoServiceImplTest {
     public void When_존재하는_않는_단위로_재료_저장_Then_예외_발생() {
 
         // When
-        this.baseInfoService.createMaterial(this.materialEntity.toDTO(), 10001);
-    }
-
-    @Test
-    public void When_존재하는_단위_조회_Then_정상_반환() {
-
-        // Given
-        given(this.unitRepository.findByName(this.unitEntity.getName())).willReturn(Optional.ofNullable(this.unitEntity));
-
-        // When
-        final Unit unit = this.baseInfoService.readUnit(this.unitEntity.getName());
-
-        // Then
-        assertThat(unit, instanceOf(Unit.class));
-        assertThat(unit.getName(), is(this.unitEntity.getName()));
-        assertThat(unit.getExchangeUnitName(), is(this.unitEntity.getExchangeUnitName()));
-        assertThat(unit.getExchangeQuantity(), is(this.unitEntity.getExchangeQuantity()));
-    }
-
-    @Test(expected = NotExistDataException.class)
-    public void When_존재하지_않는_단위_조회_Then_예외_발생() {
-
-        // When
-        this.baseInfoService.readUnit(this.unitEntity.getName());
-    }
-
-    @Test
-    public void When_단위_저장_Then_정상_반환() {
-
-        // Given
-        given(this.unitRepository.save(any(UnitEntity.class))).willReturn(unitEntity);
-
-        // When
-        final Unit unit = this.baseInfoService.createUnit(this.unitEntity.toDTO(), 10001);
-
-        // Then
-        assertThat(unit, instanceOf(Unit.class));
-        assertThat(unit.getName(), is(this.unitEntity.getName()));
-        assertThat(unit.getExchangeUnitName(), is(this.unitEntity.getExchangeUnitName()));
-        assertThat(unit.getExchangeQuantity(), is(this.unitEntity.getExchangeQuantity()));
+        this.materialService.createMaterial(this.materialEntity.toDTO(), 10001);
     }
 }

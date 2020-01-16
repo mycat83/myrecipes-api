@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import link.myrecipes.api.domain.MaterialEntity;
 import link.myrecipes.api.domain.UnitEntity;
 import link.myrecipes.api.dto.Material;
-import link.myrecipes.api.dto.Unit;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.UnitRepository;
 import org.junit.After;
@@ -31,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 //@AutoConfigureRestDocs
 @ActiveProfiles("test")
-public class BaseInfoControllerTest {
+public class MaterialControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -49,8 +48,6 @@ public class BaseInfoControllerTest {
     public void tearDown() {
         this.materialRepository.deleteAll();
     }
-
-    // TODO: 단위/재료 컨트롤러/서비 분리, 한건 조회 추가 TDD
 
     @Test
     public void When_재료_리스트_조회_When_정상_리턴() throws Exception {
@@ -101,33 +98,6 @@ public class BaseInfoControllerTest {
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("name").value(material.getName()))
                 .andExpect(jsonPath("unitName").value(material.getUnitName()));
-    }
-
-    @Test
-    public void When_단위_저장_When_정상_리턴() throws Exception {
-
-        //given
-        Unit unit = Unit.builder()
-                .name("kg")
-                .exchangeUnitName("g")
-                .exchangeQuantity(1000D)
-                .build();
-
-        //when
-        final ResultActions actions = this.mockMvc.perform(post("/units")
-                .param("userId", "1001")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaTypes.HAL_JSON)
-                .content(this.objectMapper.writeValueAsString(unit)));
-
-        //then
-        actions.andDo(print())
-                .andExpect(status().isOk())
-//                .andExpect(status().isCreated())
-//                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-                .andExpect(jsonPath("name").value(unit.getName()))
-                .andExpect(jsonPath("exchangeUnitName").value(unit.getExchangeUnitName()))
-                .andExpect(jsonPath("exchangeQuantity").value(unit.getExchangeQuantity()));
     }
 
     private UnitEntity saveUnit() {
