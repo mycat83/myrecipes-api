@@ -44,9 +44,9 @@ public class UnitController {
         Unit savedUnit = this.unitService.createUnit(unit, userId);
 
         UnitResource unitResource = new UnitResource(savedUnit);
-        unitResource.add(unitResource.getSelfLink().withRel("read-unit"));
+        unitResource.add(unitResource.selfLink().withRel("read-unit"));
         unitResource.add(new Link("/docs/index.html#resources-create-unit").withRel("profile"));
 
-        return ResponseEntity.created(unitResource.getSelfLink().getTemplate().expand()).body(unitResource);
+        return ResponseEntity.created(unitResource.selfLink().getTemplate().expand()).body(unitResource);
     }
 }
