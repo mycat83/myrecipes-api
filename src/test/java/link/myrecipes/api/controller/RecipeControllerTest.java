@@ -12,14 +12,8 @@ import link.myrecipes.api.repository.RecipeRepository;
 import link.myrecipes.api.repository.UnitRepository;
 import org.junit.After;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Collections;
@@ -34,14 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-public class RecipeControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+public class RecipeControllerTest extends ControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;

@@ -8,16 +8,10 @@ import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.UnitRepository;
 import org.junit.After;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -25,15 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-//@AutoConfigureRestDocs
-@ActiveProfiles("test")
-public class MaterialControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+public class MaterialControllerTest extends ControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -50,7 +36,7 @@ public class MaterialControllerTest {
     }
 
     @Test
-    public void When_재료_리스트_조회_When_정상_리턴() throws Exception {
+    public void When_재료_리스트_조회_Then_정상_리턴() throws Exception {
 
         // Given
         UnitEntity unitentity = saveUnit();
@@ -74,7 +60,7 @@ public class MaterialControllerTest {
     }
 
     @Test
-    public void When_재료_저장_When_정상_리턴() throws Exception {
+    public void When_재료_저장_Then_정상_리턴() throws Exception {
 
         // Given
         saveUnit();
