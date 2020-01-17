@@ -13,7 +13,7 @@ public class UnitResource extends Resource<Unit> {
         add(linkTo(UnitController.class).slash(unit.getName()).withSelfRel());
     }
 
-    public Link getSelfLink() {
-        return this.getLinks("self").get(0);
+    public Link selfLink() {
+        return getLinks("self").get(0);
     }
 }
