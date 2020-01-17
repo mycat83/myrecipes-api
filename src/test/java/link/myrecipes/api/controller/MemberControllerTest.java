@@ -6,14 +6,8 @@ import link.myrecipes.api.domain.UserRoleEntity;
 import link.myrecipes.api.repository.MemberRepository;
 import org.junit.After;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -21,14 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-public class MemberControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+public class MemberControllerTest extends ControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -42,7 +29,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void When_로그인_정보_조회_When_정상_리턴() throws Exception {
+    public void When_로그인_정보_조회_Then_정상_리턴() throws Exception {
 
         // Given
         UserEntity userEntity = saveUser();
@@ -68,7 +55,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void When_회원_조회_When_정상_리턴() throws Exception {
+    public void When_회원_조회_Then_정상_리턴() throws Exception {
 
         // Given
         UserEntity userEntity = saveUser();
@@ -89,7 +76,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void When_회원_저장_When_정상_리턴() throws Exception {
+    public void When_회원_저장_Then_정상_리턴() throws Exception {
 
         // Given
         UserEntity userEntity = UserEntity.builder()
@@ -126,7 +113,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void When_회원정보_수정_When_정상_리턴() throws Exception {
+    public void When_회원정보_수정_Then_정상_리턴() throws Exception {
 
         // Given
         UserEntity updateUserEntity = UserEntity.builder()

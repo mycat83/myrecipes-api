@@ -3,15 +3,14 @@ package link.myrecipes.api.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import link.myrecipes.api.dto.Unit;
+import link.myrecipes.api.resource.UnitResource;
 import link.myrecipes.api.service.UnitService;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Api(tags = {"unit"})
 @RestController
@@ -30,10 +29,9 @@ public class UnitController {
 
         Unit unit = this.unitService.readUnit(name);
 
-        Resource<Unit> unitResource = new Resource<>(unit);
-        ControllerLinkBuilder selfLinkBuilder = linkTo(methodOn(UnitController.class).readUnit(name));
-        unitResource.add(selfLinkBuilder.withSelfRel());
-        unitResource.add(linkTo(methodOn(UnitController.class).createUnit(unit, 1001)).withRel("insert-unit"));
+        UnitResource unitResource = new UnitResource(unit);
+        unitResource.add(linkTo(UnitController.class).withRel("create-unit"));
+        unitResource.add(new Link("/docs/index.html#resources-read-unit").withRel("profile"));
 
         return ResponseEntity.ok(unitResource);
     }
@@ -41,9 +39,14 @@ public class UnitController {
 
     @PostMapping
     @ApiOperation("단위 저장")
-    public ResponseEntity<Unit> createUnit(@RequestBody Unit unit, @RequestParam int userId) {
+    public ResponseEntity<Resource<Unit>> createUnit(@RequestBody Unit unit, @RequestParam int userId) {
 
         Unit savedUnit = this.unitService.createUnit(unit, userId);
-        return new ResponseEntity<>(savedUnit, HttpStatus.OK);
+
+        UnitResource unitResource = new UnitResource(savedUnit);
+        unitResource.add(unitResource.getSelfLink().withRel("read-unit"));
+        unitResource.add(new Link("/docs/index.html#resources-create-unit").withRel("profile"));
+
+        return ResponseEntity.created(unitResource.getSelfLink().getTemplate().expand()).body(unitResource);
     }
 }
