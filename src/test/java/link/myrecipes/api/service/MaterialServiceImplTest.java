@@ -30,7 +30,7 @@ public class MaterialServiceImplTest {
     private UnitEntity unitEntity;
 
     @InjectMocks
-    private MaterialService materialService;
+    private MaterialServiceImpl materialService;
 
     @Mock
     private MaterialRepository materialRepository;

@@ -2,6 +2,7 @@ package link.myrecipes.api.service;
 
 import link.myrecipes.api.domain.*;
 import link.myrecipes.api.dto.Recipe;
+import link.myrecipes.api.dto.RecipeCount;
 import link.myrecipes.api.dto.request.RecipeMaterialRequest;
 import link.myrecipes.api.dto.request.RecipeRequest;
 import link.myrecipes.api.dto.request.RecipeStepRequest;
@@ -156,8 +157,9 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public long readRecipeCount() {
-        return this.recipeRepository.count();
+    public RecipeCount readRecipeCount() {
+        long count = this.recipeRepository.count();
+        return new RecipeCount(count);
     }
 
     @Override

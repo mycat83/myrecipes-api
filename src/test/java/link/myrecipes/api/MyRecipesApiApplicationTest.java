@@ -11,17 +11,14 @@ import java.util.Arrays;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class MyRecipesApiApplicationTests {
+public class MyRecipesApiApplicationTest {
+
     @Autowired
     DefaultListableBeanFactory beanFactory;
 
     @Test
-    public void main_메소드_정상_확인() {
-        MyRecipesApiApplication.main(new String[]{"--server.port=9999"});
-    }
-
-    @Test
     public void 빈_리스트_조회() {
+
         String[] beans = beanFactory.getBeanDefinitionNames();
 
         Arrays.stream(beans)
