@@ -2,6 +2,7 @@ package link.myrecipes.api.service;
 
 import link.myrecipes.api.domain.*;
 import link.myrecipes.api.dto.Recipe;
+import link.myrecipes.api.dto.RecipeCount;
 import link.myrecipes.api.dto.request.RecipeMaterialRequest;
 import link.myrecipes.api.dto.request.RecipeRequest;
 import link.myrecipes.api.dto.request.RecipeStepRequest;
@@ -254,9 +255,9 @@ public class RecipeServiceImplTest {
         given(this.recipeRepository.count()).willReturn(1L);
 
         // When
-        final long recipeCnt = this.recipeService.readRecipeCount();
+        final RecipeCount recipeCnt = this.recipeService.readRecipeCount();
 
         // Then
-        assertThat(recipeCnt, is(1L));
+        assertThat(recipeCnt.getCount(), is(1L));
     }
 }

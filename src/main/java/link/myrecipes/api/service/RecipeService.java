@@ -1,6 +1,7 @@
 package link.myrecipes.api.service;
 
 import link.myrecipes.api.dto.Recipe;
+import link.myrecipes.api.dto.RecipeCount;
 import link.myrecipes.api.dto.request.RecipeRequest;
 import link.myrecipes.api.dto.view.RecipeView;
 
@@ -17,7 +18,7 @@ public interface RecipeService {
 
     void deleteRecipe(int id);
 
-    long readRecipeCount();
+    RecipeCount readRecipeCount();
 
     void increaseReadCount(int id);
 

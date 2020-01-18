@@ -2,18 +2,16 @@ package link.myrecipes.api.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import link.myrecipes.api.common.LinkType;
+import link.myrecipes.api.common.RestResource;
 import link.myrecipes.api.dto.Material;
 import link.myrecipes.api.service.MaterialService;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Api(tags = {"material"})
 @RestController
@@ -26,6 +24,22 @@ public class MaterialController {
         this.materialService = materialService;
     }
 
+    @GetMapping("/{id}")
+    @ApiOperation("재료 조회")
+    public ResponseEntity<RestResource<Material>> readMaterialList(@PathVariable int id) {
+
+        Material material = this.materialService.readMaterial(id);
+
+        RestResource<Material> restResource = new RestResource<>(material,
+                String.valueOf(material.getId()),
+                getClass(),
+                new LinkType[] {LinkType.CREATE, LinkType.QUERY},
+                "materials");
+        restResource.add(new Link("/docs/index.html#resources-materials-read").withRel("profile"));
+
+        return ResponseEntity.ok(restResource);
+    }
+
     @GetMapping
     @ApiOperation("재료 리스트 조회")
     public ResponseEntity<Resources<Material>> readMaterialList() {
@@ -33,17 +47,23 @@ public class MaterialController {
         List<Material> materialList = this.materialService.readMaterialList();
 
         Resources<Material> materialResources = new Resources<>(materialList);
-        ControllerLinkBuilder selfLinkBuilder = linkTo(methodOn(MaterialController.class).readMaterialList());
-        materialResources.add(selfLinkBuilder.withSelfRel());
 
         return ResponseEntity.ok(materialResources);
     }
 
     @PostMapping
     @ApiOperation("재료 저장")
-    public ResponseEntity<Material> createMaterial(@RequestBody Material material, @RequestParam int userId) {
+    public ResponseEntity<RestResource<Material>> createMaterial(@RequestBody Material material, @RequestParam int userId) {
 
         Material savedMaterial = this.materialService.createMaterial(material, userId);
-        return new ResponseEntity<>(savedMaterial, HttpStatus.OK);
+
+        RestResource<Material> restResource = new RestResource<>(savedMaterial,
+                String.valueOf(savedMaterial.getId()),
+                getClass(),
+                new LinkType[] {LinkType.READ, LinkType.QUERY},
+                "materials");
+        restResource.add(new Link("/docs/index.html#resources-materials-create").withRel("profile"));
+
+        return ResponseEntity.created(restResource.selfLink().getTemplate().expand()).body(restResource);
     }
 }
