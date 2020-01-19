@@ -6,7 +6,7 @@ import link.myrecipes.api.common.LinkType;
 import link.myrecipes.api.common.RestResource;
 import link.myrecipes.api.dto.Material;
 import link.myrecipes.api.service.MaterialService;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping("/materials")
 public class MaterialController {
 
+    private static final String MATERIALS = "materials";
     private final MaterialService materialService;
 
     public MaterialController(MaterialService materialService) {
@@ -26,7 +27,7 @@ public class MaterialController {
 
     @GetMapping("/{id}")
     @ApiOperation("재료 조회")
-    public ResponseEntity<RestResource<Material>> readMaterialList(@PathVariable int id) {
+    public ResponseEntity<ResourceSupport> readMaterialList(@PathVariable int id) {
 
         Material material = this.materialService.readMaterial(id);
 
@@ -34,15 +35,15 @@ public class MaterialController {
                 String.valueOf(material.getId()),
                 getClass(),
                 new LinkType[] {LinkType.CREATE, LinkType.QUERY},
-                "materials");
-        restResource.add(new Link("/docs/index.html#resources-materials-read").withRel("profile"));
+                MATERIALS);
+        restResource.addProfileLink("/docs/index.html#resources-materials-read");
 
         return ResponseEntity.ok(restResource);
     }
 
     @GetMapping
     @ApiOperation("재료 리스트 조회")
-    public ResponseEntity<Resources<Material>> readMaterialList() {
+    public ResponseEntity<ResourceSupport> readMaterialList() {
 
         List<Material> materialList = this.materialService.readMaterialList();
 
@@ -53,7 +54,7 @@ public class MaterialController {
 
     @PostMapping
     @ApiOperation("재료 저장")
-    public ResponseEntity<RestResource<Material>> createMaterial(@RequestBody Material material, @RequestParam int userId) {
+    public ResponseEntity<ResourceSupport> createMaterial(@RequestBody Material material, @RequestParam int userId) {
 
         Material savedMaterial = this.materialService.createMaterial(material, userId);
 
@@ -61,8 +62,8 @@ public class MaterialController {
                 String.valueOf(savedMaterial.getId()),
                 getClass(),
                 new LinkType[] {LinkType.READ, LinkType.QUERY},
-                "materials");
-        restResource.add(new Link("/docs/index.html#resources-materials-create").withRel("profile"));
+                MATERIALS);
+        restResource.addProfileLink("/docs/index.html#resources-materials-create");
 
         return ResponseEntity.created(restResource.selfLink().getTemplate().expand()).body(restResource);
     }

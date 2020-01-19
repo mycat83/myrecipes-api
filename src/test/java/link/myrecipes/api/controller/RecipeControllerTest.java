@@ -101,18 +101,18 @@ public class RecipeControllerTest extends ControllerTest {
                 .andExpect(jsonPath("recipeTagViewList[0].tag")
                         .value(recipeEntity.getRecipeTagEntityList().get(0).getTag()))
                 .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.create-recipe").exists())
-                .andExpect(jsonPath("_links.update-recipe").exists())
-                .andExpect(jsonPath("_links.delete-recipe").exists())
-                .andExpect(jsonPath("_links.query-recipes").exists())
+                .andExpect(jsonPath("_links.recipes-create").exists())
+                .andExpect(jsonPath("_links.recipes-update").exists())
+                .andExpect(jsonPath("_links.recipes-delete").exists())
+                .andExpect(jsonPath("_links.recipes-query").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-                .andDo(document("read-recipe",
+                .andDo(document("recipes-read",
                         links(
                                 linkWithRel("self").description("현재 API"),
-                                linkWithRel("create-recipe").description("레시피 저장 API"),
-                                linkWithRel("update-recipe").description("레시피 수정 API"),
-                                linkWithRel("delete-recipe").description("레시피 삭제 API"),
-                                linkWithRel("query-recipes").description("레시피 리스트 조회 API"),
+                                linkWithRel("recipes-create").description("레시피 저장 API"),
+                                linkWithRel("recipes-update").description("레시피 수정 API"),
+                                linkWithRel("recipes-delete").description("레시피 삭제 API"),
+                                linkWithRel("recipes-query").description("레시피 리스트 조회 API"),
                                 linkWithRel("profile").description("프로파일 링크")
                         ),
                         requestHeaders(
@@ -143,10 +143,10 @@ public class RecipeControllerTest extends ControllerTest {
                                 fieldWithPath("recipeStepViewList[0].image").description("레시피 단계 이미지"),
                                 fieldWithPath("recipeTagViewList[0].tag").description("레시피 태그"),
                                 fieldWithPath("_links.self.href").description("현재 API"),
-                                fieldWithPath("_links.create-recipe.href").description("레시피 저장 API"),
-                                fieldWithPath("_links.update-recipe.href").description("레시피 수정 API"),
-                                fieldWithPath("_links.delete-recipe.href").description("레시피 삭제 API"),
-                                fieldWithPath("_links.query-recipes.href").description("레시피 리스트 조회 API"),
+                                fieldWithPath("_links.recipes-create.href").description("레시피 저장 API"),
+                                fieldWithPath("_links.recipes-update.href").description("레시피 수정 API"),
+                                fieldWithPath("_links.recipes-delete.href").description("레시피 삭제 API"),
+                                fieldWithPath("_links.recipes-query.href").description("레시피 리스트 조회 API"),
                                 fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
@@ -236,18 +236,18 @@ public class RecipeControllerTest extends ControllerTest {
                 .andExpect(jsonPath("difficulty").value(recipeRequest.getDifficulty()))
                 .andExpect(jsonPath("recipeTagList[0].tag").value(recipeTagRequest.getTag()))
                 .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.read-recipe").exists())
-                .andExpect(jsonPath("_links.update-recipe").exists())
-                .andExpect(jsonPath("_links.delete-recipe").exists())
-                .andExpect(jsonPath("_links.query-recipes").exists())
+                .andExpect(jsonPath("_links.recipes-read").exists())
+                .andExpect(jsonPath("_links.recipes-update").exists())
+                .andExpect(jsonPath("_links.recipes-delete").exists())
+                .andExpect(jsonPath("_links.recipes-query").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-                .andDo(document("create-recipe",
+                .andDo(document("recipes-create",
                         links(
                                 linkWithRel("self").description("현재 API"),
-                                linkWithRel("read-recipe").description("레시피 조회 API"),
-                                linkWithRel("update-recipe").description("레시피 수정 API"),
-                                linkWithRel("delete-recipe").description("레시피 삭제 API"),
-                                linkWithRel("query-recipes").description("레시피 리스트 조회 API"),
+                                linkWithRel("recipes-read").description("레시피 조회 API"),
+                                linkWithRel("recipes-update").description("레시피 수정 API"),
+                                linkWithRel("recipes-delete").description("레시피 삭제 API"),
+                                linkWithRel("recipes-query").description("레시피 리스트 조회 API"),
                                 linkWithRel("profile").description("프로파일 링크")
                         ),
                         requestHeaders(
@@ -278,10 +278,10 @@ public class RecipeControllerTest extends ControllerTest {
                                 fieldWithPath("difficulty").description("레시피 난이도"),
                                 fieldWithPath("recipeTagList[0].tag").description("레시피 태그"),
                                 fieldWithPath("_links.self.href").description("현재 API"),
-                                fieldWithPath("_links.read-recipe.href").description("레시피 조회 API"),
-                                fieldWithPath("_links.update-recipe.href").description("레시피 수정 API"),
-                                fieldWithPath("_links.delete-recipe.href").description("레시피 삭제 API"),
-                                fieldWithPath("_links.query-recipes.href").description("레시피 리스트 조회 API"),
+                                fieldWithPath("_links.recipes-read.href").description("레시피 조회 API"),
+                                fieldWithPath("_links.recipes-update.href").description("레시피 수정 API"),
+                                fieldWithPath("_links.recipes-delete.href").description("레시피 삭제 API"),
+                                fieldWithPath("_links.recipes-query.href").description("레시피 리스트 조회 API"),
                                 fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
@@ -339,13 +339,13 @@ public class RecipeControllerTest extends ControllerTest {
                 .andExpect(jsonPath("estimatedTime").value(recipeRequest.getEstimatedTime()))
                 .andExpect(jsonPath("difficulty").value(recipeRequest.getDifficulty()))
                 .andExpect(jsonPath("recipeTagList[0].tag").value(recipeTagRequest.getTag()))
-                .andDo(document("update-recipe",
+                .andDo(document("recipes-update",
                         links(
                                 linkWithRel("self").description("현재 API"),
-                                linkWithRel("create-recipe").description("레시피 저장 API"),
-                                linkWithRel("read-recipe").description("레시피 조회 API"),
-                                linkWithRel("delete-recipe").description("레시피 삭제 API"),
-                                linkWithRel("query-recipes").description("레시피 리스트 조회 API"),
+                                linkWithRel("recipes-create").description("레시피 저장 API"),
+                                linkWithRel("recipes-read").description("레시피 조회 API"),
+                                linkWithRel("recipes-delete").description("레시피 삭제 API"),
+                                linkWithRel("recipes-query").description("레시피 리스트 조회 API"),
                                 linkWithRel("profile").description("프로파일 링크")
                         ),
                         requestHeaders(
@@ -376,10 +376,10 @@ public class RecipeControllerTest extends ControllerTest {
                                 fieldWithPath("difficulty").description("레시피 난이도"),
                                 fieldWithPath("recipeTagList[0].tag").description("레시피 태그"),
                                 fieldWithPath("_links.self.href").description("현재 API"),
-                                fieldWithPath("_links.create-recipe.href").description("레시피 저장 API"),
-                                fieldWithPath("_links.read-recipe.href").description("레시피 조회 API"),
-                                fieldWithPath("_links.delete-recipe.href").description("레시피 삭제 API"),
-                                fieldWithPath("_links.query-recipes.href").description("레시피 리스트 조회 API"),
+                                fieldWithPath("_links.recipes-create.href").description("레시피 저장 API"),
+                                fieldWithPath("_links.recipes-read.href").description("레시피 조회 API"),
+                                fieldWithPath("_links.recipes-delete.href").description("레시피 삭제 API"),
+                                fieldWithPath("_links.recipes-query.href").description("레시피 리스트 조회 API"),
                                 fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
@@ -400,13 +400,13 @@ public class RecipeControllerTest extends ControllerTest {
         // Then
         actions.andDo(print())
                 .andExpect(status().isOk());
-//                .andDo(document("delete-recipe",
+//                .andDo(document("recipes-delete",
 //                        links(
 //                                linkWithRel("self").description("현재 API"),
-//                                linkWithRel("create-recipe").description("레시피 저장 API"),
-//                                linkWithRel("read-recipe").description("레시피 조회 API"),
-//                                linkWithRel("update-recipe").description("레시피 수정 API"),
-//                                linkWithRel("query-recipes").description("레시피 리스트 조회 API"),
+//                                linkWithRel("recipes-create").description("레시피 저장 API"),
+//                                linkWithRel("recipes-read").description("레시피 조회 API"),
+//                                linkWithRel("recipes-update").description("레시피 수정 API"),
+//                                linkWithRel("recipes-query").description("레시피 리스트 조회 API"),
 //                                linkWithRel("profile").description("프로파일 링크")
 //                        ),
 //                        requestHeaders(
@@ -437,10 +437,10 @@ public class RecipeControllerTest extends ControllerTest {
         actions.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("count").value(count))
-                .andDo(document("recipe-count",
+                .andDo(document("recipes-count",
                         links(
                                 linkWithRel("self").description("현재 API"),
-                                linkWithRel("query-recipes").description("레시피 리스트 조회 API"),
+                                linkWithRel("recipes-query").description("레시피 리스트 조회 API"),
                                 linkWithRel("profile").description("프로파일 링크")
                         ),
                         requestHeaders(
@@ -449,6 +449,12 @@ public class RecipeControllerTest extends ControllerTest {
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
+                        ),
+                        responseFields(
+                                fieldWithPath("count").description("레시피 건 수"),
+                                fieldWithPath("_links.self.href").description("현재 API"),
+                                fieldWithPath("_links.recipes-query.href").description("레시피 리스트 조회 API"),
+                                fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
     }
@@ -463,13 +469,29 @@ public class RecipeControllerTest extends ControllerTest {
 
         // When
         final ResultActions actions = this.mockMvc.perform(put("/recipes/{id}/readCount", recipeEntity.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaTypes.HAL_JSON)
-        );
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON));
 
         // Then
         actions.andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("recipes-readCount",
+                        links(
+                                linkWithRel("self").description("현재 API"),
+                                linkWithRel("recipes-query").description("레시피 리스트 조회 API"),
+                                linkWithRel("profile").description("프로파일 링크")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("레시피 아이디")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
+                        )
+                ));
 
         Optional<RecipeEntity> recipeEntityOptional = this.recipeRepository.findById(recipeEntity.getId());
         if (recipeEntityOptional.isEmpty()) {
@@ -496,14 +518,13 @@ public class RecipeControllerTest extends ControllerTest {
 
         // When
         final ResultActions actions = this.mockMvc.perform(get("/recipes/popular")
-                        .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaTypes.HAL_JSON)
-        );
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON));
 
         // Then
         actions.andDo(print())
                 .andExpect(status().isOk())
-//                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$[0].id").value(popularRecipeDocument.getId()))
                 .andExpect(jsonPath("$[0].title").value(popularRecipeDocument.getTitle()))
                 .andExpect(jsonPath("$[0].image").value(popularRecipeDocument.getImage()))

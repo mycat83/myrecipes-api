@@ -1,17 +1,17 @@
 package link.myrecipes.api.common;
 
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.ResourceSupport;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
-public class RestResource<T> extends Resource<T> {
-    public RestResource(T content, String key, Class<?> controllerClass, LinkType[] addLinks, String linkPrefix, Link... links) {
-        super(content, links);
-        add(linkTo(controllerClass).slash(key).withSelfRel());
+public class RestResourceSupport extends ResourceSupport {
+
+    public RestResourceSupport(Class<?> controllerClass, LinkType[] addLinks, String linkPrefix) {
+        super();
 
         List<LinkType> addLinkList = Arrays.asList(addLinks);
         if (addLinkList.contains(LinkType.CREATE)) {
@@ -31,15 +31,7 @@ public class RestResource<T> extends Resource<T> {
         }
     }
 
-    public RestResource(T content, Link... links) {
-        super(content, links);
-    }
-
     public void addProfileLink(String profileLink) {
         add(new Link(profileLink).withRel("profile"));
-    }
-
-    public Link selfLink() {
-        return getLinks("self").get(0);
     }
 }
