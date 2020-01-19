@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @ActiveProfiles("test")
-@Import({EmbeddedRedisConfig.class, RestDocsConfig.class})
+@Import({RestDocsConfig.class, EmbeddedRedisConfig.class})
 @Ignore
 public class ControllerTest {
 
