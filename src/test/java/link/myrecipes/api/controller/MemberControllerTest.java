@@ -61,7 +61,7 @@ public class MemberControllerTest extends ControllerTest {
                 .andExpect(jsonPath("credentialsNonExpired").value(userEntity.getCredentialsNonExpired()))
                 .andExpect(jsonPath("enabled").value(userEntity.getEnabled()))
                 .andExpect(jsonPath("userRoleSecurityList[0].role").value("USER"))
-                .andDo(document("login-member",
+                .andDo(document("members-login",
                         links(
                                 linkWithRel("self").description("현재 API"),
                                 linkWithRel("profile").description("프로파일 링크")
@@ -112,11 +112,11 @@ public class MemberControllerTest extends ControllerTest {
                 .andExpect(jsonPath("name").value(userEntity.getName()))
                 .andExpect(jsonPath("phone").value(userEntity.getPhone()))
                 .andExpect(jsonPath("email").value(userEntity.getEmail()))
-                .andDo(document("read-member",
+                .andDo(document("members-read",
                         links(
                                 linkWithRel("self").description("현재 API"),
-                                linkWithRel("create-member").description("회원 저장 API"),
-                                linkWithRel("update-member").description("회원 수정 API"),
+                                linkWithRel("members-create").description("회원 저장 API"),
+                                linkWithRel("members-update").description("회원 수정 API"),
                                 linkWithRel("profile").description("프로파일 링크")
                         ),
                         requestHeaders(
@@ -137,8 +137,8 @@ public class MemberControllerTest extends ControllerTest {
                                 fieldWithPath("phone").description("회원 전화번호"),
                                 fieldWithPath("email").description("회원 이메일"),
                                 fieldWithPath("_links.self.href").description("현재 API"),
-                                fieldWithPath("_links.create-member.href").description("회원 저장 API"),
-                                fieldWithPath("_links.update-member.href").description("회원 수정 API"),
+                                fieldWithPath("_links.members-create.href").description("회원 저장 API"),
+                                fieldWithPath("_links.members-update.href").description("회원 수정 API"),
                                 fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
@@ -172,11 +172,11 @@ public class MemberControllerTest extends ControllerTest {
                 .andExpect(jsonPath("name").value(userRequest.getName()))
                 .andExpect(jsonPath("phone").value(userRequest.getPhone()))
                 .andExpect(jsonPath("email").value(userRequest.getEmail()))
-                .andDo(document("create-member",
+                .andDo(document("members-create",
                         links(
                                 linkWithRel("self").description("현재 API"),
-                                linkWithRel("read-member").description("회원 조회 API"),
-                                linkWithRel("update-member").description("회원 수정 API"),
+                                linkWithRel("members-read").description("회원 조회 API"),
+                                linkWithRel("members-update").description("회원 수정 API"),
                                 linkWithRel("profile").description("프로파일 링크")
                         ),
                         requestHeaders(
@@ -201,8 +201,8 @@ public class MemberControllerTest extends ControllerTest {
                                 fieldWithPath("phone").description("회원 전화번호"),
                                 fieldWithPath("email").description("회원 이메일"),
                                 fieldWithPath("_links.self.href").description("현재 API"),
-                                fieldWithPath("_links.read-member.href").description("회원 조회 API"),
-                                fieldWithPath("_links.update-member.href").description("회원 수정 API"),
+                                fieldWithPath("_links.members-read.href").description("회원 조회 API"),
+                                fieldWithPath("_links.members-update.href").description("회원 수정 API"),
                                 fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
@@ -241,11 +241,11 @@ public class MemberControllerTest extends ControllerTest {
                 .andExpect(jsonPath("name").value(userEntity.getName()))
                 .andExpect(jsonPath("phone").value(userEntity.getPhone()))
                 .andExpect(jsonPath("email").value(userEntity.getEmail()))
-                .andDo(document("update-member",
+                .andDo(document("members-update",
                         links(
                                 linkWithRel("self").description("현재 API"),
-                                linkWithRel("create-member").description("회원 저장 API"),
-                                linkWithRel("read-member").description("회원 조회 API"),
+                                linkWithRel("members-create").description("회원 저장 API"),
+                                linkWithRel("members-read").description("회원 조회 API"),
                                 linkWithRel("profile").description("프로파일 링크")
                         ),
                         requestHeaders(
@@ -270,8 +270,8 @@ public class MemberControllerTest extends ControllerTest {
                                 fieldWithPath("phone").description("회원 전화번호"),
                                 fieldWithPath("email").description("회원 이메일"),
                                 fieldWithPath("_links.self.href").description("현재 API"),
-                                fieldWithPath("_links.create-member.href").description("회원 저장 API"),
-                                fieldWithPath("_links.read-member.href").description("회원 조회 API"),
+                                fieldWithPath("_links.members-create.href").description("회원 저장 API"),
+                                fieldWithPath("_links.members-read.href").description("회원 조회 API"),
                                 fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));

@@ -50,12 +50,12 @@ public class UnitControllerTest extends ControllerTest {
                 .andExpect(jsonPath("exchangeUnitName").value(unitEntity.getExchangeUnitName()))
                 .andExpect(jsonPath("exchangeQuantity").value(unitEntity.getExchangeQuantity()))
                 .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.create-unit").exists())
+                .andExpect(jsonPath("_links.units-create").exists())
                 .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("read-unit",
                         links(
                                 linkWithRel("self").description("Link to self"),
-                                linkWithRel("create-unit").description("Link to create unit"),
+                                linkWithRel("units-create").description("Link to create unit"),
                                 linkWithRel("profile").description("Link to profile")
                         ),
                         requestHeaders(
@@ -73,7 +73,7 @@ public class UnitControllerTest extends ControllerTest {
                                 fieldWithPath("exchangeUnitName").description("Name of exchangeable unit"),
                                 fieldWithPath("exchangeQuantity").description("Base quantity to convert to exchangeable unit"),
                                 fieldWithPath("_links.self.href").description("Link to self"),
-                                fieldWithPath("_links.create-unit.href").description("Link to create unit"),
+                                fieldWithPath("_links.units-create.href").description("Link to create unit"),
                                 fieldWithPath("_links.profile.href").description("Link to profile")
                         )
                 ));
@@ -105,12 +105,12 @@ public class UnitControllerTest extends ControllerTest {
                 .andExpect(jsonPath("exchangeUnitName").value(unit.getExchangeUnitName()))
                 .andExpect(jsonPath("exchangeQuantity").value(unit.getExchangeQuantity()))
                 .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.read-unit").exists())
+                .andExpect(jsonPath("_links.units-read").exists())
                 .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("create-unit",
                         links(
                                 linkWithRel("self").description("Link to self"),
-                                linkWithRel("read-unit").description("Link to read unit"),
+                                linkWithRel("units-read").description("Link to read unit"),
                                 linkWithRel("profile").description("Link to profile")
                         ),
                         requestHeaders(
@@ -130,7 +130,7 @@ public class UnitControllerTest extends ControllerTest {
                                 fieldWithPath("exchangeUnitName").description("Name of exchangeable unit"),
                                 fieldWithPath("exchangeQuantity").description("Base quantity to convert to exchangeable unit"),
                                 fieldWithPath("_links.self.href").description("Link to self"),
-                                fieldWithPath("_links.read-unit.href").description("Link to read unit"),
+                                fieldWithPath("_links.units-read.href").description("Link to read unit"),
                                 fieldWithPath("_links.profile.href").description("Link to profile")
                         )
                 ));

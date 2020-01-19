@@ -6,12 +6,13 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import link.myrecipes.api.common.LinkType;
 import link.myrecipes.api.common.RestResource;
+import link.myrecipes.api.common.RestResourceSupport;
 import link.myrecipes.api.dto.Recipe;
 import link.myrecipes.api.dto.RecipeCount;
 import link.myrecipes.api.dto.request.RecipeRequest;
 import link.myrecipes.api.dto.view.RecipeView;
 import link.myrecipes.api.service.RecipeService;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/recipes")
 public class RecipeController {
+
+    private static final String RECIPES = "recipes";
     private final RecipeService recipeService;
 
     public RecipeController(RecipeService recipeService) {
@@ -34,7 +37,7 @@ public class RecipeController {
 
     @GetMapping("/{id}")
     @ApiOperation("레시피 조회")
-    public ResponseEntity<RestResource<RecipeView>> readRecipe(@PathVariable int id) {
+    public ResponseEntity<ResourceSupport> readRecipe(@PathVariable int id) {
 
         RecipeView recipeView = this.recipeService.readRecipe(id);
 
@@ -42,8 +45,8 @@ public class RecipeController {
                 String.valueOf(recipeView.getId()),
                 getClass(),
                 new LinkType[] {LinkType.CREATE, LinkType.UPDATE, LinkType.DELETE, LinkType.QUERY},
-                "recipes");
-        restResource.add(new Link("/docs/index.html#resources-recipes-read").withRel("profile"));
+                RECIPES);
+        restResource.addProfileLink("/docs/index.html#resources-recipes-read");
 
         return ResponseEntity.ok(restResource);
     }
@@ -66,7 +69,7 @@ public class RecipeController {
 
     @PostMapping
     @ApiOperation("레시피 저장")
-    public ResponseEntity<RestResource<Recipe>> createRecipe(@RequestBody @Valid RecipeRequest recipeRequest,
+    public ResponseEntity<ResourceSupport> createRecipe(@RequestBody @Valid RecipeRequest recipeRequest,
                                                              @RequestParam int userId) {
 
         Recipe savedRecipe = this.recipeService.createRecipe(recipeRequest, userId);
@@ -75,15 +78,15 @@ public class RecipeController {
                 String.valueOf(savedRecipe.getId()),
                 getClass(),
                 new LinkType[] {LinkType.READ, LinkType.UPDATE, LinkType.DELETE, LinkType.QUERY},
-                "recipes");
-        restResource.add(new Link("/docs/index.html#resources-recipes-create").withRel("profile"));
+                RECIPES);
+        restResource.addProfileLink("/docs/index.html#resources-recipes-create");
 
         return ResponseEntity.created(restResource.selfLink().getTemplate().expand()).body(restResource);
     }
 
     @PutMapping("/{id}")
     @ApiOperation("레시피 수정")
-    public ResponseEntity<RestResource<Recipe>> updateRecipe(@PathVariable int id,
+    public ResponseEntity<ResourceSupport> updateRecipe(@PathVariable int id,
                                                              @RequestBody @Valid RecipeRequest recipeRequest,
                                                              @RequestParam int userId) {
 
@@ -93,50 +96,62 @@ public class RecipeController {
                 String.valueOf(savedRecipe.getId()),
                 getClass(),
                 new LinkType[] {LinkType.CREATE, LinkType.READ, LinkType.DELETE, LinkType.QUERY},
-                "recipes");
-        restResource.add(new Link("/docs/index.html#resources-recipes-update").withRel("profile"));
+                RECIPES);
+        restResource.addProfileLink("/docs/index.html#resources-recipes-update");
 
         return ResponseEntity.ok(restResource);
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation("레시피 삭제")
-    public void deleteRecipe(@PathVariable int id) {
+    public ResponseEntity<ResourceSupport> deleteRecipe(@PathVariable int id) {
 
         this.recipeService.deleteRecipe(id);
 
-//        RestResource<Recipe> restResource = new RestResource<>(null,
-//                null,
-//                getClass(),
-//                new LinkType[] {LinkType.CREATE, LinkType.READ, LinkType.DELETE, LinkType.QUERY},
-//                "recipe");
-//        restResource.add(new Link("/docs/index.html#resources-delete-recipe").withRel("profile"));
-//
-//        return ResponseEntity.ok(restResource);
+        RestResourceSupport restResourceSupport = new RestResourceSupport(
+                getClass(),
+                new LinkType[] {LinkType.CREATE, LinkType.READ, LinkType.UPDATE, LinkType.QUERY},
+                RECIPES);
+        restResourceSupport.add(linkTo(methodOn(getClass()).recipeCount()).withSelfRel());
+        restResourceSupport.addProfileLink("/docs/index.html#resources-recipes-delete");
+
+        return ResponseEntity.ok(restResourceSupport);
     }
 
     @GetMapping("/count")
     @ApiOperation("레시피 건 수 조회")
-    public ResponseEntity<RestResource<RecipeCount>> recipeCount() {
+    public ResponseEntity<ResourceSupport> recipeCount() {
+
         RecipeCount recipeCount = this.recipeService.readRecipeCount();
 
         RestResource<RecipeCount> restResource = new RestResource<>(recipeCount);
         restResource.add(linkTo(methodOn(getClass()).recipeCount()).withSelfRel());
         restResource.add(linkTo(getClass()).withRel("recipes-query"));
-        restResource.add(new Link("/docs/index.html#resources-recipes-count").withRel("profile"));
+        restResource.addProfileLink("/docs/index.html#resources-recipes-count");
 
         return ResponseEntity.ok(restResource);
     }
 
     @PutMapping("/{id}/readCount")
     @ApiOperation("레시피 조회수 증가")
-    public void increaseReadCount(@PathVariable int id) {
+    public ResponseEntity<ResourceSupport> increaseReadCount(@PathVariable int id) {
+
         this.recipeService.increaseReadCount(id);
+
+        RestResourceSupport restResourceSupport = new RestResourceSupport(
+                getClass(),
+                new LinkType[] {LinkType.QUERY},
+                RECIPES);
+        restResourceSupport.add(linkTo(methodOn(getClass()).recipeCount()).withSelfRel());
+        restResourceSupport.addProfileLink("/docs/index.html#resources-recipes-readCount");
+
+        return ResponseEntity.ok(restResourceSupport);
     }
 
     @GetMapping("/popular")
     @ApiOperation("인기 레시피 리스트 조회")
     public ResponseEntity<List<Recipe>> readPopularRecipeList() {
+
         List<Recipe> popularRecipesDocumentList = this.recipeService.readPopularRecipeList();
         return new ResponseEntity<>(popularRecipesDocumentList, HttpStatus.OK);
     }

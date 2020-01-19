@@ -67,7 +67,7 @@ public class MaterialControllerTest extends ControllerTest {
                 .andExpect(jsonPath("_links.materials-create").exists())
                 .andExpect(jsonPath("_links.materials-query").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-                .andDo(document("read-material",
+                .andDo(document("materials-read",
                         links(
                                 linkWithRel("self").description("Link to self"),
                                 linkWithRel("materials-create").description("Link to create material"),
@@ -152,7 +152,7 @@ public class MaterialControllerTest extends ControllerTest {
                 .andExpect(jsonPath("_links.materials-read").exists())
                 .andExpect(jsonPath("_links.materials-query").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-                .andDo(document("read-material",
+                .andDo(document("materials-read",
                         links(
                                 linkWithRel("self").description("Link to self"),
                                 linkWithRel("materials-read").description("Link to read material"),
