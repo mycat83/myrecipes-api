@@ -54,27 +54,27 @@ public class UnitControllerTest extends ControllerTest {
                 .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("read-unit",
                         links(
-                                linkWithRel("self").description("Link to self"),
-                                linkWithRel("units-create").description("Link to create unit"),
-                                linkWithRel("profile").description("Link to profile")
+                                linkWithRel("self").description("현재 API"),
+                                linkWithRel("units-create").description("단위 저장 API"),
+                                linkWithRel("profile").description("프로파일 링크")
                         ),
                         requestHeaders(
-                                headerWithName(HttpHeaders.ACCEPT).description("Accept header"),
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type header")
+                                headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
                         ),
                         pathParameters(
-                                parameterWithName("name").description("Name of unit")
+                                parameterWithName("name").description("단위 이름")
                         ),
                         responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type header")
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
                         ),
                         responseFields(
-                                fieldWithPath("name").description("Name of unit"),
-                                fieldWithPath("exchangeUnitName").description("Name of exchangeable unit"),
-                                fieldWithPath("exchangeQuantity").description("Base quantity to convert to exchangeable unit"),
-                                fieldWithPath("_links.self.href").description("Link to self"),
-                                fieldWithPath("_links.units-create.href").description("Link to create unit"),
-                                fieldWithPath("_links.profile.href").description("Link to profile")
+                                fieldWithPath("name").description("단위 이름"),
+                                fieldWithPath("exchangeUnitName").description("환산 단위 이름"),
+                                fieldWithPath("exchangeQuantity").description("환산 단위 수량"),
+                                fieldWithPath("_links.self.href").description("현재 API"),
+                                fieldWithPath("_links.units-create.href").description("단위 저장 API"),
+                                fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
     }
@@ -109,29 +109,29 @@ public class UnitControllerTest extends ControllerTest {
                 .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("create-unit",
                         links(
-                                linkWithRel("self").description("Link to self"),
-                                linkWithRel("units-read").description("Link to read unit"),
-                                linkWithRel("profile").description("Link to profile")
+                                linkWithRel("self").description("현재 API"),
+                                linkWithRel("units-read").description("단위 조회 API"),
+                                linkWithRel("profile").description("프로파일 링크")
                         ),
                         requestHeaders(
-                                headerWithName(HttpHeaders.ACCEPT).description("Accept header"),
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type header")
+                                headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
                         ),
                         requestFields(
-                                fieldWithPath("name").description("Name of unit"),
-                                fieldWithPath("exchangeUnitName").description("Name of exchangeable unit"),
-                                fieldWithPath("exchangeQuantity").description("Base quantity to convert to exchangeable unit")
+                                fieldWithPath("name").description("단위 이름"),
+                                fieldWithPath("exchangeUnitName").description("환산 단위"),
+                                fieldWithPath("exchangeQuantity").description("환산 단위의 수량")
                         ),
                         responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type header")
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
                         ),
                         responseFields(
-                                fieldWithPath("name").description("Name of unit"),
-                                fieldWithPath("exchangeUnitName").description("Name of exchangeable unit"),
-                                fieldWithPath("exchangeQuantity").description("Base quantity to convert to exchangeable unit"),
-                                fieldWithPath("_links.self.href").description("Link to self"),
-                                fieldWithPath("_links.units-read.href").description("Link to read unit"),
-                                fieldWithPath("_links.profile.href").description("Link to profile")
+                                fieldWithPath("name").description("단위 이름"),
+                                fieldWithPath("exchangeUnitName").description("환산 단위 이름"),
+                                fieldWithPath("exchangeQuantity").description("환산 단위 수량"),
+                                fieldWithPath("_links.self.href").description("현재 API"),
+                                fieldWithPath("_links.units-read.href").description("단위 조회 API"),
+                                fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
     }

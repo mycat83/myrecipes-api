@@ -6,23 +6,26 @@ import link.myrecipes.api.dto.Material;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.UnitRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class MaterialServiceImpl implements MaterialService {
 
     private final MaterialRepository materialRepository;
     private final UnitRepository unitRepository;
+    private final ModelMapper modelMapper;
 
-    public MaterialServiceImpl(MaterialRepository materialRepository, UnitRepository unitRepository) {
+    public MaterialServiceImpl(MaterialRepository materialRepository, UnitRepository unitRepository, ModelMapper modelMapper) {
 
         this.materialRepository = materialRepository;
         this.unitRepository = unitRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -38,12 +41,9 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    public List<Material> readMaterialList() {
-
-        return this.materialRepository.findAll()
-                .stream()
-                .map(MaterialEntity::toDTO)
-                .collect(Collectors.toList());
+    public Page<Material> readMaterialList(Pageable pageable) {
+        return this.materialRepository.findAll(pageable)
+                .map(materialEntity -> modelMapper.map(materialEntity, Material.class));
     }
 
     @Override
