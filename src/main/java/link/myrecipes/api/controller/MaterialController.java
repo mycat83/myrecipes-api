@@ -6,12 +6,13 @@ import link.myrecipes.api.common.LinkType;
 import link.myrecipes.api.common.RestResource;
 import link.myrecipes.api.dto.Material;
 import link.myrecipes.api.service.MaterialService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Api(tags = {"material"})
 @RestController
@@ -43,13 +44,18 @@ public class MaterialController {
 
     @GetMapping
     @ApiOperation("재료 리스트 조회")
-    public ResponseEntity<ResourceSupport> readMaterialList() {
+    public ResponseEntity<ResourceSupport> readMaterialList(Pageable pageable, PagedResourcesAssembler<Material> assembler) {
 
-        List<Material> materialList = this.materialService.readMaterialList();
+        Page<Material> materialPage = this.materialService.readMaterialList(pageable);
 
-        Resources<Material> materialResources = new Resources<>(materialList);
+        PagedResources<RestResource<Material>> pagedModel = assembler.toResource(materialPage, material ->
+                new RestResource<>(material,
+                        String.valueOf(material.getId()),
+                        getClass(),
+                        new LinkType[] {},
+                        MATERIALS));
 
-        return ResponseEntity.ok(materialResources);
+        return ResponseEntity.ok(pagedModel);
     }
 
     @PostMapping

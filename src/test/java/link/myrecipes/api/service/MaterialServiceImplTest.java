@@ -12,9 +12,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -82,13 +83,13 @@ public class MaterialServiceImplTest {
         given(this.materialRepository.findAll()).willReturn(Collections.singletonList(this.materialEntity));
 
         // When
-        final List<Material> materialList = this.materialService.readMaterialList();
+        final Page<Material> materialPage = this.materialService.readMaterialList(PageRequest.of(10, 0));
 
         // Then
-        assertThat(materialList.size(), is(1));
-        assertThat(materialList.get(0), instanceOf(Material.class));
-        assertThat(materialList.get(0).getName(), is(this.materialEntity.getName()));
-        assertThat(materialList.get(0).getUnitName(), is(this.materialEntity.getUnitEntity().getName()));
+        assertThat(materialPage.getSize(), is(1));
+        assertThat(materialPage.getContent().get(0), instanceOf(Material.class));
+        assertThat(materialPage.getContent().get(0).getName(), is(this.materialEntity.getName()));
+        assertThat(materialPage.getContent().get(0).getUnitName(), is(this.materialEntity.getUnitEntity().getName()));
     }
 
     @Test

@@ -7,7 +7,6 @@ import link.myrecipes.api.dto.Material;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.UnitRepository;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
@@ -52,7 +51,8 @@ public class MaterialControllerTest extends ControllerTest {
         MaterialEntity materialEntity = saveMaterial(unitentity);
 
         // When
-        final ResultActions actions = this.mockMvc.perform(RestDocumentationRequestBuilders.get("/materials/{id}", materialEntity.getId())
+        final ResultActions actions = this.mockMvc.perform(RestDocumentationRequestBuilders.get("/materials/{id}",
+                materialEntity.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON));
 
@@ -69,14 +69,14 @@ public class MaterialControllerTest extends ControllerTest {
                 .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("materials-read",
                         links(
-                                linkWithRel("self").description("Link to self"),
-                                linkWithRel("materials-create").description("Link to create material"),
-                                linkWithRel("materials-query").description("Link to read material list"),
-                                linkWithRel("profile").description("Link to profile")
+                                linkWithRel("self").description("현재 API"),
+                                linkWithRel("materials-create").description("재료 저장 API"),
+                                linkWithRel("materials-query").description("재료 리스트 조회 API"),
+                                linkWithRel("profile").description("프로파일 링크")
                         ),
                         requestHeaders(
-                                headerWithName(HttpHeaders.ACCEPT).description("Accept header"),
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type header")
+                                headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
                         ),
                         pathParameters(
                                 parameterWithName("id").description("Identity of material")
@@ -85,19 +85,18 @@ public class MaterialControllerTest extends ControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type header")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("Identity of material"),
-                                fieldWithPath("name").description("Name of material"),
-                                fieldWithPath("unitName").description("Name of unit"),
-                                fieldWithPath("_links.self.href").description("Link to self"),
-                                fieldWithPath("_links.materials-create.href").description("Link to create material"),
-                                fieldWithPath("_links.materials-query.href").description("Link to read material list"),
-                                fieldWithPath("_links.profile.href").description("Link to profile")
+                                fieldWithPath("id").description("재료 아이디"),
+                                fieldWithPath("name").description("재료 이름"),
+                                fieldWithPath("unitName").description("재료의 단위 이름"),
+                                fieldWithPath("_links.self.href").description("현재 API"),
+                                fieldWithPath("_links.materials-create.href").description("현재 API"),
+                                fieldWithPath("_links.materials-query.href").description("재료 리스트 조회 API"),
+                                fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
     }
 
     @Test
-    @Ignore     // TODO: list 요소에 self 링크 넣기
     public void When_재료_리스트_조회_Then_정상_리턴() throws Exception {
 
         // Given
@@ -106,6 +105,9 @@ public class MaterialControllerTest extends ControllerTest {
 
         // When
         final ResultActions actions = this.mockMvc.perform(get("/materials")
+                .param("page", "0")
+                .param("size", "10")
+                .param("sort", "name,DESC")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON));
 
@@ -116,11 +118,12 @@ public class MaterialControllerTest extends ControllerTest {
                 .andExpect(jsonPath("_embedded.materialList[0].id").exists())
                 .andExpect(jsonPath("_embedded.materialList[0].name").value(materialEntity.getName()))
                 .andExpect(jsonPath("_embedded.materialList[0].unitName").value(materialEntity.getUnitEntity().getName()))
+                .andExpect(jsonPath("_embedded.materialList[0]._links.self").exists())
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.materials-create").exists())
                 .andExpect(jsonPath("_links.materials-read").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-                .andExpect(jsonPath("_embedded.materialList[0]._links.self").exists());
+                .andDo(document("materials-query"));
     }
 
     @Test
@@ -154,31 +157,31 @@ public class MaterialControllerTest extends ControllerTest {
                 .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("materials-read",
                         links(
-                                linkWithRel("self").description("Link to self"),
-                                linkWithRel("materials-read").description("Link to read material"),
-                                linkWithRel("materials-query").description("Link to read material list"),
-                                linkWithRel("profile").description("Link to profile")
+                                linkWithRel("self").description("현재 API"),
+                                linkWithRel("materials-read").description("재료 조회 API"),
+                                linkWithRel("materials-query").description("재료 리스트 조회 API"),
+                                linkWithRel("profile").description("프로파일 링크")
                         ),
                         requestHeaders(
-                                headerWithName(HttpHeaders.ACCEPT).description("Accept header"),
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type header")
+                                headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
                         ),
                         requestFields(
-                                fieldWithPath("id").description("Identity of material"),
-                                fieldWithPath("name").description("Name of material"),
-                                fieldWithPath("unitName").description("Name of unit")
+                                fieldWithPath("id").description("재료 아이디"),
+                                fieldWithPath("name").description("재료 이름"),
+                                fieldWithPath("unitName").description("재료의 단위 이름")
                         ),
                         responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type header")
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("Identity of material"),
-                                fieldWithPath("name").description("Name of material"),
-                                fieldWithPath("unitName").description("Name of unit"),
-                                fieldWithPath("_links.self.href").description("Link to self"),
-                                fieldWithPath("_links.materials-read.href").description("Link to read material"),
-                                fieldWithPath("_links.materials-query.href").description("Link to read material list"),
-                                fieldWithPath("_links.profile.href").description("Link to profile")
+                                fieldWithPath("id").description("재료 아이디"),
+                                fieldWithPath("name").description("재료 이름"),
+                                fieldWithPath("unitName").description("재료의 단위 이름"),
+                                fieldWithPath("_links.self.href").description("현재 API"),
+                                fieldWithPath("_links.materials-read.href").description("재료 조회 API"),
+                                fieldWithPath("_links.materials-query.href").description("재료 리스트 조회 API"),
+                                fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
     }
