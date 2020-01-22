@@ -115,15 +115,41 @@ public class MaterialControllerTest extends ControllerTest {
         actions.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("page").exists())
                 .andExpect(jsonPath("_embedded.materialList[0].id").exists())
                 .andExpect(jsonPath("_embedded.materialList[0].name").value(materialEntity.getName()))
                 .andExpect(jsonPath("_embedded.materialList[0].unitName").value(materialEntity.getUnitEntity().getName()))
                 .andExpect(jsonPath("_embedded.materialList[0]._links.self").exists())
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.materials-create").exists())
-                .andExpect(jsonPath("_links.materials-read").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-                .andDo(document("materials-query"));
+                .andDo(document("materials-query",
+                        links(
+                                linkWithRel("self").description("현재 API"),
+                                linkWithRel("materials-create").description("재료 저장 API"),
+                                linkWithRel("profile").description("프로파일 링크")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
+                        ),
+                        responseFields(
+                                fieldWithPath("_embedded.materialList[0].id").description("재료 아이디"),
+                                fieldWithPath("_embedded.materialList[0].name").description("재료 이름"),
+                                fieldWithPath("_embedded.materialList[0].unitName").description("재료의 단위 이름"),
+                                fieldWithPath("_embedded.materialList[0]._links.self.href").description("재료 조회 API"),
+                                fieldWithPath("page.size").description("페이지 사이즈"),
+                                fieldWithPath("page.totalElements").description("전체 항목 수"),
+                                fieldWithPath("page.totalPages").description("전체 페이지 수"),
+                                fieldWithPath("page.number").description("현재 페이지 번호"),
+                                fieldWithPath("_links.self.href").description("현재 API"),
+                                fieldWithPath("_links.materials-create.href").description("재료 저장 API"),
+                                fieldWithPath("_links.profile.href").description("프로파일 링크")
+                        )
+                ));
     }
 
     @Test
