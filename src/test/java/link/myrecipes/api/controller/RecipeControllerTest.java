@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -165,8 +164,7 @@ public class RecipeControllerTest extends ControllerTest {
         final ResultActions actions = this.mockMvc.perform(get("/recipes")
                 .param("page", "0")
                 .param("size", "10")
-                .param("sortField", "title")
-                .param("isDescending", "true")
+                .param("sort", "title,DESC")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON));
 
@@ -174,14 +172,61 @@ public class RecipeControllerTest extends ControllerTest {
         actions.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$", hasSize(10)))
-                .andExpect(jsonPath("$[0].id").exists())
-                .andExpect(jsonPath("$[0].title").value(recipeEntity.getTitle()))
-                .andExpect(jsonPath("$[0].image").value(recipeEntity.getImage()))
-                .andExpect(jsonPath("$[0].estimatedTime").value(recipeEntity.getEstimatedTime()))
-                .andExpect(jsonPath("$[0].difficulty").value(recipeEntity.getDifficulty()))
-                .andExpect(jsonPath("$[0].recipeTagList[0].tag")
-                        .value(recipeEntity.getRecipeTagEntityList().get(0).getTag()));
+                .andExpect(jsonPath("page").exists())
+                .andExpect(jsonPath("_embedded.recipeList[0].id").exists())
+                .andExpect(jsonPath("_embedded.recipeList[0].title").value(recipeEntity.getTitle()))
+                .andExpect(jsonPath("_embedded.recipeList[0].image").value(recipeEntity.getImage()))
+                .andExpect(jsonPath("_embedded.recipeList[0].estimatedTime").value(recipeEntity.getEstimatedTime()))
+                .andExpect(jsonPath("_embedded.recipeList[0].difficulty").value(recipeEntity.getDifficulty()))
+                .andExpect(jsonPath("_embedded.recipeList[0].recipeTagList[0].tag")
+                        .value(recipeEntity.getRecipeTagEntityList().get(0).getTag()))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.recipes-create").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+                .andDo(document("recipes-query",
+                        links(
+                                linkWithRel("self").description("현재 API"),
+                                linkWithRel("recipes-read").description("레시피 조회 API"),
+                                linkWithRel("recipes-update").description("레시피 수정 API"),
+                                linkWithRel("recipes-delete").description("레시피 삭제 API"),
+                                linkWithRel("recipes-query").description("레시피 리스트 조회 API"),
+                                linkWithRel("profile").description("프로파일 링크")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
+                        ),
+                        requestFields(
+                                fieldWithPath("title").description("레시피 제목"),
+                                fieldWithPath("image").description("레시피 대표 이미지"),
+                                fieldWithPath("estimatedTime").description("레시피 예상 소요시간"),
+                                fieldWithPath("difficulty").description("레시피 난이도"),
+                                fieldWithPath("people").description("레시피 인분"),
+                                fieldWithPath("recipeMaterialRequestList[0].materialId").description("레시피 재료 아이디"),
+                                fieldWithPath("recipeMaterialRequestList[0].quantity").description("레시피 재료 수량"),
+                                fieldWithPath("recipeStepRequestList[0].step").description("레시피 단계"),
+                                fieldWithPath("recipeStepRequestList[0].content").description("레시피 단계 내용"),
+                                fieldWithPath("recipeStepRequestList[0].image").description("레시피 단계 이미지"),
+                                fieldWithPath("recipeTagRequestList[0].tag").description("레시피 태그")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").description("레시피 아이디"),
+                                fieldWithPath("title").description("레시피 제목"),
+                                fieldWithPath("image").description("레시피 대표 이미지"),
+                                fieldWithPath("estimatedTime").description("레시피 예상 소요시간"),
+                                fieldWithPath("difficulty").description("레시피 난이도"),
+                                fieldWithPath("recipeTagList[0].tag").description("레시피 태그"),
+                                fieldWithPath("_links.self.href").description("현재 API"),
+                                fieldWithPath("_links.recipes-read.href").description("레시피 조회 API"),
+                                fieldWithPath("_links.recipes-update.href").description("레시피 수정 API"),
+                                fieldWithPath("_links.recipes-delete.href").description("레시피 삭제 API"),
+                                fieldWithPath("_links.recipes-query.href").description("레시피 리스트 조회 API"),
+                                fieldWithPath("_links.profile.href").description("프로파일 링크")
+                        )
+                ));
     }
 
     @Test

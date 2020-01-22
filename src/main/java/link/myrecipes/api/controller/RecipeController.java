@@ -12,6 +12,11 @@ import link.myrecipes.api.dto.RecipeCount;
 import link.myrecipes.api.dto.request.RecipeRequest;
 import link.myrecipes.api.dto.view.RecipeView;
 import link.myrecipes.api.service.RecipeService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,12 +64,20 @@ public class RecipeController {
             @ApiImplicitParam(name = "sortField", value = "정렬기준 필드", dataType = "string", paramType = "query", defaultValue = "registerDate"),
             @ApiImplicitParam(name = "isDescending", value = "내림차순 정렬 여부", dataType = "boolean", paramType = "query", defaultValue = "false")
     })
-    public ResponseEntity<List<Recipe>> readRecipeList(
-            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "registerDate") String sortField, @RequestParam(defaultValue = "false") boolean isDescending) {
+    public ResponseEntity<ResourceSupport> readRecipeList(Pageable pageable, PagedResourcesAssembler<Recipe> assembler) {
 
-        List<Recipe> recipePage = this.recipeService.readRecipePageSortedByParam(page, size, sortField, isDescending);
-        return new ResponseEntity<>(recipePage, HttpStatus.OK);
+        Page<Recipe> recipePage = this.recipeService.readRecipeList(pageable);
+
+        PagedResources<RestResource<Recipe>> pagedResources = assembler.toResource(recipePage, recipe ->
+                new RestResource<>(recipe,
+                        String.valueOf(recipe.getId()),
+                        getClass(),
+                        new LinkType[] {},
+                        RECIPES));
+        pagedResources.add(linkTo(getClass()).withRel("recipes-create"));
+        pagedResources.add(new Link("/docs/index.html#resources-recipes-query").withRel("profile"));
+
+        return ResponseEntity.ok(pagedResources);
     }
 
     @PostMapping

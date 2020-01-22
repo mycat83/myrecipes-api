@@ -19,6 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,13 +113,13 @@ public class RecipeServiceImplTest {
         given(this.recipeRepository.findAll(any(PageRequest.class))).willReturn(page);
 
         // When
-        final List<Recipe> foundList = this.recipeService.readRecipePageSortedByParam(0, 10, "registerDate", false);
+        final Page<Recipe> foundList = this.recipeService.readRecipeList(PageRequest.of(0, 10, Sort.Direction.ASC, "registerDate"));
 
         // Then
-        assertThat(foundList.size(), is(3));
-        assertThat(foundList.get(0).getTitle(), is(this.recipe1.getTitle()));
-        assertThat(foundList.get(1).getTitle(), is(this.recipe2.getTitle()));
-        assertThat(foundList.get(2).getTitle(), is(this.recipe3.getTitle()));
+        assertThat(foundList.getTotalElements(), is(3));
+        assertThat(foundList.getContent().get(0).getTitle(), is(this.recipe1.getTitle()));
+        assertThat(foundList.getContent().get(1).getTitle(), is(this.recipe2.getTitle()));
+        assertThat(foundList.getContent().get(2).getTitle(), is(this.recipe3.getTitle()));
     }
 
     @Test(expected = NotExistDataException.class)

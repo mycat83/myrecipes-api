@@ -9,10 +9,13 @@ import link.myrecipes.api.service.MaterialService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @Api(tags = {"material"})
 @RestController
@@ -48,14 +51,16 @@ public class MaterialController {
 
         Page<Material> materialPage = this.materialService.readMaterialList(pageable);
 
-        PagedResources<RestResource<Material>> pagedModel = assembler.toResource(materialPage, material ->
+        PagedResources<RestResource<Material>> pagedResources = assembler.toResource(materialPage, material ->
                 new RestResource<>(material,
                         String.valueOf(material.getId()),
                         getClass(),
                         new LinkType[] {},
                         MATERIALS));
+        pagedResources.add(linkTo(getClass()).withRel("materials-create"));
+        pagedResources.add(new Link("/docs/index.html#resources-materials-query").withRel("profile"));
 
-        return ResponseEntity.ok(pagedModel);
+        return ResponseEntity.ok(pagedResources);
     }
 
     @PostMapping
