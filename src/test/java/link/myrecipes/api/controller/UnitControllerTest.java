@@ -52,7 +52,7 @@ public class UnitControllerTest extends ControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.units-create").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-                .andDo(document("read-unit",
+                .andDo(document("units-read",
                         links(
                                 linkWithRel("self").description("현재 API"),
                                 linkWithRel("units-create").description("단위 저장 API"),
@@ -107,7 +107,7 @@ public class UnitControllerTest extends ControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.units-read").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-                .andDo(document("create-unit",
+                .andDo(document("units-create",
                         links(
                                 linkWithRel("self").description("현재 API"),
                                 linkWithRel("units-read").description("단위 조회 API"),

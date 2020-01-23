@@ -213,11 +213,11 @@ public class MemberControllerTest extends ControllerTest {
 
         // Given
         UserEntity updateUserEntity = UserEntity.builder()
-                .username("user34")
+                .username("user02")
                 .password("234567")
-                .name("유저34")
+                .name("유저02")
                 .phone("01023456789")
-                .email("user34@domain.com")
+                .email("user02@domain.com")
                 .build();
 
         UserEntity userEntity = saveUser();

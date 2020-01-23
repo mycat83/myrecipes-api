@@ -43,13 +43,12 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     public Page<Material> readMaterialList(Pageable pageable) {
         Page<MaterialEntity> materialEntityPage = this.materialRepository.findAll(pageable);
-        Material map = this.modelMapper.map(materialEntityPage.getContent().get(0), Material.class);
-        Page<Material> materialPage = materialEntityPage
-                .map(materialEntity -> {
-                    Material material = modelMapper.map(materialEntity, Material.class);
-                    return material;
-                });
-        return materialPage;
+
+        // 테스트를 위해 추가: testMaterial에 null 값이 들어옴
+        Material testMaterial = this.modelMapper.map(materialEntityPage.getContent().get(0), Material.class);
+
+        return materialEntityPage
+                .map(materialEntity -> modelMapper.map(materialEntity, Material.class));
     }
 
     @Override

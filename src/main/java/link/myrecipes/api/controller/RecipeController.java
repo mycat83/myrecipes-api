@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import link.myrecipes.api.common.LinkType;
 import link.myrecipes.api.common.RestResource;
 import link.myrecipes.api.common.RestResourceSupport;
+import link.myrecipes.api.common.RestResources;
 import link.myrecipes.api.dto.Recipe;
 import link.myrecipes.api.dto.RecipeCount;
 import link.myrecipes.api.dto.request.RecipeRequest;
@@ -18,7 +19,6 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.ResourceSupport;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -162,9 +162,17 @@ public class RecipeController {
 
     @GetMapping("/popular")
     @ApiOperation("인기 레시피 리스트 조회")
-    public ResponseEntity<List<Recipe>> readPopularRecipeList() {
+    public ResponseEntity<ResourceSupport> readPopularRecipeList() {
 
-        List<Recipe> popularRecipesDocumentList = this.recipeService.readPopularRecipeList();
-        return new ResponseEntity<>(popularRecipesDocumentList, HttpStatus.OK);
+        List<Recipe> recipeList = this.recipeService.readPopularRecipeList();
+
+        RestResources<Recipe> recipeResources = new RestResources<>(recipeList,
+                getClass(),
+                new LinkType[] {LinkType.CREATE},
+                RECIPES);
+        recipeResources.add(linkTo(methodOn(getClass()).recipeCount()).withSelfRel());
+        recipeResources.addProfileLink("/docs/index.html#resources-recipes-popular");
+
+        return ResponseEntity.ok(recipeResources);
     }
 }

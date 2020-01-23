@@ -185,7 +185,7 @@ public class MaterialControllerTest extends ControllerTest {
                 .andExpect(jsonPath("_links.materials-read").exists())
                 .andExpect(jsonPath("_links.materials-query").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-                .andDo(document("materials-read",
+                .andDo(document("materials-create",
                         links(
                                 linkWithRel("self").description("현재 API"),
                                 linkWithRel("materials-read").description("재료 조회 API"),
