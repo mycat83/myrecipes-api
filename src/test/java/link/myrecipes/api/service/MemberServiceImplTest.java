@@ -24,6 +24,7 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MemberServiceImplTest {
+
     private UserSecurity userSecurity;
     private UserEntity userEntity;
     private UserRequest userRequest;
@@ -36,6 +37,7 @@ public class MemberServiceImplTest {
 
     @Before
     public void setUp() {
+
         this.userSecurity = UserSecurity.builder()
                 .id(1)
                 .username("user12")
@@ -69,13 +71,14 @@ public class MemberServiceImplTest {
 
     @Test
     public void When_존재하는_유저명으로_회원_로그인_조회_Then_정상_반환() {
-        //given
+
+        // Given
         given(this.memberRepository.findByUsername(userSecurity.getUsername())).willReturn(Optional.ofNullable(this.userEntity));
 
-        //when
+        // When
         final UserSecurity selectedUserSecurity = this.memberService.login(this.userSecurity.getUsername());
 
-        //then
+        // Then
         assertThat(selectedUserSecurity, instanceOf(UserSecurity.class));
         assertThat(selectedUserSecurity.getUsername(), is(this.userSecurity.getUsername()));
         assertThat(selectedUserSecurity.getPassword(), is(this.userSecurity.getPassword()));
@@ -87,19 +90,21 @@ public class MemberServiceImplTest {
 
     @Test(expected = UsernameNotFoundException.class)
     public void When_존재하지_않는_유저명으로_회원_로그인_조회_Then_예외_발생() {
-        //when
+
+        // When
         this.memberService.login(this.userSecurity.getUsername());
     }
 
     @Test
     public void When_존재하는_회원_조회_Then_정상_반환() {
-        //given
+
+        // Given
         given(this.memberRepository.findById(1)).willReturn(Optional.ofNullable(this.userEntity));
 
-        //when
+        // When
         final User user = this.memberService.readMember(1);
 
-        //then
+        // Then
         assertThat(user, instanceOf(User.class));
         assertThat(user.getUsername(), is(this.userEntity.getUsername()));
         assertThat(user.getPassword(), is(this.userEntity.getPassword()));
@@ -110,19 +115,21 @@ public class MemberServiceImplTest {
 
     @Test(expected = NotExistDataException.class)
     public void When_존재하지_않는_회원_조회_Then_예외_발생() {
-        //when
+
+        // When
         this.memberService.readMember(1);
     }
 
     @Test
     public void When_회원_저장_Then_정상_반환() {
-        //given
+
+        // Given
         given(this.memberRepository.save(any(UserEntity.class))).willReturn(this.userEntity);
 
-        //when
+        // When
         final User user = this.memberService.createMember(this.userRequest);
 
-        //then
+        // Then
         assertThat(user, instanceOf(User.class));
         assertThat(user.getUsername(), is(this.userRequest.getUsername()));
         assertThat(user.getPassword(), is(this.userRequest.getPassword()));
@@ -133,14 +140,15 @@ public class MemberServiceImplTest {
 
     @Test
     public void When_존재하는_회원_수정_Then_정상_반환() {
-        //given
+
+        // Given
         given(this.memberRepository.findById(1)).willReturn(Optional.ofNullable(this.userEntity));
         given(this.memberRepository.save(any(UserEntity.class))).willReturn(this.userEntity);
 
-        //when
+        // When
         final User user = this.memberService.updateMember(1, this.userRequest, 10002);
 
-        //then
+        // Then
         assertThat(user, instanceOf(User.class));
         assertThat(user.getUsername(), is(this.userRequest.getUsername()));
         assertThat(user.getPassword(), is(this.userRequest.getPassword()));
@@ -151,7 +159,8 @@ public class MemberServiceImplTest {
 
     @Test(expected = NotExistDataException.class)
     public void When_존재하지_않는_회원_수정_Then_정상_반환() {
-        //when
+
+        // When
         this.memberService.updateMember(1, this.userRequest, 10002);
     }
 }

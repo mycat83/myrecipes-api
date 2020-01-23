@@ -12,8 +12,8 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @NoArgsConstructor
 public class UserRequest {
-    @NotBlank(message = "아이디를 입력해주세요.")
-    @Length(min = 6, max = 20, message = "아이디는 6~20자 이내로 입력이 가능합니다.")
+    @NotBlank(message = "사용자 계정을 입력해주세요.")
+    @Length(min = 6, max = 20, message = "사용자 계정은 6~20자 이내로 입력이 가능합니다.")
     private String username;
 
     @NotBlank(message = "비밀번호를 입력해주세요.")

@@ -2,6 +2,7 @@ package link.myrecipes.api.repository;
 
 import link.myrecipes.api.domain.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @DataJpaTest
+@Ignore
 //@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class MakeDataTest {
     @Autowired

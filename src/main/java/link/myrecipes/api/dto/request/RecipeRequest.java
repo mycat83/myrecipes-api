@@ -31,6 +31,10 @@ public class RecipeRequest {
     @Max(value = 5, message = "난이도는 최대 5까지 입력이 가능합니다.")
     private Integer difficulty;
 
+    @NotNull(message = "인원을 입력해주세요.")
+    @Positive(message = "인원을 양수로 입력해주세요.")
+    private Integer people;
+
     @NotEmpty(message = "요리 재료를 1개 이상 입력해주세요.")
     private List<@Valid RecipeMaterialRequest> recipeMaterialRequestList = new ArrayList<>();
 
@@ -40,11 +44,12 @@ public class RecipeRequest {
     private List<@Valid RecipeTagRequest> recipeTagRequestList = new ArrayList<>();
 
     @Builder
-    public RecipeRequest(String title, String image, Integer estimatedTime, Integer difficulty) {
+    public RecipeRequest(String title, String image, Integer estimatedTime, Integer difficulty, Integer people) {
         this.title = title;
         this.image = image;
         this.estimatedTime = estimatedTime;
         this.difficulty = difficulty;
+        this.people = people;
     }
 
     public void addRecipeMaterial(RecipeMaterialRequest recipeMaterialRequest) {
@@ -65,6 +70,7 @@ public class RecipeRequest {
                 .image(this.getImage())
                 .estimatedTime(this.getEstimatedTime())
                 .difficulty(this.getDifficulty())
+                .people(this.getPeople())
                 .build();
     }
 }

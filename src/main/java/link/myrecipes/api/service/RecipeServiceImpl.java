@@ -2,6 +2,7 @@ package link.myrecipes.api.service;
 
 import link.myrecipes.api.domain.*;
 import link.myrecipes.api.dto.Recipe;
+import link.myrecipes.api.dto.RecipeCount;
 import link.myrecipes.api.dto.request.RecipeMaterialRequest;
 import link.myrecipes.api.dto.request.RecipeRequest;
 import link.myrecipes.api.dto.request.RecipeStepRequest;
@@ -9,11 +10,12 @@ import link.myrecipes.api.dto.request.RecipeTagRequest;
 import link.myrecipes.api.dto.view.RecipeView;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,18 +25,26 @@ import java.util.stream.Collectors;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
+
     private final RecipeRepository recipeRepository;
     private final RecipeMaterialRepository recipeMaterialRepository;
     private final RecipeStepRepository recipeStepRepository;
     private final RecipeTagRepository recipeTagRepository;
     private final MaterialRepository materialRepository;
+    private final PopularRecipeRepository popularRecipesRepository;
+    private final ModelMapper modelMapper;
 
-    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeMaterialRepository recipeMaterialRepository, RecipeStepRepository recipeStepRepository, RecipeTagRepository recipeTagRepository, MaterialRepository materialRepository) {
+    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeMaterialRepository recipeMaterialRepository,
+                             RecipeStepRepository recipeStepRepository, RecipeTagRepository recipeTagRepository,
+                             MaterialRepository materialRepository, PopularRecipeRepository popularRecipesRepository,
+                             ModelMapper modelMapper) {
         this.recipeRepository = recipeRepository;
         this.recipeMaterialRepository = recipeMaterialRepository;
         this.recipeStepRepository = recipeStepRepository;
         this.recipeTagRepository = recipeTagRepository;
         this.materialRepository = materialRepository;
+        this.popularRecipesRepository = popularRecipesRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -50,27 +60,18 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    @Cacheable(value = "myrecipe:api:recipeList",
-            key = "#page + ':' + #size + ':' + #sortField + ':' + #isDescending")
-    public List<Recipe> readRecipePageSortedByParam(int page, int size, String sortField, boolean isDescending) {
-        PageRequest pageable;
-        if (isDescending) {
-            pageable = PageRequest.of(page, size, Sort.Direction.DESC, sortField);
-        } else {
-            pageable = PageRequest.of(page, size, Sort.Direction.ASC, sortField);
-        }
+    @Cacheable(value = "myrecipe:api:recipeList", key = "#pageable.pageNumber + ':' + #pageable.pageSize + ':' + #pageable.sort")
+    public Page<Recipe> readRecipeList(Pageable pageable) {
 
         return this.recipeRepository.findAll(pageable)
-                .getContent()
-                .stream()
-                .map(RecipeEntity::toDTO)
-                .collect(Collectors.toList());
+                .map(recipeEntity -> modelMapper.map(recipeEntity, Recipe.class));
     }
 
     @Override
     @Transactional
     @CacheEvict(value = "myrecipe:api:recipeList", allEntries = true)
     public Recipe createRecipe(RecipeRequest recipeRequest, int userId) {
+
         RecipeEntity recipeEntity = recipeRequest.toEntity();
         recipeEntity.setRegisterUserId(userId);
 
@@ -84,6 +85,7 @@ public class RecipeServiceImpl implements RecipeService {
             @CacheEvict(value = "myrecipe:api:recipeList", allEntries = true)
     })
     public Recipe updateRecipe(int id, RecipeRequest recipeRequest, int userId) {
+
         Optional<RecipeEntity> recipeOptional = this.recipeRepository.findById(id);
 
         if (recipeOptional.isEmpty()) {
@@ -110,6 +112,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     private Recipe saveRecipe(RecipeRequest recipeRequest, RecipeEntity recipeEntity) {
+
         for (RecipeMaterialRequest recipeMaterialRequest : recipeRequest.getRecipeMaterialRequestList()) {
             Optional<MaterialEntity> materialEntityOptional = this.materialRepository.findById(recipeMaterialRequest.getMaterialId());
             if (materialEntityOptional.isEmpty()) {
@@ -152,13 +155,20 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public long readRecipeCount() {
-        return this.recipeRepository.count();
+    public RecipeCount readRecipeCount() {
+        long count = this.recipeRepository.count();
+        return new RecipeCount(count);
     }
 
     @Override
     @Transactional
     public void increaseReadCount(int id) {
         this.recipeRepository.increaseReadCount(id);
+    }
+
+    @Override
+    public List<Recipe> readPopularRecipeList() {
+        List<PopularRecipeDocument> popularRecipeDocumentList = this.popularRecipesRepository.findAllByOrderBySequence();
+        return popularRecipeDocumentList.stream().map(PopularRecipeDocument::toDTO).collect(Collectors.toList());
     }
 }
