@@ -31,8 +31,7 @@ import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.li
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -152,7 +151,7 @@ public class RecipeControllerTest extends ControllerTest {
     }
 
     @Test
-    public void When_레시피_페이지_호출_Then_첫페이지_조회() throws Exception {
+    public void When_레시피_리스트_조회_Then_페이지_리턴() throws Exception {
 
         // Given
         UnitEntity unitEntity = saveUnit();
@@ -183,48 +182,48 @@ public class RecipeControllerTest extends ControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.recipes-create").exists())
                 .andExpect(jsonPath("_links.profile").exists())
+                .andExpect(jsonPath("_links.first").exists())
+                .andExpect(jsonPath("_links.next").exists())
+                .andExpect(jsonPath("_links.last").exists())
                 .andDo(document("recipes-query",
                         links(
                                 linkWithRel("self").description("현재 API"),
-                                linkWithRel("recipes-read").description("레시피 조회 API"),
-                                linkWithRel("recipes-update").description("레시피 수정 API"),
-                                linkWithRel("recipes-delete").description("레시피 삭제 API"),
-                                linkWithRel("recipes-query").description("레시피 리스트 조회 API"),
-                                linkWithRel("profile").description("프로파일 링크")
+                                linkWithRel("recipes-create").description("레시피 저장 API"),
+                                linkWithRel("profile").description("프로파일 링크"),
+                                linkWithRel("first").description("첫 페이지 링크"),
+                                linkWithRel("next").description("다음 페이지 링크"),
+                                linkWithRel("last").description("마지막 페이지 링크")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더"),
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
                         ),
-                        requestFields(
-                                fieldWithPath("title").description("레시피 제목"),
-                                fieldWithPath("image").description("레시피 대표 이미지"),
-                                fieldWithPath("estimatedTime").description("레시피 예상 소요시간"),
-                                fieldWithPath("difficulty").description("레시피 난이도"),
-                                fieldWithPath("people").description("레시피 인분"),
-                                fieldWithPath("recipeMaterialRequestList[0].materialId").description("레시피 재료 아이디"),
-                                fieldWithPath("recipeMaterialRequestList[0].quantity").description("레시피 재료 수량"),
-                                fieldWithPath("recipeStepRequestList[0].step").description("레시피 단계"),
-                                fieldWithPath("recipeStepRequestList[0].content").description("레시피 단계 내용"),
-                                fieldWithPath("recipeStepRequestList[0].image").description("레시피 단계 이미지"),
-                                fieldWithPath("recipeTagRequestList[0].tag").description("레시피 태그")
+                        requestParameters(
+                                parameterWithName("page").description("요청 페이지"),
+                                parameterWithName("size").description("페이지 사이즈"),
+                                parameterWithName("sort").description("정렬 기준")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("레시피 아이디"),
-                                fieldWithPath("title").description("레시피 제목"),
-                                fieldWithPath("image").description("레시피 대표 이미지"),
-                                fieldWithPath("estimatedTime").description("레시피 예상 소요시간"),
-                                fieldWithPath("difficulty").description("레시피 난이도"),
-                                fieldWithPath("recipeTagList[0].tag").description("레시피 태그"),
+                                fieldWithPath("_embedded.recipeList[0].id").description("레시피 아이디"),
+                                fieldWithPath("_embedded.recipeList[0].title").description("레시피 제목"),
+                                fieldWithPath("_embedded.recipeList[0].image").description("레시피 대표 이미지"),
+                                fieldWithPath("_embedded.recipeList[0].estimatedTime").description("레시피 예상 소요시간"),
+                                fieldWithPath("_embedded.recipeList[0].difficulty").description("레시피 난이도"),
+                                fieldWithPath("_embedded.recipeList[0].recipeTagList[0].tag").description("레시피 태그"),
+                                fieldWithPath("_embedded.recipeList[0]._links.self.href").description("레시피 조회 API"),
+                                fieldWithPath("page.number").description("현재 페이지 번호"),
+                                fieldWithPath("page.size").description("페이지 사이즈"),
+                                fieldWithPath("page.totalElements").description("전체 항목 수"),
+                                fieldWithPath("page.totalPages").description("전체 페이지 수"),
                                 fieldWithPath("_links.self.href").description("현재 API"),
-                                fieldWithPath("_links.recipes-read.href").description("레시피 조회 API"),
-                                fieldWithPath("_links.recipes-update.href").description("레시피 수정 API"),
-                                fieldWithPath("_links.recipes-delete.href").description("레시피 삭제 API"),
-                                fieldWithPath("_links.recipes-query.href").description("레시피 리스트 조회 API"),
-                                fieldWithPath("_links.profile.href").description("프로파일 링크")
+                                fieldWithPath("_links.recipes-create.href").description("레시피 저장 API"),
+                                fieldWithPath("_links.profile.href").description("프로파일 링크"),
+                                fieldWithPath("_links.first.href").description("첫 페이지 링크"),
+                                fieldWithPath("_links.next.href").description("다음 페이지 링크"),
+                                fieldWithPath("_links.last.href").description("마지막 페이지 링크")
                         )
                 ));
     }
@@ -440,28 +439,34 @@ public class RecipeControllerTest extends ControllerTest {
 
         // When
         final ResultActions actions = this.mockMvc.perform(delete("/recipes/{id}", recipeEntity.getId())
-                .contentType(MediaType.APPLICATION_JSON_UTF8));
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON));
 
         // Then
         actions.andDo(print())
-                .andExpect(status().isOk());
-//                .andDo(document("recipes-delete",
-//                        links(
-//                                linkWithRel("self").description("현재 API"),
-//                                linkWithRel("recipes-create").description("레시피 저장 API"),
-//                                linkWithRel("recipes-read").description("레시피 조회 API"),
-//                                linkWithRel("recipes-update").description("레시피 수정 API"),
-//                                linkWithRel("recipes-query").description("레시피 리스트 조회 API"),
-//                                linkWithRel("profile").description("프로파일 링크")
-//                        ),
-//                        requestHeaders(
-//                                headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더"),
-//                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
-//                        ),
-//                        pathParameters(
-//                                parameterWithName("id").description("레시피 아이디")
-//                        )
-//                ));
+                .andExpect(status().isOk())
+                .andDo(document("recipes-delete",
+                        links(
+                                linkWithRel("self").description("현재 API"),
+                                linkWithRel("recipes-query").description("레시피 리스트 조회 API"),
+                                linkWithRel("profile").description("프로파일 링크")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("레시피 아이디")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
+                        ),
+                        responseFields(
+                                fieldWithPath("_links.self.href").description("현재 API"),
+                                fieldWithPath("_links.recipes-query.href").description("레시피 리스트 조회 API"),
+                                fieldWithPath("_links.profile.href").description("프로파일 링크")
+                        )
+                ));
     }
 
     @Test

@@ -12,8 +12,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -39,6 +42,9 @@ public class MaterialServiceImplTest {
     @Mock
     private UnitRepository unitRepository;
 
+    @Mock
+    private ModelMapper modelMapper;
+
     @Before
     public void setUp() {
 
@@ -50,6 +56,8 @@ public class MaterialServiceImplTest {
 
         this.materialEntity = MaterialEntity.builder()
                 .name("재료")
+                .registerUserId(1001)
+                .modifyUserId(1001)
                 .unitEntity(this.unitEntity)
                 .build();
     }
@@ -80,10 +88,14 @@ public class MaterialServiceImplTest {
     public void When_재료_리스트_조회_Then_정상_반환() {
 
         // Given
-        given(this.materialRepository.findAll()).willReturn(Collections.singletonList(this.materialEntity));
+        Page<MaterialEntity> materialEntityPage = new PageImpl<>(Collections.singletonList(this.materialEntity));
+        given(this.materialRepository.findAll(any(Pageable.class))).willReturn(materialEntityPage);
+
+        Material material = this.modelMapper.map(this.materialEntity, Material.class);
+        given(this.modelMapper.map(any(), any())).willReturn(material);
 
         // When
-        final Page<Material> materialPage = this.materialService.readMaterialList(PageRequest.of(10, 0));
+        final Page<Material> materialPage = this.materialService.readMaterialList(PageRequest.of(0, 10));
 
         // Then
         assertThat(materialPage.getSize(), is(1));
