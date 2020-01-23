@@ -575,12 +575,37 @@ public class RecipeControllerTest extends ControllerTest {
         actions.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$[0].id").value(popularRecipeDocument.getId()))
-                .andExpect(jsonPath("$[0].title").value(popularRecipeDocument.getTitle()))
-                .andExpect(jsonPath("$[0].image").value(popularRecipeDocument.getImage()))
-                .andExpect(jsonPath("$[0].estimatedTime").value(popularRecipeDocument.getEstimatedTime()))
-                .andExpect(jsonPath("$[0].difficulty").value(popularRecipeDocument.getDifficulty()))
-                .andExpect(jsonPath("$[0].recipeTagList[0].tag").value(popularRecipeDocument.getRecipeTagList().get(0)));
+                .andExpect(jsonPath("_embedded.recipeList[0].id").value(popularRecipeDocument.getId()))
+                .andExpect(jsonPath("_embedded.recipeList[0].title").value(popularRecipeDocument.getTitle()))
+                .andExpect(jsonPath("_embedded.recipeList[0].image").value(popularRecipeDocument.getImage()))
+                .andExpect(jsonPath("_embedded.recipeList[0].estimatedTime").value(popularRecipeDocument.getEstimatedTime()))
+                .andExpect(jsonPath("_embedded.recipeList[0].difficulty").value(popularRecipeDocument.getDifficulty()))
+                .andExpect(jsonPath("_embedded.recipeList[0].recipeTagList[0].tag").value(popularRecipeDocument.getRecipeTagList().get(0)))
+                .andDo(document("recipes-popular",
+                        links(
+                                linkWithRel("self").description("현재 API"),
+                                linkWithRel("recipes-create").description("레시피 저장 API"),
+                                linkWithRel("profile").description("프로파일 링크")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
+                        ),
+                        responseFields(
+                                fieldWithPath("_embedded.recipeList[0].id").description("레시피 아이디"),
+                                fieldWithPath("_embedded.recipeList[0].title").description("레시피 제목"),
+                                fieldWithPath("_embedded.recipeList[0].image").description("레시피 대표 이미지"),
+                                fieldWithPath("_embedded.recipeList[0].estimatedTime").description("레시피 예상 소요시간"),
+                                fieldWithPath("_embedded.recipeList[0].difficulty").description("레시피 난이도"),
+                                fieldWithPath("_embedded.recipeList[0].recipeTagList[0].tag").description("레시피 태그"),
+                                fieldWithPath("_links.self.href").description("현재 API"),
+                                fieldWithPath("_links.recipes-create.href").description("레시피 저장 API"),
+                                fieldWithPath("_links.profile.href").description("프로파일 링크")
+                        )
+                ));
     }
 
     private UnitEntity saveUnit() {
