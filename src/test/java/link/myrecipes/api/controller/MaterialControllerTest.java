@@ -19,11 +19,10 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -97,7 +96,7 @@ public class MaterialControllerTest extends ControllerTest {
     }
 
     @Test
-    public void When_재료_리스트_조회_Then_정상_리턴() throws Exception {
+    public void When_재료_리스트_조회_Then_페이지_리턴() throws Exception {
 
         // Given
         UnitEntity unitentity = saveUnit();
@@ -133,6 +132,11 @@ public class MaterialControllerTest extends ControllerTest {
                                 headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더"),
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
                         ),
+                        requestParameters(
+                                parameterWithName("page").description("요청 페이지"),
+                                parameterWithName("size").description("페이지 사이즈"),
+                                parameterWithName("sort").description("정렬 기준")
+                        ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
                         ),
@@ -141,10 +145,10 @@ public class MaterialControllerTest extends ControllerTest {
                                 fieldWithPath("_embedded.materialList[0].name").description("재료 이름"),
                                 fieldWithPath("_embedded.materialList[0].unitName").description("재료의 단위 이름"),
                                 fieldWithPath("_embedded.materialList[0]._links.self.href").description("재료 조회 API"),
+                                fieldWithPath("page.number").description("현재 페이지 번호"),
                                 fieldWithPath("page.size").description("페이지 사이즈"),
                                 fieldWithPath("page.totalElements").description("전체 항목 수"),
                                 fieldWithPath("page.totalPages").description("전체 페이지 수"),
-                                fieldWithPath("page.number").description("현재 페이지 번호"),
                                 fieldWithPath("_links.self.href").description("현재 API"),
                                 fieldWithPath("_links.materials-create.href").description("재료 저장 API"),
                                 fieldWithPath("_links.profile.href").description("프로파일 링크")
