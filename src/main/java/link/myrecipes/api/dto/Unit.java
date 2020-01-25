@@ -1,11 +1,12 @@
 package link.myrecipes.api.dto;
 
-import link.myrecipes.api.domain.UnitEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class Unit {
     private String name;
@@ -19,13 +20,5 @@ public class Unit {
         this.name = name;
         this.exchangeUnitName = exchangeUnitName;
         this.exchangeQuantity = exchangeQuantity;
-    }
-
-    public UnitEntity toEntity() {
-        return UnitEntity.builder()
-                .name(this.getName())
-                .exchangeUnitName(this.getExchangeUnitName())
-                .exchangeQuantity(this.getExchangeQuantity())
-                .build();
     }
 }

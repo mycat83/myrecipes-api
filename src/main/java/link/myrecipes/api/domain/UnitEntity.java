@@ -1,7 +1,6 @@
 package link.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import link.myrecipes.api.dto.Unit;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -11,6 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "unit")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 @JsonIgnoreProperties("hibernateLazyInitializer")
@@ -29,13 +29,5 @@ public class UnitEntity extends BaseEntity {
         this.exchangeQuantity = exchangeQuantity;
         this.registerUserId = registerUserId;
         this.modifyUserId = modifyUserId;
-    }
-
-    public Unit toDTO() {
-        return Unit.builder()
-                .name(this.getName())
-                .exchangeUnitName(this.getExchangeUnitName())
-                .exchangeQuantity(this.getExchangeQuantity())
-                .build();
     }
 }
