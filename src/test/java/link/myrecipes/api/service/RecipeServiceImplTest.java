@@ -11,26 +11,24 @@ import link.myrecipes.api.dto.view.RecipeView;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -60,6 +58,9 @@ public class RecipeServiceImplTest {
 
     @Mock
     private RecipeTagRepository recipeTagRepository;
+
+    @Mock
+    private ModelMapper modelMapper;
 
     @Before
     public void setUp() {
@@ -98,30 +99,28 @@ public class RecipeServiceImplTest {
     }
 
     @Test
-    @Ignore
     public void When_0_페이지_조회_Then_첫번째_페이지_반환() {
 
         // Given
-        List<Recipe> list = new ArrayList<>();
-        list.add(this.recipe1);
-        list.add(this.recipe2);
-        list.add(this.recipe3);
-
-        Page<RecipeEntity> page = new PageImpl<>(
-                list.stream().map(Recipe::toEntity).collect(Collectors.toList()),
-                PageRequest.of(0, list.size()), list.size()
-        );
-
+        RecipeEntity recipeEntity = RecipeEntity.builder()
+                .title(recipeRequest1.getTitle())
+                .image(recipeRequest1.getImage())
+                .estimatedTime(recipeRequest1.getEstimatedTime())
+                .difficulty(recipeRequest1.getDifficulty())
+                .build();
+        Page<RecipeEntity> page = new PageImpl<>(Collections.singletonList(recipeEntity));
         given(this.recipeRepository.findAll(any(PageRequest.class))).willReturn(page);
+        given(this.modelMapper.map(any(RecipeEntity.class), eq(Recipe.class))).willReturn(this.recipe1);
 
         // When
-        final Page<Recipe> foundList = this.recipeService.readRecipeList(PageRequest.of(0, 10, Sort.Direction.ASC, "registerDate"));
+        final Page<Recipe> foundList = this.recipeService.readRecipeList(PageRequest.of(0, 10));
 
         // Then
-        assertThat(foundList.getTotalElements(), is(3));
+        assertThat(foundList.getTotalElements(), is(1L));
         assertThat(foundList.getContent().get(0).getTitle(), is(this.recipe1.getTitle()));
-        assertThat(foundList.getContent().get(1).getTitle(), is(this.recipe2.getTitle()));
-        assertThat(foundList.getContent().get(2).getTitle(), is(this.recipe3.getTitle()));
+        assertThat(foundList.getContent().get(0).getImage(), is(this.recipe1.getImage()));
+        assertThat(foundList.getContent().get(0).getEstimatedTime(), is(this.recipe1.getEstimatedTime()));
+        assertThat(foundList.getContent().get(0).getDifficulty(), is(this.recipe1.getDifficulty()));
     }
 
     @Test(expected = NotExistDataException.class)

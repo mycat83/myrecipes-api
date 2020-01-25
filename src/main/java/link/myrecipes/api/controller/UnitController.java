@@ -49,7 +49,7 @@ public class UnitController {
                 getClass(),
                 new LinkType[] {LinkType.READ},
                 UNITS);
-        restResource.addProfileLink("/docs/index.html#resources-units-read");
+        restResource.addProfileLink("/docs/index.html#resources-units-create");
 
         return ResponseEntity.created(restResource.selfLink().getTemplate().expand()).body(restResource);
     }

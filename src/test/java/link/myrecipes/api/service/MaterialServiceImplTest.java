@@ -7,7 +7,6 @@ import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.UnitRepository;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -87,21 +86,24 @@ public class MaterialServiceImplTest {
     }
 
     @Test
-    @Ignore
     public void When_재료_리스트_조회_Then_정상_반환() {
 
         // Given
         Page<MaterialEntity> materialEntityPage = new PageImpl<>(Collections.singletonList(this.materialEntity));
         given(this.materialRepository.findAll(any(Pageable.class))).willReturn(materialEntityPage);
 
-        Material material = this.modelMapper.map(this.materialEntity, Material.class);
+        Material material = Material.builder()
+                .id(this.materialEntity.getId())
+                .name(this.materialEntity.getName())
+                .unitName(this.materialEntity.getUnitEntity().getName())
+                .build();
         given(this.modelMapper.map(any(MaterialEntity.class), eq(Material.class))).willReturn(material);
 
         // When
         final Page<Material> materialPage = this.materialService.readMaterialList(PageRequest.of(0, 10));
 
         // Then
-        assertThat(materialPage.getSize(), is(1));
+        assertThat(materialPage.getTotalElements(), is(1L));
         assertThat(materialPage.getContent().get(0), instanceOf(Material.class));
         assertThat(materialPage.getContent().get(0).getName(), is(this.materialEntity.getName()));
         assertThat(materialPage.getContent().get(0).getUnitName(), is(this.materialEntity.getUnitEntity().getName()));
