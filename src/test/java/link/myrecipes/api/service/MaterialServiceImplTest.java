@@ -67,15 +67,18 @@ public class MaterialServiceImplTest {
     public void When_존재하는_재료_조회_Then_정상_반환() {
 
         // Given
+        Material material = makeMaterial(this.materialEntity);
+
         given(this.materialRepository.findById(10)).willReturn(Optional.ofNullable(this.materialEntity));
+        given(this.modelMapper.map(any(MaterialEntity.class), eq(Material.class))).willReturn(material);
 
         // When
-        final Material material = this.materialService.readMaterial(10);
+        final Material readMaterial = this.materialService.readMaterial(10);
 
         // Then
-        assertThat(material, instanceOf(Material.class));
-        assertThat(material.getName(), is(this.materialEntity.getName()));
-        assertThat(material.getUnitName(), is(this.materialEntity.getUnitEntity().getName()));
+        assertThat(readMaterial, instanceOf(Material.class));
+        assertThat(readMaterial.getName(), is(this.materialEntity.getName()));
+        assertThat(readMaterial.getUnitName(), is(this.materialEntity.getUnitEntity().getName()));
     }
 
     @Test(expected = NotExistDataException.class)
@@ -90,13 +93,9 @@ public class MaterialServiceImplTest {
 
         // Given
         Page<MaterialEntity> materialEntityPage = new PageImpl<>(Collections.singletonList(this.materialEntity));
-        given(this.materialRepository.findAll(any(Pageable.class))).willReturn(materialEntityPage);
+        Material material = makeMaterial(this.materialEntity);
 
-        Material material = Material.builder()
-                .id(this.materialEntity.getId())
-                .name(this.materialEntity.getName())
-                .unitName(this.materialEntity.getUnitEntity().getName())
-                .build();
+        given(this.materialRepository.findAll(any(Pageable.class))).willReturn(materialEntityPage);
         given(this.modelMapper.map(any(MaterialEntity.class), eq(Material.class))).willReturn(material);
 
         // When
@@ -113,22 +112,39 @@ public class MaterialServiceImplTest {
     public void When_존재하는_단위로_재료_저장_Then_정상_반환() {
 
         // Given
+        Material material = makeMaterial(this.materialEntity);
+
         given(this.unitRepository.findByName(this.unitEntity.getName())).willReturn(Optional.ofNullable(this.unitEntity));
         given(this.materialRepository.save(any(MaterialEntity.class))).willReturn(this.materialEntity);
+        given(this.modelMapper.map(any(Material.class), eq(MaterialEntity.class))).willReturn(this.materialEntity);
+        given(this.modelMapper.map(any(MaterialEntity.class), eq(Material.class))).willReturn(material);
 
         // When
-        final Material material = this.materialService.createMaterial(this.materialEntity.toDTO(), 10001);
+        final Material savedMaterial = this.materialService.createMaterial(material, 10001);
 
         // Then
-        assertThat(material, instanceOf(Material.class));
-        assertThat(material.getName(), is(this.materialEntity.getName()));
-        assertThat(material.getUnitName(), is(this.materialEntity.getUnitEntity().getName()));
+        assertThat(savedMaterial, instanceOf(Material.class));
+        assertThat(savedMaterial.getName(), is(this.materialEntity.getName()));
+        assertThat(savedMaterial.getUnitName(), is(this.materialEntity.getUnitEntity().getName()));
     }
 
     @Test(expected = NotExistDataException.class)
     public void When_존재하는_않는_단위로_재료_저장_Then_예외_발생() {
 
+        // Given
+        Material material = makeMaterial(this.materialEntity);
+
+        given(this.modelMapper.map(any(Material.class), eq(MaterialEntity.class))).willReturn(this.materialEntity);
+
         // When
-        this.materialService.createMaterial(this.materialEntity.toDTO(), 10001);
+        this.materialService.createMaterial(material, 10001);
+    }
+
+    private Material makeMaterial(MaterialEntity materialEntity) {
+        return Material.builder()
+                .id(materialEntity.getId())
+                .name(materialEntity.getName())
+                .unitName(materialEntity.getUnitEntity().getName())
+                .build();
     }
 }

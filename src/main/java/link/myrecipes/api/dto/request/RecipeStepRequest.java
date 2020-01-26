@@ -1,6 +1,5 @@
 package link.myrecipes.api.dto.request;
 
-import link.myrecipes.api.domain.RecipeStepEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +12,7 @@ import javax.validation.constraints.Positive;
 @Getter
 @NoArgsConstructor
 public class RecipeStepRequest {
+
     @NotNull(message = "단계를 입력해주세요.")
     @Positive(message = "단계를 양수로 입력해주세요.")
     private Integer step;
@@ -25,16 +25,9 @@ public class RecipeStepRequest {
 
     @Builder
     public RecipeStepRequest(Integer step, String content, String image) {
+
         this.step = step;
         this.content = content;
         this.image = image;
-    }
-
-    public RecipeStepEntity toEntity() {
-        return RecipeStepEntity.builder()
-                .step(this.getStep())
-                .content(this.getContent())
-                .image(this.getImage())
-                .build();
     }
 }

@@ -82,7 +82,7 @@ public class RecipeController {
     @PostMapping
     @ApiOperation("레시피 저장")
     public ResponseEntity<ResourceSupport> createRecipe(@RequestBody @Valid RecipeRequest recipeRequest,
-                                                             @RequestParam int userId) {
+                                                        @RequestParam int userId) {
 
         Recipe savedRecipe = this.recipeService.createRecipe(recipeRequest, userId);
 

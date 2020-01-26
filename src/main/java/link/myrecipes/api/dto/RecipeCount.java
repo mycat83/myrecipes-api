@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class RecipeCount {
+
     private long count;
 
     public RecipeCount(long count) {

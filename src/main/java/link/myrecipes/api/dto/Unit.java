@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Unit {
+
     private String name;
 
     private String exchangeUnitName;

@@ -37,7 +37,7 @@ public class MaterialServiceImpl implements MaterialService {
             throw new NotExistDataException(MaterialEntity.class, id);
         }
 
-        return materialEntityOptional.get().toDTO();
+        return this.modelMapper.map(materialEntityOptional.get(), Material.class);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class MaterialServiceImpl implements MaterialService {
     @Transactional
     public Material createMaterial(Material material, int userId) {
 
-        MaterialEntity materialEntity = material.toEntity();
+        MaterialEntity materialEntity = this.modelMapper.map(material, MaterialEntity.class);
         materialEntity.setRegisterUserId(userId);
 
         Optional<UnitEntity> unitEntityOptional = this.unitRepository.findByName(material.getUnitName());
@@ -59,6 +59,6 @@ public class MaterialServiceImpl implements MaterialService {
         }
 
         materialEntity.setUnitEntity(unitEntityOptional.get());
-        return this.materialRepository.save(materialEntity).toDTO();
+        return this.modelMapper.map(this.materialRepository.save(materialEntity), Material.class);
     }
 }
