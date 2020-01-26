@@ -7,6 +7,7 @@ import link.myrecipes.api.dto.request.UserRequest;
 import link.myrecipes.api.repository.MemberRepository;
 import org.junit.After;
 import org.junit.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +29,9 @@ public class MemberControllerTest extends ControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -222,7 +226,7 @@ public class MemberControllerTest extends ControllerTest {
 
         UserEntity userEntity = saveUser();
         userEntity.update(updateUserEntity, 1002);
-        UserRequest userRequest = this.objectMapper.convertValue(userEntity, UserRequest.class);
+        UserRequest userRequest = this.modelMapper.map(userEntity, UserRequest.class);
 
         // When
         final ResultActions actions = this.mockMvc.perform(put("/members/{id}", userEntity.getId())

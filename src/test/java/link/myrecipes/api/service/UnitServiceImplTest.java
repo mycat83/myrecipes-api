@@ -2,6 +2,7 @@ package link.myrecipes.api.service;
 
 import link.myrecipes.api.domain.UnitEntity;
 import link.myrecipes.api.dto.Unit;
+import link.myrecipes.api.dto.request.UnitRequest;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.UnitRepository;
 import org.junit.Before;
@@ -76,19 +77,28 @@ public class UnitServiceImplTest {
 
         // Given
         Unit unit = makeUnit(this.unitEntity);
+        UnitRequest unitRequest = makeUnitRequest(this.unitEntity);
 
         given(this.unitRepository.save(any(UnitEntity.class))).willReturn(this.unitEntity);
         given(this.modelMapper.map(any(Unit.class), eq(UnitEntity.class))).willReturn(this.unitEntity);
         given(this.modelMapper.map(any(UnitEntity.class), eq(Unit.class))).willReturn(unit);
 
         // When
-        final Unit savedUnit = this.unitService.createUnit(unit, 10001);
+        final Unit savedUnit = this.unitService.createUnit(unitRequest, 10001);
 
         // Then
         assertThat(savedUnit, instanceOf(Unit.class));
         assertThat(savedUnit.getName(), is(this.unitEntity.getName()));
         assertThat(savedUnit.getExchangeUnitName(), is(this.unitEntity.getExchangeUnitName()));
         assertThat(savedUnit.getExchangeQuantity(), is(this.unitEntity.getExchangeQuantity()));
+    }
+
+    private UnitRequest makeUnitRequest(UnitEntity unitEntity) {
+        return UnitRequest.builder()
+                .name(unitEntity.getName())
+                .exchangeUnitName(unitEntity.getExchangeUnitName())
+                .exchangeQuantity(unitEntity.getExchangeQuantity())
+                .build();
     }
 
     private Unit makeUnit(UnitEntity unitEntity) {
