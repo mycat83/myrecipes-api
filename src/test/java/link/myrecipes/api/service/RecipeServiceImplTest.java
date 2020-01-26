@@ -130,9 +130,6 @@ public class RecipeServiceImplTest {
     public void When_레시피_저장_Then_정상_저장_확인() {
 
         // Given
-//        MaterialEntity materialEntity = MaterialEntity.builder().name("material1").build();
-//        Optional<MaterialEntity> materialEntityOptional = Optional.ofNullable(materialEntity);
-
         RecipeEntity recipeEntity = makeRecipeEntity(this.recipeRequest1);
         Optional<RecipeEntity> recipeEntityOptional = Optional.ofNullable(recipeEntity);
 
