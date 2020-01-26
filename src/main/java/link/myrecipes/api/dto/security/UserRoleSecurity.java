@@ -7,11 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class UserRoleSecurity {
-    private String role;
 
-    public String getRole() {
-        return role;
-    }
+    private String role;
 
     @Builder
     public UserRoleSecurity(String role) {

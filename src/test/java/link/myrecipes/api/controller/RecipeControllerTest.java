@@ -82,21 +82,21 @@ public class RecipeControllerTest extends ControllerTest {
                 .andExpect(jsonPath("people").value(recipeEntity.getPeople()))
                 .andExpect(jsonPath("registerUserId").value(recipeEntity.getRegisterUserId()))
                 .andExpect(jsonPath("registerDate").exists())
-                .andExpect(jsonPath("recipeMaterialViewList[0].materialId")
+                .andExpect(jsonPath("recipeMaterialList[0].materialId")
                         .value(recipeEntity.getRecipeMaterialEntityList().get(0).getMaterialEntity().getId()))
-                .andExpect(jsonPath("recipeMaterialViewList[0].materialName")
+                .andExpect(jsonPath("recipeMaterialList[0].materialName")
                         .value(recipeEntity.getRecipeMaterialEntityList().get(0).getMaterialEntity().getName()))
-                .andExpect(jsonPath("recipeMaterialViewList[0].materialUnitName")
+                .andExpect(jsonPath("recipeMaterialList[0].materialUnitName")
                         .value(recipeEntity.getRecipeMaterialEntityList().get(0).getMaterialEntity().getUnitEntity().getName()))
-                .andExpect(jsonPath("recipeMaterialViewList[0].quantity")
+                .andExpect(jsonPath("recipeMaterialList[0].quantity")
                         .value(recipeEntity.getRecipeMaterialEntityList().get(0).getQuantity()))
-                .andExpect(jsonPath("recipeStepViewList[0].step")
+                .andExpect(jsonPath("recipeStepList[0].step")
                         .value(recipeEntity.getRecipeStepEntityList().get(0).getStep()))
-                .andExpect(jsonPath("recipeStepViewList[0].content")
+                .andExpect(jsonPath("recipeStepList[0].content")
                         .value(recipeEntity.getRecipeStepEntityList().get(0).getContent()))
-                .andExpect(jsonPath("recipeStepViewList[0].image")
+                .andExpect(jsonPath("recipeStepList[0].image")
                         .value(recipeEntity.getRecipeStepEntityList().get(0).getImage()))
-                .andExpect(jsonPath("recipeTagViewList[0].tag")
+                .andExpect(jsonPath("recipeTagList[0].tag")
                         .value(recipeEntity.getRecipeTagEntityList().get(0).getTag()))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.recipes-create").exists())
@@ -132,14 +132,14 @@ public class RecipeControllerTest extends ControllerTest {
                                 fieldWithPath("people").description("레시피 인분"),
                                 fieldWithPath("registerUserId").description("레시피 등록자 아이디"),
                                 fieldWithPath("registerDate").description("레시피 등록일"),
-                                fieldWithPath("recipeMaterialViewList[0].materialId").description("레시피 재료 아이디"),
-                                fieldWithPath("recipeMaterialViewList[0].materialName").description("레시피 재료 이름"),
-                                fieldWithPath("recipeMaterialViewList[0].materialUnitName").description("레시피 재료 단위"),
-                                fieldWithPath("recipeMaterialViewList[0].quantity").description("레시피 재료 수량"),
-                                fieldWithPath("recipeStepViewList[0].step").description("레시피 단계"),
-                                fieldWithPath("recipeStepViewList[0].content").description("레시피 단계 내용"),
-                                fieldWithPath("recipeStepViewList[0].image").description("레시피 단계 이미지"),
-                                fieldWithPath("recipeTagViewList[0].tag").description("레시피 태그"),
+                                fieldWithPath("recipeMaterialList[0].materialId").description("레시피 재료 아이디"),
+                                fieldWithPath("recipeMaterialList[0].materialName").description("레시피 재료 이름"),
+                                fieldWithPath("recipeMaterialList[0].materialUnitName").description("레시피 재료 단위"),
+                                fieldWithPath("recipeMaterialList[0].quantity").description("레시피 재료 수량"),
+                                fieldWithPath("recipeStepList[0].step").description("레시피 단계"),
+                                fieldWithPath("recipeStepList[0].content").description("레시피 단계 내용"),
+                                fieldWithPath("recipeStepList[0].image").description("레시피 단계 이미지"),
+                                fieldWithPath("recipeTagList[0].tag").description("레시피 태그"),
                                 fieldWithPath("_links.self.href").description("현재 API"),
                                 fieldWithPath("_links.recipes-create.href").description("레시피 저장 API"),
                                 fieldWithPath("_links.recipes-update.href").description("레시피 수정 API"),

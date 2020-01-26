@@ -1,8 +1,6 @@
 package link.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import link.myrecipes.api.dto.Recipe;
-import link.myrecipes.api.dto.view.RecipeView;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,6 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "recipe")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(exclude = {"recipeMaterialEntityList", "recipeStepEntityList", "recipeTagEntityList"})
 @JsonIgnoreProperties("hibernateLazyInitializer")
@@ -92,10 +91,6 @@ public class RecipeEntity extends BaseEntity {
         this.recipeTagEntityList.clear();
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public void update(RecipeEntity recipeEntity, int userId) {
         this.title = recipeEntity.getTitle();
         this.image = recipeEntity.getImage();
@@ -103,52 +98,5 @@ public class RecipeEntity extends BaseEntity {
         this.difficulty = recipeEntity.getDifficulty();
         this.people = recipeEntity.getPeople();
         this.modifyUserId = userId;
-    }
-
-    public void increaseReadCount() {
-        this.readCount++;
-    }
-
-    public Recipe toDTO() {
-        Recipe recipe = Recipe.builder()
-                .id(this.getId())
-                .title(this.getTitle())
-                .image(this.getImage())
-                .estimatedTime(this.getEstimatedTime())
-                .difficulty(this.getDifficulty())
-                .build();
-
-        for (RecipeTagEntity recipeTagEntity : this.getRecipeTagEntityList()) {
-            recipe.addRecipeTag(recipeTagEntity.toDTO());
-        }
-
-        return recipe;
-    }
-
-    public RecipeView toViewDTO() {
-        RecipeView recipeView = RecipeView.builder()
-                .id(this.getId() == null ? 0 : this.getId())
-                .title(this.getTitle())
-                .image(this.getImage())
-                .estimatedTime(this.getEstimatedTime())
-                .difficulty(this.getDifficulty())
-                .people(this.getPeople())
-                .registerUserId(this.getRegisterUserId())
-                .registerDate(this.getRegisterDate())
-                .build();
-
-        for (RecipeMaterialEntity recipeMaterialEntity : this.getRecipeMaterialEntityList()) {
-            recipeView.addRecipeMaterialView(recipeMaterialEntity.toViewDTO());
-        }
-
-        for (RecipeStepEntity recipeStepEntity : this.getRecipeStepEntityList()) {
-            recipeView.addRecipeStepView(recipeStepEntity.toViewDTO());
-        }
-
-        for (RecipeTagEntity recipeTagEntity : this.getRecipeTagEntityList()) {
-            recipeView.addRecipeTagView(recipeTagEntity.toViewDTO());
-        }
-
-        return recipeView;
     }
 }

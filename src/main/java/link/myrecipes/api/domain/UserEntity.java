@@ -1,8 +1,6 @@
 package link.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import link.myrecipes.api.dto.User;
-import link.myrecipes.api.dto.security.UserSecurity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,6 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(exclude = "userRoleEntityList")
 @JsonIgnoreProperties("hibernateLazyInitializer")
@@ -70,22 +69,6 @@ public class UserEntity extends BaseEntity {
         this.userRoleEntityList.add(userRoleEntity);
     }
 
-    public void setAccountNonExpired(Boolean accountNonExpired) {
-        this.accountNonExpired = accountNonExpired;
-    }
-
-    public void setAccountNonLocked(Boolean accountNonLocked) {
-        this.accountNonLocked = accountNonLocked;
-    }
-
-    public void setCredentialsNonExpired(Boolean credentialsNonExpired) {
-        this.credentialsNonExpired = credentialsNonExpired;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
     public void update(UserEntity userEntity, int userId) {
         this.username = userEntity.getUsername();
         this.password = userEntity.getPassword();
@@ -93,28 +76,5 @@ public class UserEntity extends BaseEntity {
         this.phone = userEntity.getPhone();
         this.email = userEntity.getEmail();
         this.modifyUserId = userId;
-    }
-
-    public UserSecurity toSecurityDTO() {
-        return UserSecurity.builder()
-                .id(this.getId())
-                .username(this.getUsername())
-                .password(this.getPassword())
-                .accountNonExpired(this.getAccountNonExpired())
-                .accountNonLocked(this.getAccountNonLocked())
-                .credentialsNonExpired(this.getCredentialsNonExpired())
-                .enabled(this.getEnabled())
-                .build();
-    }
-
-    public User toDTO() {
-        return User.builder()
-                .id(this.getId())
-                .username(this.getUsername())
-                .password(this.getPassword())
-                .name(this.getName())
-                .phone(this.getPhone())
-                .email(this.getEmail())
-                .build();
     }
 }

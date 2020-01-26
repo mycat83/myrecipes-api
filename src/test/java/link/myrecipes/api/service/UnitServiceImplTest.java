@@ -49,12 +49,9 @@ public class UnitServiceImplTest {
     public void When_존재하는_단위_조회_Then_정상_반환() {
 
         // Given
+        Unit unit = makeUnit(this.unitEntity);
+
         given(this.unitRepository.findByName(this.unitEntity.getName())).willReturn(Optional.ofNullable(this.unitEntity));
-        Unit unit = Unit.builder()
-                .name(this.unitEntity.getName())
-                .exchangeUnitName(this.unitEntity.getExchangeUnitName())
-                .exchangeQuantity(this.unitEntity.getExchangeQuantity())
-                .build();
         given(this.modelMapper.map(any(UnitEntity.class), eq(Unit.class))).willReturn(unit);
 
         // When
@@ -78,13 +75,10 @@ public class UnitServiceImplTest {
     public void When_단위_저장_Then_정상_반환() {
 
         // Given
+        Unit unit = makeUnit(this.unitEntity);
+
         given(this.unitRepository.save(any(UnitEntity.class))).willReturn(this.unitEntity);
         given(this.modelMapper.map(any(Unit.class), eq(UnitEntity.class))).willReturn(this.unitEntity);
-        Unit unit = Unit.builder()
-                .name(this.unitEntity.getName())
-                .exchangeUnitName(this.unitEntity.getExchangeUnitName())
-                .exchangeQuantity(this.unitEntity.getExchangeQuantity())
-                .build();
         given(this.modelMapper.map(any(UnitEntity.class), eq(Unit.class))).willReturn(unit);
 
         // When
@@ -95,5 +89,13 @@ public class UnitServiceImplTest {
         assertThat(savedUnit.getName(), is(this.unitEntity.getName()));
         assertThat(savedUnit.getExchangeUnitName(), is(this.unitEntity.getExchangeUnitName()));
         assertThat(savedUnit.getExchangeQuantity(), is(this.unitEntity.getExchangeQuantity()));
+    }
+
+    private Unit makeUnit(UnitEntity unitEntity) {
+        return Unit.builder()
+                .name(unitEntity.getName())
+                .exchangeUnitName(unitEntity.getExchangeUnitName())
+                .exchangeQuantity(unitEntity.getExchangeQuantity())
+                .build();
     }
 }

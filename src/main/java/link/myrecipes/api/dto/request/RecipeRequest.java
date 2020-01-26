@@ -1,6 +1,5 @@
 package link.myrecipes.api.dto.request;
 
-import link.myrecipes.api.domain.RecipeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class RecipeRequest {
+
     @NotBlank(message = "레시피 제목을 입력해주세요.")
     @Length(max = 60, message = "레시피 제목은 최대 60자까지 입력이 가능합니다.")
     private String title;
@@ -45,6 +45,7 @@ public class RecipeRequest {
 
     @Builder
     public RecipeRequest(String title, String image, Integer estimatedTime, Integer difficulty, Integer people) {
+
         this.title = title;
         this.image = image;
         this.estimatedTime = estimatedTime;
@@ -62,15 +63,5 @@ public class RecipeRequest {
 
     public void addRecipeTag(RecipeTagRequest recipeTagRequest) {
         this.recipeTagRequestList.add(recipeTagRequest);
-    }
-
-    public RecipeEntity toEntity() {
-        return RecipeEntity.builder()
-                .title(this.getTitle())
-                .image(this.getImage())
-                .estimatedTime(this.getEstimatedTime())
-                .difficulty(this.getDifficulty())
-                .people(this.getPeople())
-                .build();
     }
 }
