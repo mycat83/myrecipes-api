@@ -212,6 +212,29 @@ public class MemberControllerTest extends ControllerTest {
                 ));
     }
 
+
+    @Test
+    public void When_잘못된_값으로_회원_저장_Then_404_에러_리턴() throws Exception {
+
+        // Given
+        UserRequest userRequest = new UserRequest();
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(post("/members")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(userRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
+    }
+
     @Test
     public void When_회원정보_수정_Then_정상_리턴() throws Exception {
 
@@ -279,6 +302,39 @@ public class MemberControllerTest extends ControllerTest {
                                 fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
+    }
+
+    @Test
+    public void When_잘못된_값으로_회원정보_수정_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        UserEntity updateUserEntity = UserEntity.builder()
+                .username("user02")
+                .password("234567")
+                .name("유저02")
+                .phone("01023456789")
+                .email("user02@domain.com")
+                .build();
+
+        UserEntity userEntity = saveUser();
+        userEntity.update(updateUserEntity, 1002);
+        UserRequest userRequest = new UserRequest();
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(put("/members/{id}", userEntity.getId())
+                .param("userId", "1001")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(userRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
     }
 
     private UserEntity saveUser() {

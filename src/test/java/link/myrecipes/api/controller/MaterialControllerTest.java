@@ -3,7 +3,7 @@ package link.myrecipes.api.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import link.myrecipes.api.domain.MaterialEntity;
 import link.myrecipes.api.domain.UnitEntity;
-import link.myrecipes.api.dto.Material;
+import link.myrecipes.api.dto.request.MaterialRequest;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.UnitRepository;
 import org.junit.After;
@@ -40,6 +40,7 @@ public class MaterialControllerTest extends ControllerTest {
     @After
     public void tearDown() {
         this.materialRepository.deleteAll();
+        this.unitRepository.deleteAll();
     }
 
     @Test
@@ -161,7 +162,7 @@ public class MaterialControllerTest extends ControllerTest {
 
         // Given
         saveUnit();
-        Material material = Material.builder()
+        MaterialRequest materialRequest = MaterialRequest.builder()
                 .name("재료")
                 .unitName("kg")
                 .build();
@@ -171,7 +172,7 @@ public class MaterialControllerTest extends ControllerTest {
                 .param("userId", "1001")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON)
-                .content(this.objectMapper.writeValueAsString(material)));
+                .content(this.objectMapper.writeValueAsString(materialRequest)));
 
         // Then
         actions.andDo(print())
@@ -179,8 +180,8 @@ public class MaterialControllerTest extends ControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("name").value(material.getName()))
-                .andExpect(jsonPath("unitName").value(material.getUnitName()))
+                .andExpect(jsonPath("name").value(materialRequest.getName()))
+                .andExpect(jsonPath("unitName").value(materialRequest.getUnitName()))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.materials-read").exists())
                 .andExpect(jsonPath("_links.materials-query").exists())
@@ -197,7 +198,6 @@ public class MaterialControllerTest extends ControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type 헤더")
                         ),
                         requestFields(
-                                fieldWithPath("id").description("재료 아이디"),
                                 fieldWithPath("name").description("재료 이름"),
                                 fieldWithPath("unitName").description("재료의 단위 이름")
                         ),
@@ -214,6 +214,29 @@ public class MaterialControllerTest extends ControllerTest {
                                 fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
+    }
+
+    @Test
+    public void When_잘못된_값으로_재료_저장_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        MaterialRequest materialRequest = new MaterialRequest();
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(post("/materials")
+                .param("userId", "1001")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(materialRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
     }
 
     private UnitEntity saveUnit() {

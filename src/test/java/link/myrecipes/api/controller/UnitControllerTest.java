@@ -155,10 +155,8 @@ public class UnitControllerTest extends ControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("content[0].objectName").exists())
                 .andExpect(jsonPath("content[0].defaultMessage").exists())
-                .andExpect(jsonPath("content[0].code").exists());
-//                .andExpect(jsonPath("_links.self").exists())
-//                .andExpect(jsonPath("_links.units-read").exists())
-//                .andExpect(jsonPath("_links.profile").exists());
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
     }
 
     private UnitEntity saveUnit() {

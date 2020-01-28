@@ -4,10 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import link.myrecipes.api.common.LinkType;
-import link.myrecipes.api.common.RestResource;
-import link.myrecipes.api.common.RestResourceSupport;
-import link.myrecipes.api.common.RestResources;
+import link.myrecipes.api.common.*;
 import link.myrecipes.api.dto.Recipe;
 import link.myrecipes.api.dto.RecipeCount;
 import link.myrecipes.api.dto.request.RecipeRequest;
@@ -20,6 +17,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -82,7 +80,12 @@ public class RecipeController {
     @PostMapping
     @ApiOperation("레시피 저장")
     public ResponseEntity<ResourceSupport> createRecipe(@RequestBody @Valid RecipeRequest recipeRequest,
-                                                        @RequestParam int userId) {
+                                                        Errors errors, @RequestParam int userId) {
+
+        if (errors.hasErrors()) {
+            ErrorsResource errorsResource = new ErrorsResource(errors);
+            return ResponseEntity.badRequest().body(errorsResource);
+        }
 
         Recipe savedRecipe = this.recipeService.createRecipe(recipeRequest, userId);
 
@@ -99,8 +102,14 @@ public class RecipeController {
     @PutMapping("/{id}")
     @ApiOperation("레시피 수정")
     public ResponseEntity<ResourceSupport> updateRecipe(@PathVariable int id,
-                                                             @RequestBody @Valid RecipeRequest recipeRequest,
-                                                             @RequestParam int userId) {
+                                                        @RequestBody @Valid RecipeRequest recipeRequest,
+                                                        Errors errors,
+                                                        @RequestParam int userId) {
+
+        if (errors.hasErrors()) {
+            ErrorsResource errorsResource = new ErrorsResource(errors);
+            return ResponseEntity.badRequest().body(errorsResource);
+        }
 
         Recipe savedRecipe = this.recipeService.updateRecipe(id, recipeRequest, userId);
 

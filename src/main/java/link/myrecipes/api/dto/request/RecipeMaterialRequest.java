@@ -11,7 +11,7 @@ import javax.validation.constraints.Positive;
 @NoArgsConstructor
 public class RecipeMaterialRequest {
 
-    @Positive(message = "요리 재료를 입력해주세요.")
+    @Positive(message = "요리 재료를 입력해주세요.")   // TODO: 재료 존재여부 Custom Validator 적용
     private Integer materialId;
 
     @NotNull(message = "요리 재료의 수량을 입력해주세요.")

@@ -80,7 +80,7 @@ public class UnitServiceImplTest {
         UnitRequest unitRequest = makeUnitRequest(this.unitEntity);
 
         given(this.unitRepository.save(any(UnitEntity.class))).willReturn(this.unitEntity);
-        given(this.modelMapper.map(any(Unit.class), eq(UnitEntity.class))).willReturn(this.unitEntity);
+        given(this.modelMapper.map(any(UnitRequest.class), eq(UnitEntity.class))).willReturn(this.unitEntity);
         given(this.modelMapper.map(any(UnitEntity.class), eq(Unit.class))).willReturn(unit);
 
         // When
