@@ -3,6 +3,7 @@ package link.myrecipes.api.service;
 import link.myrecipes.api.domain.MaterialEntity;
 import link.myrecipes.api.domain.UnitEntity;
 import link.myrecipes.api.dto.Material;
+import link.myrecipes.api.dto.request.MaterialRequest;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.UnitRepository;
@@ -112,15 +113,16 @@ public class MaterialServiceImplTest {
     public void When_존재하는_단위로_재료_저장_Then_정상_반환() {
 
         // Given
+        MaterialRequest materialRequest = makeMaterialRequest(this.materialEntity);
         Material material = makeMaterial(this.materialEntity);
 
         given(this.unitRepository.findByName(this.unitEntity.getName())).willReturn(Optional.ofNullable(this.unitEntity));
         given(this.materialRepository.save(any(MaterialEntity.class))).willReturn(this.materialEntity);
-        given(this.modelMapper.map(any(Material.class), eq(MaterialEntity.class))).willReturn(this.materialEntity);
+        given(this.modelMapper.map(any(MaterialRequest.class), eq(MaterialEntity.class))).willReturn(this.materialEntity);
         given(this.modelMapper.map(any(MaterialEntity.class), eq(Material.class))).willReturn(material);
 
         // When
-        final Material savedMaterial = this.materialService.createMaterial(material, 10001);
+        final Material savedMaterial = this.materialService.createMaterial(materialRequest, 10001);
 
         // Then
         assertThat(savedMaterial, instanceOf(Material.class));
@@ -132,12 +134,19 @@ public class MaterialServiceImplTest {
     public void When_존재하는_않는_단위로_재료_저장_Then_예외_발생() {
 
         // Given
-        Material material = makeMaterial(this.materialEntity);
+        MaterialRequest materialRequest = makeMaterialRequest(this.materialEntity);
 
-        given(this.modelMapper.map(any(Material.class), eq(MaterialEntity.class))).willReturn(this.materialEntity);
+        given(this.modelMapper.map(any(MaterialRequest.class), eq(MaterialEntity.class))).willReturn(this.materialEntity);
 
         // When
-        this.materialService.createMaterial(material, 10001);
+        this.materialService.createMaterial(materialRequest, 10001);
+    }
+
+    private MaterialRequest makeMaterialRequest(MaterialEntity materialEntity) {
+        return MaterialRequest.builder()
+                .name(materialEntity.getName())
+                .unitName(materialEntity.getUnitEntity().getName())
+                .build();
     }
 
     private Material makeMaterial(MaterialEntity materialEntity) {

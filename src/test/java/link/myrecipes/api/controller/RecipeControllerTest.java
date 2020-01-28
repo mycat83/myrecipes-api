@@ -6,10 +6,7 @@ import link.myrecipes.api.dto.request.RecipeMaterialRequest;
 import link.myrecipes.api.dto.request.RecipeRequest;
 import link.myrecipes.api.dto.request.RecipeStepRequest;
 import link.myrecipes.api.dto.request.RecipeTagRequest;
-import link.myrecipes.api.repository.MaterialRepository;
-import link.myrecipes.api.repository.PopularRecipeRepository;
-import link.myrecipes.api.repository.RecipeRepository;
-import link.myrecipes.api.repository.UnitRepository;
+import link.myrecipes.api.repository.*;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +41,15 @@ public class RecipeControllerTest extends ControllerTest {
     private RecipeRepository recipeRepository;
 
     @Autowired
+    private RecipeMaterialRepository recipeMaterialRepository;
+
+    @Autowired
+    private RecipeStepRepository recipeStepRepository;
+
+    @Autowired
+    private RecipeTagRepository recipeTagRepository;
+
+    @Autowired
     private MaterialRepository materialRepository;
 
     @Autowired
@@ -54,7 +60,12 @@ public class RecipeControllerTest extends ControllerTest {
 
     @After
     public void tearDown() {
+        this.recipeMaterialRepository.deleteAll();
+        this.recipeStepRepository.deleteAll();
+        this.recipeTagRepository.deleteAll();
         this.recipeRepository.deleteAll();
+        this.materialRepository.deleteAll();
+        this.unitRepository.deleteAll();
     }
 
     @Test
@@ -332,6 +343,29 @@ public class RecipeControllerTest extends ControllerTest {
     }
 
     @Test
+    public void When_잘못된_값으로_레시피_저장_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        RecipeRequest recipeRequest = new RecipeRequest();
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(post("/recipes")
+                .param("userId", "1001")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(recipeRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
+    }
+
+    @Test
     public void When_레시피_수정_Then_정상_리턴() throws Exception {
 
         // Given
@@ -427,6 +461,33 @@ public class RecipeControllerTest extends ControllerTest {
                                 fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
+    }
+
+    @Test
+    public void When_잘못된_값으로_레시피_수정_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        UnitEntity unitEntity = saveUnit();
+        MaterialEntity materialEntity = saveMaterial(unitEntity);
+        RecipeEntity recipeEntity = saveRecipe(materialEntity, 1);
+
+        RecipeRequest recipeRequest = new RecipeRequest();
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(put("/recipes/{id}", recipeEntity.getId())
+                .param("userId", "1001")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(recipeRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
     }
 
     @Test
