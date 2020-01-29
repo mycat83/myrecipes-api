@@ -366,6 +366,54 @@ public class RecipeControllerTest extends ControllerTest {
     }
 
     @Test
+    public void When_존재하지않는_재료로_레시피_저장_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        RecipeRequest recipeRequest = RecipeRequest.builder()
+                .title("레시피")
+                .image("recipe.jpg")
+                .estimatedTime(30)
+                .difficulty(1)
+                .people(1)
+                .build();
+
+        RecipeMaterialRequest recipeMaterialRequest = RecipeMaterialRequest.builder()
+                .materialId(100)
+                .quantity(10D)
+                .build();
+
+        RecipeStepRequest recipeStepRequest = RecipeStepRequest.builder()
+                .step(1)
+                .content("1단계")
+                .image("step1.jpg")
+                .build();
+
+        RecipeTagRequest recipeTagRequest = RecipeTagRequest.builder()
+                .tag("태그")
+                .build();
+
+        recipeRequest.addRecipeMaterial(recipeMaterialRequest);
+        recipeRequest.addRecipeStep(recipeStepRequest);
+        recipeRequest.addRecipeTag(recipeTagRequest);
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(post("/recipes")
+                .param("userId", "1001")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(recipeRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
+    }
+
+    @Test
     public void When_레시피_수정_Then_정상_리턴() throws Exception {
 
         // Given
@@ -472,6 +520,58 @@ public class RecipeControllerTest extends ControllerTest {
         RecipeEntity recipeEntity = saveRecipe(materialEntity, 1);
 
         RecipeRequest recipeRequest = new RecipeRequest();
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(put("/recipes/{id}", recipeEntity.getId())
+                .param("userId", "1001")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(recipeRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
+    }
+
+    @Test
+    public void When_존재하지않는_재료로_레시피_수정_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        UnitEntity unitEntity = saveUnit();
+        MaterialEntity materialEntity = saveMaterial(unitEntity);
+        RecipeEntity recipeEntity = saveRecipe(materialEntity, 1);
+
+        RecipeRequest recipeRequest = RecipeRequest.builder()
+                .title("레시피02")
+                .image("recipe02.jpg")
+                .estimatedTime(60)
+                .difficulty(2)
+                .people(2)
+                .build();
+
+        RecipeMaterialRequest recipeMaterialRequest = RecipeMaterialRequest.builder()
+                .materialId(100)
+                .quantity(20D)
+                .build();
+
+        RecipeStepRequest recipeStepRequest = RecipeStepRequest.builder()
+                .step(2)
+                .content("2단계")
+                .image("step2.jpg")
+                .build();
+
+        RecipeTagRequest recipeTagRequest = RecipeTagRequest.builder()
+                .tag("태그2")
+                .build();
+
+        recipeRequest.addRecipeMaterial(recipeMaterialRequest);
+        recipeRequest.addRecipeStep(recipeStepRequest);
+        recipeRequest.addRecipeTag(recipeTagRequest);
 
         // When
         final ResultActions actions = this.mockMvc.perform(put("/recipes/{id}", recipeEntity.getId())

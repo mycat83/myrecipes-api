@@ -33,9 +33,11 @@ public class RecipeController {
 
     private static final String RECIPES = "recipes";
     private final RecipeService recipeService;
+    private final RecipeMaterialValidator recipeMaterialValidator;
 
-    public RecipeController(RecipeService recipeService) {
+    public RecipeController(RecipeService recipeService, RecipeMaterialValidator recipeMaterialValidator) {
         this.recipeService = recipeService;
+        this.recipeMaterialValidator = recipeMaterialValidator;
     }
 
     @GetMapping("/{id}")
@@ -82,10 +84,8 @@ public class RecipeController {
     public ResponseEntity<ResourceSupport> createRecipe(@RequestBody @Valid RecipeRequest recipeRequest,
                                                         Errors errors, @RequestParam int userId) {
 
-        if (errors.hasErrors()) {
-            ErrorsResource errorsResource = new ErrorsResource(errors);
-            return ResponseEntity.badRequest().body(errorsResource);
-        }
+        ResponseEntity<ResourceSupport> errorsResource = checkErrors(recipeRequest, errors);
+        if (errorsResource != null) return errorsResource;
 
         Recipe savedRecipe = this.recipeService.createRecipe(recipeRequest, userId);
 
@@ -106,10 +106,8 @@ public class RecipeController {
                                                         Errors errors,
                                                         @RequestParam int userId) {
 
-        if (errors.hasErrors()) {
-            ErrorsResource errorsResource = new ErrorsResource(errors);
-            return ResponseEntity.badRequest().body(errorsResource);
-        }
+        ResponseEntity<ResourceSupport> errorsResource = checkErrors(recipeRequest, errors);
+        if (errorsResource != null) return errorsResource;
 
         Recipe savedRecipe = this.recipeService.updateRecipe(id, recipeRequest, userId);
 
@@ -183,5 +181,19 @@ public class RecipeController {
         recipeResources.addProfileLink("/docs/index.html#resources-recipes-popular");
 
         return ResponseEntity.ok(recipeResources);
+    }
+
+    private ResponseEntity<ResourceSupport> checkErrors(@RequestBody @Valid RecipeRequest recipeRequest, Errors errors) {
+        if (errors.hasErrors()) {
+            ErrorsResource errorsResource = new ErrorsResource(errors);
+            return ResponseEntity.badRequest().body(errorsResource);
+        }
+
+        recipeMaterialValidator.validate(recipeRequest.getRecipeMaterialRequestList(), errors);
+        if (errors.hasErrors()) {
+            ErrorsResource errorsResource = new ErrorsResource(errors);
+            return ResponseEntity.badRequest().body(errorsResource);
+        }
+        return null;
     }
 }
