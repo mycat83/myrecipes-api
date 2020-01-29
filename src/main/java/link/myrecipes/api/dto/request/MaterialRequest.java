@@ -15,7 +15,7 @@ public class MaterialRequest {
     @NotBlank(message = "재료 이름을 입력해주세요.")
     private String name;
 
-    @NotBlank(message = "재료 단위를 입력해주세요.")   // TODO: 재료 단위 존재여부 Custom Validator 적용
+    @NotBlank(message = "재료 단위를 입력해주세요.")
     private String unitName;
 
     @Builder

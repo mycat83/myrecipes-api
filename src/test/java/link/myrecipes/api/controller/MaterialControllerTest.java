@@ -239,6 +239,32 @@ public class MaterialControllerTest extends ControllerTest {
                 .andExpect(jsonPath("_links.index").exists());
     }
 
+    @Test
+    public void When_존재하지않는_단위로_재료_저장_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        MaterialRequest materialRequest = MaterialRequest.builder()
+                .name("재료")
+                .unitName("kg")
+                .build();
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(post("/materials")
+                .param("userId", "1001")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(materialRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
+    }
+
     private UnitEntity saveUnit() {
 
         UnitEntity unitEntity = UnitEntity.builder()

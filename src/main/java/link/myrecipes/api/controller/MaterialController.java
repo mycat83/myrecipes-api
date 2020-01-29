@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import link.myrecipes.api.common.ErrorsResource;
 import link.myrecipes.api.common.LinkType;
+import link.myrecipes.api.common.MaterialValidator;
 import link.myrecipes.api.common.RestResource;
 import link.myrecipes.api.dto.Material;
 import link.myrecipes.api.dto.request.MaterialRequest;
@@ -29,9 +30,11 @@ public class MaterialController {
 
     private static final String MATERIALS = "materials";
     private final MaterialService materialService;
+    private final MaterialValidator materialValidator;
 
-    public MaterialController(MaterialService materialService) {
+    public MaterialController(MaterialService materialService, MaterialValidator materialValidator) {
         this.materialService = materialService;
+        this.materialValidator = materialValidator;
     }
 
     @GetMapping("/{id}")
@@ -73,6 +76,12 @@ public class MaterialController {
     public ResponseEntity<ResourceSupport> createMaterial(@RequestBody @Valid MaterialRequest materialRequest,
                                                           Errors errors, @RequestParam int userId) {
 
+        if (errors.hasErrors()) {
+            ErrorsResource errorsResource = new ErrorsResource(errors);
+            return ResponseEntity.badRequest().body(errorsResource);
+        }
+
+        materialValidator.validate(materialRequest, errors);
         if (errors.hasErrors()) {
             ErrorsResource errorsResource = new ErrorsResource(errors);
             return ResponseEntity.badRequest().body(errorsResource);
