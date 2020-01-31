@@ -3,11 +3,11 @@ package link.myrecipes.api.service;
 import link.myrecipes.api.domain.MaterialEntity;
 import link.myrecipes.api.domain.UnitEntity;
 import link.myrecipes.api.dto.Material;
+import link.myrecipes.api.dto.request.MaterialRequest;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.UnitRepository;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -68,15 +68,18 @@ public class MaterialServiceImplTest {
     public void When_존재하는_재료_조회_Then_정상_반환() {
 
         // Given
+        Material material = makeMaterial(this.materialEntity);
+
         given(this.materialRepository.findById(10)).willReturn(Optional.ofNullable(this.materialEntity));
+        given(this.modelMapper.map(any(MaterialEntity.class), eq(Material.class))).willReturn(material);
 
         // When
-        final Material material = this.materialService.readMaterial(10);
+        final Material readMaterial = this.materialService.readMaterial(10);
 
         // Then
-        assertThat(material, instanceOf(Material.class));
-        assertThat(material.getName(), is(this.materialEntity.getName()));
-        assertThat(material.getUnitName(), is(this.materialEntity.getUnitEntity().getName()));
+        assertThat(readMaterial, instanceOf(Material.class));
+        assertThat(readMaterial.getName(), is(this.materialEntity.getName()));
+        assertThat(readMaterial.getUnitName(), is(this.materialEntity.getUnitEntity().getName()));
     }
 
     @Test(expected = NotExistDataException.class)
@@ -87,21 +90,20 @@ public class MaterialServiceImplTest {
     }
 
     @Test
-    @Ignore
     public void When_재료_리스트_조회_Then_정상_반환() {
 
         // Given
         Page<MaterialEntity> materialEntityPage = new PageImpl<>(Collections.singletonList(this.materialEntity));
-        given(this.materialRepository.findAll(any(Pageable.class))).willReturn(materialEntityPage);
+        Material material = makeMaterial(this.materialEntity);
 
-        Material material = this.modelMapper.map(this.materialEntity, Material.class);
+        given(this.materialRepository.findAll(any(Pageable.class))).willReturn(materialEntityPage);
         given(this.modelMapper.map(any(MaterialEntity.class), eq(Material.class))).willReturn(material);
 
         // When
         final Page<Material> materialPage = this.materialService.readMaterialList(PageRequest.of(0, 10));
 
         // Then
-        assertThat(materialPage.getSize(), is(1));
+        assertThat(materialPage.getTotalElements(), is(1L));
         assertThat(materialPage.getContent().get(0), instanceOf(Material.class));
         assertThat(materialPage.getContent().get(0).getName(), is(this.materialEntity.getName()));
         assertThat(materialPage.getContent().get(0).getUnitName(), is(this.materialEntity.getUnitEntity().getName()));
@@ -111,22 +113,47 @@ public class MaterialServiceImplTest {
     public void When_존재하는_단위로_재료_저장_Then_정상_반환() {
 
         // Given
+        MaterialRequest materialRequest = makeMaterialRequest(this.materialEntity);
+        Material material = makeMaterial(this.materialEntity);
+
         given(this.unitRepository.findByName(this.unitEntity.getName())).willReturn(Optional.ofNullable(this.unitEntity));
         given(this.materialRepository.save(any(MaterialEntity.class))).willReturn(this.materialEntity);
+        given(this.modelMapper.map(any(MaterialRequest.class), eq(MaterialEntity.class))).willReturn(this.materialEntity);
+        given(this.modelMapper.map(any(MaterialEntity.class), eq(Material.class))).willReturn(material);
 
         // When
-        final Material material = this.materialService.createMaterial(this.materialEntity.toDTO(), 10001);
+        final Material savedMaterial = this.materialService.createMaterial(materialRequest, 10001);
 
         // Then
-        assertThat(material, instanceOf(Material.class));
-        assertThat(material.getName(), is(this.materialEntity.getName()));
-        assertThat(material.getUnitName(), is(this.materialEntity.getUnitEntity().getName()));
+        assertThat(savedMaterial, instanceOf(Material.class));
+        assertThat(savedMaterial.getName(), is(this.materialEntity.getName()));
+        assertThat(savedMaterial.getUnitName(), is(this.materialEntity.getUnitEntity().getName()));
     }
 
     @Test(expected = NotExistDataException.class)
     public void When_존재하는_않는_단위로_재료_저장_Then_예외_발생() {
 
+        // Given
+        MaterialRequest materialRequest = makeMaterialRequest(this.materialEntity);
+
+        given(this.modelMapper.map(any(MaterialRequest.class), eq(MaterialEntity.class))).willReturn(this.materialEntity);
+
         // When
-        this.materialService.createMaterial(this.materialEntity.toDTO(), 10001);
+        this.materialService.createMaterial(materialRequest, 10001);
+    }
+
+    private MaterialRequest makeMaterialRequest(MaterialEntity materialEntity) {
+        return MaterialRequest.builder()
+                .name(materialEntity.getName())
+                .unitName(materialEntity.getUnitEntity().getName())
+                .build();
+    }
+
+    private Material makeMaterial(MaterialEntity materialEntity) {
+        return Material.builder()
+                .id(materialEntity.getId())
+                .name(materialEntity.getName())
+                .unitName(materialEntity.getUnitEntity().getName())
+                .build();
     }
 }

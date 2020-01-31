@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "recipe_tag")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class RecipeTagEntity {

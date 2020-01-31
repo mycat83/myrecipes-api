@@ -1,6 +1,5 @@
 package link.myrecipes.api.dto;
 
-import link.myrecipes.api.domain.RecipeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class Recipe implements Serializable {
+
     private Integer id;
 
     private String title;
@@ -28,6 +28,7 @@ public class Recipe implements Serializable {
 
     @Builder
     public Recipe(Integer id, String title, String image, Integer estimatedTime, Integer difficulty) {
+
         this.id = id;
         this.title = title;
         this.image = image;
@@ -39,12 +40,4 @@ public class Recipe implements Serializable {
         this.recipeTagList.add(recipeTag);
     }
 
-    public RecipeEntity toEntity() {
-        return RecipeEntity.builder()
-                .title(this.getTitle())
-                .image(this.getImage())
-                .estimatedTime(this.getEstimatedTime())
-                .difficulty(this.getDifficulty())
-                .build();
-    }
 }

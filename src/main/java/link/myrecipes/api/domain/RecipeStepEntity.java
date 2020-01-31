@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "recipe_step")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class RecipeStepEntity {

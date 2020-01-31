@@ -9,6 +9,7 @@ import link.myrecipes.api.exception.CustomValidationException;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.exception.UsernameNotFoundException;
 import link.myrecipes.api.repository.MemberRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,21 +17,26 @@ import java.util.Optional;
 
 @Service
 public class MemberServiceImpl implements MemberService {
-    private final MemberRepository memberRepository;
 
-    public MemberServiceImpl(MemberRepository memberRepository) {
+    private final MemberRepository memberRepository;
+    private final ModelMapper modelMapper;
+
+    public MemberServiceImpl(MemberRepository memberRepository, ModelMapper modelMapper) {
+
         this.memberRepository = memberRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
     public UserSecurity login(String username) {
+
         Optional<UserEntity> userEntityOptional = this.memberRepository.findByUsername(username);
 
         if (userEntityOptional.isEmpty()) {
             throw new UsernameNotFoundException(username);
         }
 
-        UserSecurity userSecurity = userEntityOptional.get().toSecurityDTO();
+        UserSecurity userSecurity = this.modelMapper.map(userEntityOptional.get(), UserSecurity.class);
         for (UserRoleEntity userRoleEntity : userEntityOptional.get().getUserRoleEntityList()) {
             userSecurity.addUserRoleSecurity(userRoleEntity.toSecurityDTO());
         }
@@ -39,23 +45,25 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public User readMember(int id) {
+
         Optional<UserEntity> userEntityOptional = this.memberRepository.findById(id);
 
         if (userEntityOptional.isEmpty()) {
             throw new NotExistDataException(UserEntity.class, id);
         }
 
-        return userEntityOptional.get().toDTO();
+        return this.modelMapper.map(userEntityOptional.get(), User.class);
     }
 
     @Override
     @Transactional
     public User createMember(UserRequest userRequest) {
+
         if (this.memberRepository.findByUsername(userRequest.getUsername()).isPresent()) {
             throw new CustomValidationException("이미 사용중인 아이디입니다.", "username");
         }
 
-        UserEntity userEntity = userRequest.toEntity();
+        UserEntity userEntity = this.modelMapper.map(userRequest, UserEntity.class);
         UserRoleEntity userRoleEntity = UserRoleEntity.builder()
                 .role("USER")
                 .build();
@@ -71,12 +79,13 @@ public class MemberServiceImpl implements MemberService {
         savedUserEntity.setRegisterUserId(savedUserEntity.getId());
         savedUserEntity.setModifyUserId(savedUserEntity.getId());
 
-        return this.memberRepository.save(savedUserEntity).toDTO();
+        return this.modelMapper.map(this.memberRepository.save(savedUserEntity), User.class);
     }
 
     @Override
     @Transactional
     public User updateMember(int id, UserRequest userRequest, int userId) {
+
         if (this.memberRepository.findByUsername(userRequest.getUsername()).isPresent()) {
             throw new CustomValidationException("이미 사용중인 아이디입니다.", "username");
         }
@@ -87,8 +96,9 @@ public class MemberServiceImpl implements MemberService {
             throw new NotExistDataException(UserEntity.class, id);
         }
 
-        UserEntity selectedUserEntity = userEntityOptional.get();
-        selectedUserEntity.update(userRequest.toEntity(), userId);
-        return this.memberRepository.save(selectedUserEntity).toDTO();
+        UserEntity readUserEntity = userEntityOptional.get();
+        UserEntity userEntity = this.modelMapper.map(userRequest, UserEntity.class);
+        readUserEntity.update(userEntity, userId);
+        return this.modelMapper.map(this.memberRepository.save(readUserEntity), User.class);
     }
 }

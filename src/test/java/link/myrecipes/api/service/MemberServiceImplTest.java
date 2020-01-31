@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.modelmapper.ModelMapper;
 
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,6 +36,9 @@ public class MemberServiceImplTest {
 
     @Mock
     private MemberRepository memberRepository;
+
+    @Mock
+    private ModelMapper modelMapper;
 
     @Before
     public void setUp() {
@@ -74,18 +79,19 @@ public class MemberServiceImplTest {
 
         // Given
         given(this.memberRepository.findByUsername(userSecurity.getUsername())).willReturn(Optional.ofNullable(this.userEntity));
+        given(this.modelMapper.map(any(UserEntity.class), eq(UserSecurity.class))).willReturn(this.userSecurity);
 
         // When
-        final UserSecurity selectedUserSecurity = this.memberService.login(this.userSecurity.getUsername());
+        final UserSecurity readUserSecurity = this.memberService.login(this.userSecurity.getUsername());
 
         // Then
-        assertThat(selectedUserSecurity, instanceOf(UserSecurity.class));
-        assertThat(selectedUserSecurity.getUsername(), is(this.userSecurity.getUsername()));
-        assertThat(selectedUserSecurity.getPassword(), is(this.userSecurity.getPassword()));
-        assertThat(selectedUserSecurity.isAccountNonExpired(), is(this.userSecurity.isAccountNonExpired()));
-        assertThat(selectedUserSecurity.isAccountNonLocked(), is(this.userSecurity.isAccountNonLocked()));
-        assertThat(selectedUserSecurity.isCredentialsNonExpired(), is(this.userSecurity.isCredentialsNonExpired()));
-        assertThat(selectedUserSecurity.isEnabled(), is(this.userSecurity.isEnabled()));
+        assertThat(readUserSecurity, instanceOf(UserSecurity.class));
+        assertThat(readUserSecurity.getUsername(), is(this.userSecurity.getUsername()));
+        assertThat(readUserSecurity.getPassword(), is(this.userSecurity.getPassword()));
+        assertThat(readUserSecurity.isAccountNonExpired(), is(this.userSecurity.isAccountNonExpired()));
+        assertThat(readUserSecurity.isAccountNonLocked(), is(this.userSecurity.isAccountNonLocked()));
+        assertThat(readUserSecurity.isCredentialsNonExpired(), is(this.userSecurity.isCredentialsNonExpired()));
+        assertThat(readUserSecurity.isEnabled(), is(this.userSecurity.isEnabled()));
     }
 
     @Test(expected = UsernameNotFoundException.class)
@@ -99,18 +105,21 @@ public class MemberServiceImplTest {
     public void When_존재하는_회원_조회_Then_정상_반환() {
 
         // Given
+        User user = makeUser(this.userEntity);
+
         given(this.memberRepository.findById(1)).willReturn(Optional.ofNullable(this.userEntity));
+        given(this.modelMapper.map(any(UserEntity.class), eq(User.class))).willReturn(user);
 
         // When
-        final User user = this.memberService.readMember(1);
+        final User readUser = this.memberService.readMember(1);
 
         // Then
-        assertThat(user, instanceOf(User.class));
-        assertThat(user.getUsername(), is(this.userEntity.getUsername()));
-        assertThat(user.getPassword(), is(this.userEntity.getPassword()));
-        assertThat(user.getName(), is(this.userEntity.getName()));
-        assertThat(user.getPhone(), is(this.userEntity.getPhone()));
-        assertThat(user.getEmail(), is(this.userEntity.getEmail()));
+        assertThat(readUser, instanceOf(User.class));
+        assertThat(readUser.getUsername(), is(this.userEntity.getUsername()));
+        assertThat(readUser.getPassword(), is(this.userEntity.getPassword()));
+        assertThat(readUser.getName(), is(this.userEntity.getName()));
+        assertThat(readUser.getPhone(), is(this.userEntity.getPhone()));
+        assertThat(readUser.getEmail(), is(this.userEntity.getEmail()));
     }
 
     @Test(expected = NotExistDataException.class)
@@ -124,37 +133,45 @@ public class MemberServiceImplTest {
     public void When_회원_저장_Then_정상_반환() {
 
         // Given
+        User user = makeUser(this.userEntity);
+
         given(this.memberRepository.save(any(UserEntity.class))).willReturn(this.userEntity);
+        given(this.modelMapper.map(any(UserRequest.class), eq(UserEntity.class))).willReturn(this.userEntity);
+        given(this.modelMapper.map(any(UserEntity.class), eq(User.class))).willReturn(user);
 
         // When
-        final User user = this.memberService.createMember(this.userRequest);
+        final User savedUser = this.memberService.createMember(this.userRequest);
 
         // Then
-        assertThat(user, instanceOf(User.class));
-        assertThat(user.getUsername(), is(this.userRequest.getUsername()));
-        assertThat(user.getPassword(), is(this.userRequest.getPassword()));
-        assertThat(user.getName(), is(this.userRequest.getName()));
-        assertThat(user.getPhone(), is(this.userRequest.getPhone()));
-        assertThat(user.getEmail(), is(this.userRequest.getEmail()));
+        assertThat(savedUser, instanceOf(User.class));
+        assertThat(savedUser.getUsername(), is(this.userRequest.getUsername()));
+        assertThat(savedUser.getPassword(), is(this.userRequest.getPassword()));
+        assertThat(savedUser.getName(), is(this.userRequest.getName()));
+        assertThat(savedUser.getPhone(), is(this.userRequest.getPhone()));
+        assertThat(savedUser.getEmail(), is(this.userRequest.getEmail()));
     }
 
     @Test
     public void When_존재하는_회원_수정_Then_정상_반환() {
 
         // Given
+        User user = makeUser(this.userEntity);
+
         given(this.memberRepository.findById(1)).willReturn(Optional.ofNullable(this.userEntity));
         given(this.memberRepository.save(any(UserEntity.class))).willReturn(this.userEntity);
+        given(this.modelMapper.map(any(UserRequest.class), eq(UserEntity.class))).willReturn(this.userEntity);
+        given(this.modelMapper.map(any(UserEntity.class), eq(User.class))).willReturn(user);
 
         // When
-        final User user = this.memberService.updateMember(1, this.userRequest, 10002);
+        final User updatedUser = this.memberService.updateMember(1, this.userRequest, 10002);
 
         // Then
-        assertThat(user, instanceOf(User.class));
-        assertThat(user.getUsername(), is(this.userRequest.getUsername()));
-        assertThat(user.getPassword(), is(this.userRequest.getPassword()));
-        assertThat(user.getName(), is(this.userRequest.getName()));
-        assertThat(user.getPhone(), is(this.userRequest.getPhone()));
-        assertThat(user.getEmail(), is(this.userRequest.getEmail()));
+        assertThat(updatedUser, instanceOf(User.class));
+        assertThat(updatedUser.getUsername(), is(this.userRequest.getUsername()));
+        assertThat(updatedUser.getPassword(), is(this.userRequest.getPassword()));
+        assertThat(updatedUser.getName(), is(this.userRequest.getName()));
+        assertThat(updatedUser.getPhone(), is(this.userRequest.getPhone()));
+        assertThat(updatedUser.getEmail(), is(this.userRequest.getEmail()));
     }
 
     @Test(expected = NotExistDataException.class)
@@ -162,5 +179,16 @@ public class MemberServiceImplTest {
 
         // When
         this.memberService.updateMember(1, this.userRequest, 10002);
+    }
+
+    private User makeUser(UserEntity userEntity) {
+        return User.builder()
+                .id(userEntity.getId())
+                .username(userEntity.getUsername())
+                .password(userEntity.getPassword())
+                .name(userEntity.getName())
+                .phone(userEntity.getPhone())
+                .email(userEntity.getEmail())
+                .build();
     }
 }

@@ -6,10 +6,7 @@ import link.myrecipes.api.dto.request.RecipeMaterialRequest;
 import link.myrecipes.api.dto.request.RecipeRequest;
 import link.myrecipes.api.dto.request.RecipeStepRequest;
 import link.myrecipes.api.dto.request.RecipeTagRequest;
-import link.myrecipes.api.repository.MaterialRepository;
-import link.myrecipes.api.repository.PopularRecipeRepository;
-import link.myrecipes.api.repository.RecipeRepository;
-import link.myrecipes.api.repository.UnitRepository;
+import link.myrecipes.api.repository.*;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +41,15 @@ public class RecipeControllerTest extends ControllerTest {
     private RecipeRepository recipeRepository;
 
     @Autowired
+    private RecipeMaterialRepository recipeMaterialRepository;
+
+    @Autowired
+    private RecipeStepRepository recipeStepRepository;
+
+    @Autowired
+    private RecipeTagRepository recipeTagRepository;
+
+    @Autowired
     private MaterialRepository materialRepository;
 
     @Autowired
@@ -54,7 +60,12 @@ public class RecipeControllerTest extends ControllerTest {
 
     @After
     public void tearDown() {
+        this.recipeMaterialRepository.deleteAll();
+        this.recipeStepRepository.deleteAll();
+        this.recipeTagRepository.deleteAll();
         this.recipeRepository.deleteAll();
+        this.materialRepository.deleteAll();
+        this.unitRepository.deleteAll();
     }
 
     @Test
@@ -82,21 +93,21 @@ public class RecipeControllerTest extends ControllerTest {
                 .andExpect(jsonPath("people").value(recipeEntity.getPeople()))
                 .andExpect(jsonPath("registerUserId").value(recipeEntity.getRegisterUserId()))
                 .andExpect(jsonPath("registerDate").exists())
-                .andExpect(jsonPath("recipeMaterialViewList[0].materialId")
+                .andExpect(jsonPath("recipeMaterialList[0].materialId")
                         .value(recipeEntity.getRecipeMaterialEntityList().get(0).getMaterialEntity().getId()))
-                .andExpect(jsonPath("recipeMaterialViewList[0].materialName")
+                .andExpect(jsonPath("recipeMaterialList[0].materialName")
                         .value(recipeEntity.getRecipeMaterialEntityList().get(0).getMaterialEntity().getName()))
-                .andExpect(jsonPath("recipeMaterialViewList[0].materialUnitName")
+                .andExpect(jsonPath("recipeMaterialList[0].materialUnitName")
                         .value(recipeEntity.getRecipeMaterialEntityList().get(0).getMaterialEntity().getUnitEntity().getName()))
-                .andExpect(jsonPath("recipeMaterialViewList[0].quantity")
+                .andExpect(jsonPath("recipeMaterialList[0].quantity")
                         .value(recipeEntity.getRecipeMaterialEntityList().get(0).getQuantity()))
-                .andExpect(jsonPath("recipeStepViewList[0].step")
+                .andExpect(jsonPath("recipeStepList[0].step")
                         .value(recipeEntity.getRecipeStepEntityList().get(0).getStep()))
-                .andExpect(jsonPath("recipeStepViewList[0].content")
+                .andExpect(jsonPath("recipeStepList[0].content")
                         .value(recipeEntity.getRecipeStepEntityList().get(0).getContent()))
-                .andExpect(jsonPath("recipeStepViewList[0].image")
+                .andExpect(jsonPath("recipeStepList[0].image")
                         .value(recipeEntity.getRecipeStepEntityList().get(0).getImage()))
-                .andExpect(jsonPath("recipeTagViewList[0].tag")
+                .andExpect(jsonPath("recipeTagList[0].tag")
                         .value(recipeEntity.getRecipeTagEntityList().get(0).getTag()))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.recipes-create").exists())
@@ -132,14 +143,14 @@ public class RecipeControllerTest extends ControllerTest {
                                 fieldWithPath("people").description("레시피 인분"),
                                 fieldWithPath("registerUserId").description("레시피 등록자 아이디"),
                                 fieldWithPath("registerDate").description("레시피 등록일"),
-                                fieldWithPath("recipeMaterialViewList[0].materialId").description("레시피 재료 아이디"),
-                                fieldWithPath("recipeMaterialViewList[0].materialName").description("레시피 재료 이름"),
-                                fieldWithPath("recipeMaterialViewList[0].materialUnitName").description("레시피 재료 단위"),
-                                fieldWithPath("recipeMaterialViewList[0].quantity").description("레시피 재료 수량"),
-                                fieldWithPath("recipeStepViewList[0].step").description("레시피 단계"),
-                                fieldWithPath("recipeStepViewList[0].content").description("레시피 단계 내용"),
-                                fieldWithPath("recipeStepViewList[0].image").description("레시피 단계 이미지"),
-                                fieldWithPath("recipeTagViewList[0].tag").description("레시피 태그"),
+                                fieldWithPath("recipeMaterialList[0].materialId").description("레시피 재료 아이디"),
+                                fieldWithPath("recipeMaterialList[0].materialName").description("레시피 재료 이름"),
+                                fieldWithPath("recipeMaterialList[0].materialUnitName").description("레시피 재료 단위"),
+                                fieldWithPath("recipeMaterialList[0].quantity").description("레시피 재료 수량"),
+                                fieldWithPath("recipeStepList[0].step").description("레시피 단계"),
+                                fieldWithPath("recipeStepList[0].content").description("레시피 단계 내용"),
+                                fieldWithPath("recipeStepList[0].image").description("레시피 단계 이미지"),
+                                fieldWithPath("recipeTagList[0].tag").description("레시피 태그"),
                                 fieldWithPath("_links.self.href").description("현재 API"),
                                 fieldWithPath("_links.recipes-create.href").description("레시피 저장 API"),
                                 fieldWithPath("_links.recipes-update.href").description("레시피 수정 API"),
@@ -332,6 +343,77 @@ public class RecipeControllerTest extends ControllerTest {
     }
 
     @Test
+    public void When_잘못된_값으로_레시피_저장_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        RecipeRequest recipeRequest = new RecipeRequest();
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(post("/recipes")
+                .param("userId", "1001")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(recipeRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
+    }
+
+    @Test
+    public void When_존재하지않는_재료로_레시피_저장_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        RecipeRequest recipeRequest = RecipeRequest.builder()
+                .title("레시피")
+                .image("recipe.jpg")
+                .estimatedTime(30)
+                .difficulty(1)
+                .people(1)
+                .build();
+
+        RecipeMaterialRequest recipeMaterialRequest = RecipeMaterialRequest.builder()
+                .materialId(100)
+                .quantity(10D)
+                .build();
+
+        RecipeStepRequest recipeStepRequest = RecipeStepRequest.builder()
+                .step(1)
+                .content("1단계")
+                .image("step1.jpg")
+                .build();
+
+        RecipeTagRequest recipeTagRequest = RecipeTagRequest.builder()
+                .tag("태그")
+                .build();
+
+        recipeRequest.addRecipeMaterial(recipeMaterialRequest);
+        recipeRequest.addRecipeStep(recipeStepRequest);
+        recipeRequest.addRecipeTag(recipeTagRequest);
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(post("/recipes")
+                .param("userId", "1001")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(recipeRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
+    }
+
+    @Test
     public void When_레시피_수정_Then_정상_리턴() throws Exception {
 
         // Given
@@ -427,6 +509,85 @@ public class RecipeControllerTest extends ControllerTest {
                                 fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
                 ));
+    }
+
+    @Test
+    public void When_잘못된_값으로_레시피_수정_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        UnitEntity unitEntity = saveUnit();
+        MaterialEntity materialEntity = saveMaterial(unitEntity);
+        RecipeEntity recipeEntity = saveRecipe(materialEntity, 1);
+
+        RecipeRequest recipeRequest = new RecipeRequest();
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(put("/recipes/{id}", recipeEntity.getId())
+                .param("userId", "1001")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(recipeRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
+    }
+
+    @Test
+    public void When_존재하지않는_재료로_레시피_수정_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        UnitEntity unitEntity = saveUnit();
+        MaterialEntity materialEntity = saveMaterial(unitEntity);
+        RecipeEntity recipeEntity = saveRecipe(materialEntity, 1);
+
+        RecipeRequest recipeRequest = RecipeRequest.builder()
+                .title("레시피02")
+                .image("recipe02.jpg")
+                .estimatedTime(60)
+                .difficulty(2)
+                .people(2)
+                .build();
+
+        RecipeMaterialRequest recipeMaterialRequest = RecipeMaterialRequest.builder()
+                .materialId(100)
+                .quantity(20D)
+                .build();
+
+        RecipeStepRequest recipeStepRequest = RecipeStepRequest.builder()
+                .step(2)
+                .content("2단계")
+                .image("step2.jpg")
+                .build();
+
+        RecipeTagRequest recipeTagRequest = RecipeTagRequest.builder()
+                .tag("태그2")
+                .build();
+
+        recipeRequest.addRecipeMaterial(recipeMaterialRequest);
+        recipeRequest.addRecipeStep(recipeStepRequest);
+        recipeRequest.addRecipeTag(recipeTagRequest);
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(put("/recipes/{id}", recipeEntity.getId())
+                .param("userId", "1001")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(recipeRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
     }
 
     @Test

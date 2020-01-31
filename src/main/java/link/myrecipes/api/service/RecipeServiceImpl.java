@@ -56,7 +56,7 @@ public class RecipeServiceImpl implements RecipeService {
             throw new NotExistDataException(RecipeEntity.class, id);
         }
 
-        return recipeEntityOptional.get().toViewDTO();
+        return this.modelMapper.map(recipeEntityOptional.get(), RecipeView.class);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class RecipeServiceImpl implements RecipeService {
     @CacheEvict(value = "myrecipe:api:recipeList", allEntries = true)
     public Recipe createRecipe(RecipeRequest recipeRequest, int userId) {
 
-        RecipeEntity recipeEntity = recipeRequest.toEntity();
+        RecipeEntity recipeEntity = this.modelMapper.map(recipeRequest, RecipeEntity.class);
         recipeEntity.setRegisterUserId(userId);
 
         return saveRecipe(recipeRequest, recipeEntity);
@@ -92,23 +92,24 @@ public class RecipeServiceImpl implements RecipeService {
             throw new NotExistDataException(RecipeEntity.class, id);
         }
 
-        RecipeEntity selectedRecipeEntity = recipeOptional.get();
-        selectedRecipeEntity.update(recipeRequest.toEntity(), userId);
+        RecipeEntity readRecipeEntity = recipeOptional.get();
+        RecipeEntity recipeEntity = this.modelMapper.map(recipeRequest, RecipeEntity.class);
+        readRecipeEntity.update(recipeEntity, userId);
 
-        for (RecipeMaterialEntity recipeMaterialEntity : selectedRecipeEntity.getRecipeMaterialEntityList()) {
+        for (RecipeMaterialEntity recipeMaterialEntity : readRecipeEntity.getRecipeMaterialEntityList()) {
             this.recipeMaterialRepository.delete(recipeMaterialEntity);
         }
-        for (RecipeStepEntity recipeStepEntity : selectedRecipeEntity.getRecipeStepEntityList()) {
+        for (RecipeStepEntity recipeStepEntity : readRecipeEntity.getRecipeStepEntityList()) {
             this.recipeStepRepository.delete(recipeStepEntity);
         }
-        for (RecipeTagEntity recipeTagEntity : selectedRecipeEntity.getRecipeTagEntityList()) {
+        for (RecipeTagEntity recipeTagEntity : readRecipeEntity.getRecipeTagEntityList()) {
             this.recipeTagRepository.delete(recipeTagEntity);
         }
-        selectedRecipeEntity.clearRecipeMaterialEntityList();
-        selectedRecipeEntity.clearRecipeStepEntityList();
-        selectedRecipeEntity.clearRecipeTagEntityList();
+        readRecipeEntity.clearRecipeMaterialEntityList();
+        readRecipeEntity.clearRecipeStepEntityList();
+        readRecipeEntity.clearRecipeTagEntityList();
 
-        return saveRecipe(recipeRequest, selectedRecipeEntity);
+        return saveRecipe(recipeRequest, readRecipeEntity);
     }
 
     private Recipe saveRecipe(RecipeRequest recipeRequest, RecipeEntity recipeEntity) {
@@ -119,7 +120,9 @@ public class RecipeServiceImpl implements RecipeService {
                 throw new NotExistDataException(MaterialEntity.class, recipeMaterialRequest.getMaterialId());
             }
 
-            RecipeMaterialEntity recipeMaterialEntity = recipeMaterialRequest.toEntity();
+            RecipeMaterialEntity recipeMaterialEntity = RecipeMaterialEntity.builder()
+                    .quantity(recipeMaterialRequest.getQuantity())
+                    .build();
             recipeMaterialEntity.setRecipeEntity(recipeEntity);
             recipeMaterialEntity.setMaterialEntity(materialEntityOptional.get());
 
@@ -127,21 +130,21 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         for (RecipeStepRequest recipeStepRequest : recipeRequest.getRecipeStepRequestList()) {
-            RecipeStepEntity recipeStepEntity = recipeStepRequest.toEntity();
+            RecipeStepEntity recipeStepEntity = this.modelMapper.map(recipeStepRequest, RecipeStepEntity.class);
             recipeStepEntity.setRecipeEntity(recipeEntity);
 
             recipeEntity.addRecipeStep(recipeStepEntity);
         }
 
         for (RecipeTagRequest recipeTagRequest : recipeRequest.getRecipeTagRequestList()) {
-            RecipeTagEntity recipeTagEntity = recipeTagRequest.toEntity();
+            RecipeTagEntity recipeTagEntity = this.modelMapper.map(recipeTagRequest, RecipeTagEntity.class);
             recipeTagEntity.setRecipeEntity(recipeEntity);
 
             recipeEntity.addRecipeTag(recipeTagEntity);
         }
 
-        this.recipeRepository.save(recipeEntity);
-        return recipeEntity.toDTO();
+        RecipeEntity savedRecipeEntity = this.recipeRepository.save(recipeEntity);
+        return this.modelMapper.map(savedRecipeEntity, Recipe.class);
     }
 
     @Override

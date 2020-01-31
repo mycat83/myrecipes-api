@@ -3,6 +3,7 @@ package link.myrecipes.api.dto.view;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -10,8 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class RecipeView implements Serializable {
+
     private Integer id;
 
     private String title;
@@ -28,15 +31,16 @@ public class RecipeView implements Serializable {
 
     private LocalDateTime registerDate;
 
-    private List<RecipeMaterialView> recipeMaterialViewList = new ArrayList<>();
+    private List<RecipeMaterialView> recipeMaterialList = new ArrayList<>();
 
-    private List<RecipeStepView> recipeStepViewList = new ArrayList<>();
+    private List<RecipeStepView> recipeStepList = new ArrayList<>();
 
-    private List<RecipeTagView> recipeTagViewList = new ArrayList<>();
+    private List<RecipeTagView> recipeTagList = new ArrayList<>();
 
     @Builder
     public RecipeView(Integer id, String title, String image, Integer estimatedTime, Integer difficulty,
                       Integer people, Integer registerUserId, LocalDateTime registerDate) {
+
         this.id = id;
         this.title = title;
         this.image = image;
@@ -47,15 +51,15 @@ public class RecipeView implements Serializable {
         this.registerDate = registerDate;
     }
 
-    public void addRecipeMaterialView(RecipeMaterialView recipeMaterialView) {
-        this.recipeMaterialViewList.add(recipeMaterialView);
+    public void addRecipeMaterial(RecipeMaterialView recipeMaterialView) {
+        this.recipeMaterialList.add(recipeMaterialView);
     }
 
-    public void addRecipeStepView(RecipeStepView recipeStepView) {
-        this.recipeStepViewList.add(recipeStepView);
+    public void addRecipeStep(RecipeStepView recipeStepView) {
+        this.recipeStepList.add(recipeStepView);
     }
 
-    public void addRecipeTagView(RecipeTagView recipeTagView) {
-        this.recipeTagViewList.add(recipeTagView);
+    public void addRecipeTag(RecipeTagView recipeTagView) {
+        this.recipeTagList.add(recipeTagView);
     }
 }

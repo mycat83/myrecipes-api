@@ -11,6 +11,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 public class RecipeTag implements Serializable {
+
     private String tag;
 
     @Builder

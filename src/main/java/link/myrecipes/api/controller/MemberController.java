@@ -2,6 +2,7 @@ package link.myrecipes.api.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import link.myrecipes.api.common.ErrorsResource;
 import link.myrecipes.api.common.LinkType;
 import link.myrecipes.api.common.RestResource;
 import link.myrecipes.api.dto.User;
@@ -10,6 +11,7 @@ import link.myrecipes.api.dto.security.UserSecurity;
 import link.myrecipes.api.service.MemberService;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -60,7 +62,12 @@ public class MemberController {
 
     @PostMapping
     @ApiOperation("회원 저장")
-    public ResponseEntity<ResourceSupport> createMember(@RequestBody @Valid UserRequest userRequest) {
+    public ResponseEntity<ResourceSupport> createMember(@RequestBody @Valid UserRequest userRequest, Errors errors) {
+
+        if (errors.hasErrors()) {
+            ErrorsResource errorsResource = new ErrorsResource(errors);
+            return ResponseEntity.badRequest().body(errorsResource);
+        }
 
         User savedUser = this.memberService.createMember(userRequest);
 
@@ -76,8 +83,16 @@ public class MemberController {
 
     @PutMapping("/{id}")
     @ApiOperation("회원 수정")
-    public ResponseEntity<ResourceSupport> updateMember(@PathVariable int id, @RequestBody @Valid UserRequest userRequest,
+    public ResponseEntity<ResourceSupport> updateMember(@PathVariable int id,
+                                                        @RequestBody @Valid UserRequest userRequest,
+                                                        Errors errors,
                                                         @RequestParam int userId) {
+
+        if (errors.hasErrors()) {
+            ErrorsResource errorsResource = new ErrorsResource(errors);
+            return ResponseEntity.badRequest().body(errorsResource);
+        }
+
         User savedUser = this.memberService.updateMember(id, userRequest, userId);
 
         RestResource<User> restResource = new RestResource<>(savedUser,

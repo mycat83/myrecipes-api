@@ -1,17 +1,19 @@
 package link.myrecipes.api.dto.request;
 
-import link.myrecipes.api.domain.UserEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class UserRequest {
+
     @NotBlank(message = "사용자 계정을 입력해주세요.")
     @Length(min = 6, max = 20, message = "사용자 계정은 6~20자 이내로 입력이 가능합니다.")
     private String username;
@@ -35,20 +37,11 @@ public class UserRequest {
 
     @Builder
     public UserRequest(String username, String password, String name, String phone, String email) {
+
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
         this.email = email;
-    }
-
-    public UserEntity toEntity() {
-        return UserEntity.builder()
-                .username(this.getUsername())
-                .password(this.getPassword())
-                .name(this.getName())
-                .phone(this.getPhone())
-                .email(this.getEmail())
-                .build();
     }
 }

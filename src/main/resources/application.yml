@@ -46,6 +46,9 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/myrecipes
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
 
 logging:
   level:
@@ -94,6 +97,9 @@ spring:
       uri: mongodb://10.0.10.206:27017/myrecipes
       username: mruser
       password: qwer1234!
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
 
 logging:
   level:

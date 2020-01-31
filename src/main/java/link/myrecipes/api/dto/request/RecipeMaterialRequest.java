@@ -1,6 +1,5 @@
 package link.myrecipes.api.dto.request;
 
-import link.myrecipes.api.domain.RecipeMaterialEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +10,7 @@ import javax.validation.constraints.Positive;
 @Getter
 @NoArgsConstructor
 public class RecipeMaterialRequest {
+
     @Positive(message = "요리 재료를 입력해주세요.")
     private Integer materialId;
 
@@ -22,11 +22,5 @@ public class RecipeMaterialRequest {
     public RecipeMaterialRequest(Integer materialId, Double quantity) {
         this.materialId = materialId;
         this.quantity = quantity;
-    }
-
-    public RecipeMaterialEntity toEntity() {
-        return RecipeMaterialEntity.builder()
-                .quantity(this.getQuantity())
-                .build();
     }
 }

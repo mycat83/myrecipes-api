@@ -2,9 +2,12 @@ package link.myrecipes.api.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import link.myrecipes.api.common.ErrorsResource;
 import link.myrecipes.api.common.LinkType;
+import link.myrecipes.api.common.MaterialValidator;
 import link.myrecipes.api.common.RestResource;
 import link.myrecipes.api.dto.Material;
+import link.myrecipes.api.dto.request.MaterialRequest;
 import link.myrecipes.api.service.MaterialService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +16,10 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
@@ -24,9 +30,11 @@ public class MaterialController {
 
     private static final String MATERIALS = "materials";
     private final MaterialService materialService;
+    private final MaterialValidator materialValidator;
 
-    public MaterialController(MaterialService materialService) {
+    public MaterialController(MaterialService materialService, MaterialValidator materialValidator) {
         this.materialService = materialService;
+        this.materialValidator = materialValidator;
     }
 
     @GetMapping("/{id}")
@@ -65,9 +73,21 @@ public class MaterialController {
 
     @PostMapping
     @ApiOperation("재료 저장")
-    public ResponseEntity<ResourceSupport> createMaterial(@RequestBody Material material, @RequestParam int userId) {
+    public ResponseEntity<ResourceSupport> createMaterial(@RequestBody @Valid MaterialRequest materialRequest,
+                                                          Errors errors, @RequestParam int userId) {
 
-        Material savedMaterial = this.materialService.createMaterial(material, userId);
+        if (errors.hasErrors()) {
+            ErrorsResource errorsResource = new ErrorsResource(errors);
+            return ResponseEntity.badRequest().body(errorsResource);
+        }
+
+        materialValidator.validate(materialRequest, errors);
+        if (errors.hasErrors()) {
+            ErrorsResource errorsResource = new ErrorsResource(errors);
+            return ResponseEntity.badRequest().body(errorsResource);
+        }
+
+        Material savedMaterial = this.materialService.createMaterial(materialRequest, userId);
 
         RestResource<Material> restResource = new RestResource<>(savedMaterial,
                 String.valueOf(savedMaterial.getId()),

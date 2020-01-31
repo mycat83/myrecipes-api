@@ -1,7 +1,6 @@
 package link.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import link.myrecipes.api.dto.Material;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,6 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "material")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 @JsonIgnoreProperties("hibernateLazyInitializer")
@@ -30,17 +30,5 @@ public class MaterialEntity extends BaseEntity {
         this.registerUserId = registerUserId;
         this.modifyUserId = modifyUserId;
         this.unitEntity = unitEntity;
-    }
-
-    public void setUnitEntity(UnitEntity unitEntity) {
-        this.unitEntity = unitEntity;
-    }
-
-    public Material toDTO() {
-        return Material.builder()
-                .id(this.getId())
-                .name(this.getName())
-                .unitName(this.getUnitEntity().getName())
-                .build();
     }
 }
