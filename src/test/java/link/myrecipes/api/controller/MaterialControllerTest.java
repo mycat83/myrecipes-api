@@ -245,7 +245,7 @@ public class MaterialControllerTest extends ControllerTest {
         // Given
         MaterialRequest materialRequest = MaterialRequest.builder()
                 .name("재료")
-                .unitName("kg")
+                .unitName("g")
                 .build();
 
         // When
