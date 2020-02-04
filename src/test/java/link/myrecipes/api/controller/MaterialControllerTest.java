@@ -85,7 +85,7 @@ public class MaterialControllerTest extends ControllerTest {
                                 fieldWithPath("name").description("재료 이름"),
                                 fieldWithPath("unitName").description("재료의 단위 이름"),
                                 fieldWithPath("_links.self.href").description("현재 API"),
-                                fieldWithPath("_links.materials-create.href").description("현재 API"),
+                                fieldWithPath("_links.materials-create.href").description("재료 저장 API"),
                                 fieldWithPath("_links.materials-query.href").description("재료 리스트 조회 API"),
                                 fieldWithPath("_links.profile.href").description("프로파일 링크")
                         )
