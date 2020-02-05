@@ -1,6 +1,4 @@
 FROM openjdk:11-jdk-slim
-ENV PORT 8081
-EXPOSE 8081
 
-COPY *.jar app.jar
+COPY target/*.jar app.jar
 CMD ["java", "-XX:+UseG1GC", "-XX:MaxMetaspaceSize=512m", "-XX:MetaspaceSize=256m", "-Dspring.profiles.active=dev", "-jar", "app.jar"]
