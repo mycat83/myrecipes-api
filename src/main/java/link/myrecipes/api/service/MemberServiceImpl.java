@@ -86,10 +86,6 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public User updateMember(int id, UserRequest userRequest, int userId) {
 
-        if (this.memberRepository.findByUsername(userRequest.getUsername()).isPresent()) {
-            throw new CustomValidationException("이미 사용중인 아이디입니다.", "username");
-        }
-
         Optional<UserEntity> userEntityOptional = this.memberRepository.findById(id);
 
         if (userEntityOptional.isEmpty()) {
