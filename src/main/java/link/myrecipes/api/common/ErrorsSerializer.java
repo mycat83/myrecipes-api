@@ -17,7 +17,7 @@ public class ErrorsSerializer extends JsonSerializer<Errors> {
     public void serialize(Errors errors, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
 
         jsonGenerator.writeStartArray();
-        errors.getFieldErrors().forEach(error ->{
+        errors.getFieldErrors().forEach(error -> {
             try {
                 jsonGenerator.writeStartObject();
                 jsonGenerator.writeStringField("objectName", error.getObjectName());
