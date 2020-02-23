@@ -1,6 +1,5 @@
 package link.myrecipes.api.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import link.myrecipes.api.domain.*;
 import link.myrecipes.api.dto.request.RecipeMaterialRequest;
 import link.myrecipes.api.dto.request.RecipeRequest;
@@ -33,9 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class RecipeControllerTest extends ControllerTest {
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private RecipeRepository recipeRepository;

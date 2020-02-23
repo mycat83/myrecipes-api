@@ -86,13 +86,12 @@ include::{snippets}/errors/http-response.adoc[]
 
 인덱스는 서비스 진입점을 제공한다.
 
-
 [[resources-index-access]]
 === 인덱스 조회
 
 `GET` 요청을 사용하여 인덱스에 접근할 수 있다.
 
-operation::index[snippets='response-body,http-response,links']
+operation::index[snippets='request-headers,http-request,response-fields,response-headers,curl-request,http-response,links']
 
 [[resources-units]]
 == 단위

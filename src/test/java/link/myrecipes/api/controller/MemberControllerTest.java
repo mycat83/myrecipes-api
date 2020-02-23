@@ -1,13 +1,11 @@
 package link.myrecipes.api.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import link.myrecipes.api.domain.UserEntity;
 import link.myrecipes.api.domain.UserRoleEntity;
 import link.myrecipes.api.dto.request.UserRequest;
 import link.myrecipes.api.repository.MemberRepository;
 import org.junit.After;
 import org.junit.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
@@ -26,12 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class MemberControllerTest extends ControllerTest {
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Autowired
     private MemberRepository memberRepository;

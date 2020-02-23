@@ -14,10 +14,10 @@ public class IndexController {
     public ResponseEntity<ResourceSupport> index() {
 
         ResourceSupport resourceSupport = new ResourceSupport();
-        resourceSupport.add(linkTo(UnitController.class).withRel("units"));
-        resourceSupport.add(linkTo(MaterialController.class).withRel("materials"));
-        resourceSupport.add(linkTo(RecipeController.class).withRel("recipes"));
-        resourceSupport.add(linkTo(MemberController.class).withRel("members"));
+        resourceSupport.add(linkTo(UnitController.class).withRel("units-query"));
+        resourceSupport.add(linkTo(MaterialController.class).withRel("materials-query"));
+        resourceSupport.add(linkTo(RecipeController.class).withRel("recipes-query"));
+        resourceSupport.add(linkTo(MemberController.class).withRel("members-query"));
 
         return ResponseEntity.ok(resourceSupport);
     }

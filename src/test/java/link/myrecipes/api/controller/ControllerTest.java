@@ -1,9 +1,11 @@
 package link.myrecipes.api.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import link.myrecipes.api.config.EmbeddedRedisConfig;
 import link.myrecipes.api.config.RestDocsConfig;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,4 +26,10 @@ public class ControllerTest {
 
     @Autowired
     protected MockMvc mockMvc;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
+
+    @Autowired
+    protected ModelMapper modelMapper;
 }

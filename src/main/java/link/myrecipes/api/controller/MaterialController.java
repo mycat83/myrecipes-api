@@ -39,7 +39,7 @@ public class MaterialController {
 
     @GetMapping("/{id}")
     @ApiOperation("재료 조회")
-    public ResponseEntity<ResourceSupport> readMaterialList(@PathVariable int id) {
+    public ResponseEntity<ResourceSupport> readMaterial(@PathVariable int id) {
 
         Material material = this.materialService.readMaterial(id);
 
