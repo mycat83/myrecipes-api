@@ -146,7 +146,7 @@ public class MemberControllerTest extends ControllerTest {
         // Given
         UserRequest userRequest = UserRequest.builder()
                 .username("user01")
-                .password("123456")
+                .password("qwer1234!")
                 .name("유저01")
                 .phone("01012345678")
                 .email("user01@domain.com")
@@ -204,12 +204,67 @@ public class MemberControllerTest extends ControllerTest {
                 ));
     }
 
-
     @Test
-    public void When_잘못된_값으로_회원_저장_Then_404_에러_리턴() throws Exception {
+    public void When_잘못된_값으로_회원_저장_Then_400_에러_리턴() throws Exception {
 
         // Given
         UserRequest userRequest = new UserRequest();
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(post("/members")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(userRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
+    }
+
+    @Test
+    public void When_정책에_맞지않는_비밀번호로_회원_저장_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        UserRequest userRequest = UserRequest.builder()
+                .username("user01")
+                .password("qwer1234")
+                .name("유저01")
+                .phone("01012345678")
+                .email("user01@domain.com")
+                .build();
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(post("/members")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(userRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
+    }
+
+    @Test
+    public void When_잘못된_핸드폰번호로_회원_저장_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        UserRequest userRequest = UserRequest.builder()
+                .username("user01")
+                .password("qwer1234!")
+                .name("유저01")
+                .phone("01212345678")
+                .email("user01@domain.com")
+                .build();
 
         // When
         final ResultActions actions = this.mockMvc.perform(post("/members")
@@ -233,7 +288,7 @@ public class MemberControllerTest extends ControllerTest {
         // Given
         UserEntity updateUserEntity = UserEntity.builder()
                 .username("user02")
-                .password("234567")
+                .password("asdf1234!")
                 .name("유저02")
                 .phone("01023456789")
                 .email("user02@domain.com")
@@ -297,12 +352,78 @@ public class MemberControllerTest extends ControllerTest {
     }
 
     @Test
+    public void When_정책에_맞지않는_비밀번호로_회원정보_수정_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        UserEntity updateUserEntity = UserEntity.builder()
+                .username("user02")
+                .password("asdf1234")
+                .name("유저02")
+                .phone("01023456789")
+                .email("user02@domain.com")
+                .build();
+
+        UserEntity userEntity = saveUser();
+        userEntity.update(updateUserEntity, 1002);
+        UserRequest userRequest = this.modelMapper.map(userEntity, UserRequest.class);
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(put("/members/{id}", userEntity.getId())
+                .param("userId", "1001")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(userRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
+    }
+
+    @Test
+    public void When_잘못된_핸드폰번호로_회원정보_수정_Then_400_에러_리턴() throws Exception {
+
+        // Given
+        UserEntity updateUserEntity = UserEntity.builder()
+                .username("user02")
+                .password("asdf1234!")
+                .name("유저02")
+                .phone("01223456789")
+                .email("user02@domain.com")
+                .build();
+
+        UserEntity userEntity = saveUser();
+        userEntity.update(updateUserEntity, 1002);
+        UserRequest userRequest = this.modelMapper.map(userEntity, UserRequest.class);
+
+        // When
+        final ResultActions actions = this.mockMvc.perform(put("/members/{id}", userEntity.getId())
+                .param("userId", "1001")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(this.objectMapper.writeValueAsString(userRequest)));
+
+        // Then
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("content[0].objectName").exists())
+                .andExpect(jsonPath("content[0].defaultMessage").exists())
+                .andExpect(jsonPath("content[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists());
+    }
+
+    @Test
     public void When_잘못된_값으로_회원정보_수정_Then_400_에러_리턴() throws Exception {
 
         // Given
         UserEntity updateUserEntity = UserEntity.builder()
                 .username("user02")
-                .password("234567")
+                .password("asdf1234!")
                 .name("유저02")
                 .phone("01023456789")
                 .email("user02@domain.com")

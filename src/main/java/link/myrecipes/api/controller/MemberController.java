@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import link.myrecipes.api.common.ErrorsResource;
 import link.myrecipes.api.common.LinkType;
+import link.myrecipes.api.common.MemberValidator;
 import link.myrecipes.api.common.RestResource;
 import link.myrecipes.api.dto.User;
 import link.myrecipes.api.dto.request.UserRequest;
@@ -26,9 +27,11 @@ public class MemberController {
 
     private static final String MEMBERS = "members";
     private final MemberService memberService;
+    private final MemberValidator memberValidator;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, MemberValidator memberValidator) {
         this.memberService = memberService;
+        this.memberValidator = memberValidator;
     }
 
     @GetMapping("/login/{username}")
@@ -64,10 +67,8 @@ public class MemberController {
     @ApiOperation("회원 저장")
     public ResponseEntity<ResourceSupport> createMember(@RequestBody @Valid UserRequest userRequest, Errors errors) {
 
-        if (errors.hasErrors()) {
-            ErrorsResource errorsResource = new ErrorsResource(errors);
-            return ResponseEntity.badRequest().body(errorsResource);
-        }
+        ResponseEntity<ResourceSupport> errorsResource = checkErrors(userRequest, errors);
+        if (errorsResource != null) return errorsResource;
 
         User savedUser = this.memberService.createMember(userRequest);
 
@@ -88,10 +89,8 @@ public class MemberController {
                                                         Errors errors,
                                                         @RequestParam int userId) {
 
-        if (errors.hasErrors()) {
-            ErrorsResource errorsResource = new ErrorsResource(errors);
-            return ResponseEntity.badRequest().body(errorsResource);
-        }
+        ResponseEntity<ResourceSupport> errorsResource = checkErrors(userRequest, errors);
+        if (errorsResource != null) return errorsResource;
 
         User savedUser = this.memberService.updateMember(id, userRequest, userId);
 
@@ -103,5 +102,19 @@ public class MemberController {
         restResource.addProfileLink("/docs/index.html#resources-members-update");
 
         return ResponseEntity.ok(restResource);
+    }
+
+    private ResponseEntity<ResourceSupport> checkErrors(@RequestBody @Valid UserRequest userRequest, Errors errors) {
+        if (errors.hasErrors()) {
+            ErrorsResource errorsResource = new ErrorsResource(errors);
+            return ResponseEntity.badRequest().body(errorsResource);
+        }
+
+        this.memberValidator.validate(userRequest, errors);
+        if (errors.hasErrors()) {
+            ErrorsResource errorsResource = new ErrorsResource(errors);
+            return ResponseEntity.badRequest().body(errorsResource);
+        }
+        return null;
     }
 }

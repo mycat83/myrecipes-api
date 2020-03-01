@@ -81,7 +81,7 @@ public class MaterialController {
             return ResponseEntity.badRequest().body(errorsResource);
         }
 
-        materialValidator.validate(materialRequest, errors);
+        this.materialValidator.validate(materialRequest, errors);
         if (errors.hasErrors()) {
             ErrorsResource errorsResource = new ErrorsResource(errors);
             return ResponseEntity.badRequest().body(errorsResource);
