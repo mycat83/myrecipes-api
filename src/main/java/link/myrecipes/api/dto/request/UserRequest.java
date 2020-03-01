@@ -19,7 +19,7 @@ public class UserRequest {
     private String username;
 
     @NotBlank(message = "비밀번호를 입력해주세요.")
-    @Length(max = 100, message = "비밀번호는 최대 100자까지 입력이 가능합니다.")
+    @Length(min = 8, max = 100, message = "비밀번호는 8~100자 이내로 입력이 가능합니다.")
     private String password;
 
     @NotBlank(message = "이름을 입력해주세요.")
