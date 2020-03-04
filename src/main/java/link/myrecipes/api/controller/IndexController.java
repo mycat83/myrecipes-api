@@ -1,5 +1,6 @@
 package link.myrecipes.api.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 public class IndexController {
 
     @GetMapping("/")
+    @ApiOperation("메인 페이지 조회")
     public ResponseEntity<ResourceSupport> index() {
 
         ResourceSupport resourceSupport = new ResourceSupport();
