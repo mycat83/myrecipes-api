@@ -5,7 +5,7 @@ import link.myrecipes.api.domain.UserRoleEntity;
 import link.myrecipes.api.dto.User;
 import link.myrecipes.api.dto.request.UserRequest;
 import link.myrecipes.api.dto.security.UserSecurity;
-import link.myrecipes.api.exception.CustomValidationException;
+import link.myrecipes.api.exception.DuplicateDataException;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.exception.UsernameNotFoundException;
 import link.myrecipes.api.repository.MemberRepository;
@@ -60,7 +60,7 @@ public class MemberServiceImpl implements MemberService {
     public User createMember(UserRequest userRequest) {
 
         if (this.memberRepository.findByUsername(userRequest.getUsername()).isPresent()) {
-            throw new CustomValidationException("이미 사용중인 아이디입니다.", "username");
+            throw new DuplicateDataException(userRequest.getClass(), userRequest.getUsername());
         }
 
         UserEntity userEntity = this.modelMapper.map(userRequest, UserEntity.class);
