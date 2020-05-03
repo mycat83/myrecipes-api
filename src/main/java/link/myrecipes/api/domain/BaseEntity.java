@@ -1,23 +1,31 @@
 package link.myrecipes.api.domain;
 
 import lombok.Getter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
-@MappedSuperclass
 @Getter
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 class BaseEntity {
+
+    // TODO: JWT 인증 적용 후 수정
+    //    @CreatedBy
     protected Integer registerUserId;
 
-    @CreationTimestamp
+    @CreatedDate
     private LocalDateTime registerDate;
 
+    // TODO: JWT 인증 적용 후 수정
+    //    @LastModifiedBy
     protected Integer modifyUserId;
 
-    @UpdateTimestamp
+    @LastModifiedDate
     private LocalDateTime modifyDate;
 
     public void setRegisterUserId(Integer registerUserId) {
