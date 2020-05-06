@@ -1,7 +1,12 @@
 package link.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,6 +20,7 @@ import javax.persistence.Table;
 @ToString
 @JsonIgnoreProperties("hibernateLazyInitializer")
 public class UnitEntity extends BaseEntity {
+
     @Id
     private String name;
 

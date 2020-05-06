@@ -1,9 +1,20 @@
 package link.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +26,7 @@ import java.util.List;
 @ToString(exclude = "userRoleEntityList")
 @JsonIgnoreProperties("hibernateLazyInitializer")
 public class UserEntity extends BaseEntity {
+
     @Id
     @GeneratedValue
     private Integer id;
