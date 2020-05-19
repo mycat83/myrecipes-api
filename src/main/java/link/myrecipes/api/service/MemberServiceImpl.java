@@ -9,6 +9,7 @@ import link.myrecipes.api.exception.DuplicateDataException;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.exception.UsernameNotFoundException;
 import link.myrecipes.api.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,16 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
-
-    public MemberServiceImpl(MemberRepository memberRepository, ModelMapper modelMapper) {
-
-        this.memberRepository = memberRepository;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     public UserSecurity login(String username) {

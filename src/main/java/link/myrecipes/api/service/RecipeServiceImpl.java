@@ -1,6 +1,11 @@
 package link.myrecipes.api.service;
 
-import link.myrecipes.api.domain.*;
+import link.myrecipes.api.domain.MaterialEntity;
+import link.myrecipes.api.domain.PopularRecipeDocument;
+import link.myrecipes.api.domain.RecipeEntity;
+import link.myrecipes.api.domain.RecipeMaterialEntity;
+import link.myrecipes.api.domain.RecipeStepEntity;
+import link.myrecipes.api.domain.RecipeTagEntity;
 import link.myrecipes.api.dto.Recipe;
 import link.myrecipes.api.dto.RecipeCount;
 import link.myrecipes.api.dto.request.RecipeMaterialRequest;
@@ -9,7 +14,13 @@ import link.myrecipes.api.dto.request.RecipeStepRequest;
 import link.myrecipes.api.dto.request.RecipeTagRequest;
 import link.myrecipes.api.dto.view.RecipeView;
 import link.myrecipes.api.exception.NotExistDataException;
-import link.myrecipes.api.repository.*;
+import link.myrecipes.api.repository.MaterialRepository;
+import link.myrecipes.api.repository.PopularRecipeRepository;
+import link.myrecipes.api.repository.RecipeMaterialRepository;
+import link.myrecipes.api.repository.RecipeRepository;
+import link.myrecipes.api.repository.RecipeStepRepository;
+import link.myrecipes.api.repository.RecipeTagRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -24,6 +35,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeRepository recipeRepository;
@@ -33,19 +45,6 @@ public class RecipeServiceImpl implements RecipeService {
     private final MaterialRepository materialRepository;
     private final PopularRecipeRepository popularRecipesRepository;
     private final ModelMapper modelMapper;
-
-    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeMaterialRepository recipeMaterialRepository,
-                             RecipeStepRepository recipeStepRepository, RecipeTagRepository recipeTagRepository,
-                             MaterialRepository materialRepository, PopularRecipeRepository popularRecipesRepository,
-                             ModelMapper modelMapper) {
-        this.recipeRepository = recipeRepository;
-        this.recipeMaterialRepository = recipeMaterialRepository;
-        this.recipeStepRepository = recipeStepRepository;
-        this.recipeTagRepository = recipeTagRepository;
-        this.materialRepository = materialRepository;
-        this.popularRecipesRepository = popularRecipesRepository;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     @Cacheable(value = "myrecipe:api:recipeView", key = "#id")

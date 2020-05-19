@@ -7,6 +7,7 @@ import link.myrecipes.api.dto.request.MaterialRequest;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.MaterialRepository;
 import link.myrecipes.api.repository.UnitRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,18 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class MaterialServiceImpl implements MaterialService {
 
     private final MaterialRepository materialRepository;
     private final UnitRepository unitRepository;
     private final ModelMapper modelMapper;
-
-    public MaterialServiceImpl(MaterialRepository materialRepository, UnitRepository unitRepository, ModelMapper modelMapper) {
-
-        this.materialRepository = materialRepository;
-        this.unitRepository = unitRepository;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     public Material readMaterial(int id) {
