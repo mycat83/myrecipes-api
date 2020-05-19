@@ -9,6 +9,7 @@ import java.util.List;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 public class RestResource<T> extends Resource<T> {
+
     public RestResource(T content, String key, Class<?> controllerClass, LinkType[] addLinks, String linkPrefix, Link... links) {
         super(content, links);
         add(linkTo(controllerClass).slash(key).withSelfRel());
