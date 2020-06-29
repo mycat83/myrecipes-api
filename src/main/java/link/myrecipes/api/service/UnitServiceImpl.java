@@ -5,6 +5,7 @@ import link.myrecipes.api.dto.Unit;
 import link.myrecipes.api.dto.request.UnitRequest;
 import link.myrecipes.api.exception.NotExistDataException;
 import link.myrecipes.api.repository.UnitRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,16 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UnitServiceImpl implements UnitService {
 
     private final UnitRepository unitRepository;
     private ModelMapper modelMapper;
-
-    public UnitServiceImpl(UnitRepository unitRepository, ModelMapper modelMapper) {
-
-        this.unitRepository = unitRepository;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     public Unit readUnit(String name) {

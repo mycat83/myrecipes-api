@@ -19,6 +19,7 @@ import java.util.Arrays;
 @ConditionalOnProperty("spring.rabbitmq")
 @Slf4j
 public class LoggerAspect {
+
     @Value("${app.rabbitmq.exchange}")
     private String exchange;
 

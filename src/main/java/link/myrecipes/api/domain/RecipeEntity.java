@@ -1,9 +1,21 @@
 package link.myrecipes.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.ArrayList;
@@ -17,6 +29,7 @@ import java.util.List;
 @ToString(exclude = {"recipeMaterialEntityList", "recipeStepEntityList", "recipeTagEntityList"})
 @JsonIgnoreProperties("hibernateLazyInitializer")
 public class RecipeEntity extends BaseEntity {
+
     @Id
     @GeneratedValue
     private Integer id;
@@ -47,7 +60,7 @@ public class RecipeEntity extends BaseEntity {
     @OneToMany(mappedBy = "recipeEntity", cascade = CascadeType.ALL)
     private List<RecipeStepEntity> recipeStepEntityList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipeEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "recipeEntity", cascade = CascadeType.ALL)
     private List<RecipeTagEntity> recipeTagEntityList = new ArrayList<>();
 
     @Builder

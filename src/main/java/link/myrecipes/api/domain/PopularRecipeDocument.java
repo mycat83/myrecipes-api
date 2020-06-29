@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Document(collection = "popular_recipe")
 @Getter
 public class PopularRecipeDocument {
+
     @Id
     private Integer id;
 
