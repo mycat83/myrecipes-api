@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <swagger.version>2.9.2</swagger.version>
+        <swagger.version>2.10.0</swagger.version>
         <jacoco.version>0.8.5</jacoco.version>
         <sonar.projectKey>mycat83_myrecipes-api</sonar.projectKey>
         <sonar.organization>myrecipes</sonar.organization>
